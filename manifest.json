@@ -4,13 +4,13 @@
   "description": "A classic single-player board game involving movement of marbles. Jump marbles to remove them and try to leave just one!",
   "icons": [
     {
-      "src": "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+      "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
     },
     {
-      "src": "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+      "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
