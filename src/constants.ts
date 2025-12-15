@@ -9,6 +9,19 @@ const E = 0;  // Empty
 
 export const LAYOUTS: GameLayout[] = [
   {
+    name: "Circular Board",
+    description: "37 holes. The classic round layout.",
+    board: [
+      [I, I, O, O, O, I, I],
+      [I, O, O, O, O, O, I],
+      [O, O, O, O, O, O, O],
+      [O, O, O, E, O, O, O],
+      [O, O, O, O, O, O, O],
+      [I, O, O, O, O, O, I],
+      [I, I, O, O, O, I, I],
+    ]
+  },
+  {
     name: "Classic Cross",
     description: "The standard 33-hole English board.",
     board: [
@@ -18,19 +31,6 @@ export const LAYOUTS: GameLayout[] = [
       [O, O, O, E, O, O, O],
       [O, O, O, O, O, O, O],
       [I, I, O, O, O, I, I],
-      [I, I, O, O, O, I, I],
-    ]
-  },
-  {
-    name: "European Circle",
-    description: "37 holes. A true circular challenge.",
-    board: [
-      [I, I, O, O, O, I, I],
-      [I, O, O, O, O, O, I],
-      [O, O, O, O, O, O, O],
-      [O, O, O, E, O, O, O],
-      [O, O, O, O, O, O, O],
-      [I, O, O, O, O, O, I],
       [I, I, O, O, O, I, I],
     ]
   },
