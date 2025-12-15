@@ -1,0 +1,5 @@
+{
+  "name": "Brainvita Master",
+  "description": "A classic single-player board game involving movement of marbles on a board with holes. Jump marbles to remove them and try to leave just one!",
+  "requestFramePermissions": []
+}

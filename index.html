@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" href="/vite.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- PWA & SEO Meta Tags -->
+    <meta name="theme-color" content="#020617" />
+    <meta name="description" content="Play Brainvita Master 3D (Peg Solitaire). A classic marble puzzle game with stunning 3D graphics and themes. Challenge yourself to leave only one marble!" />
+    <meta name="keywords" content="Brainvita, Peg Solitaire, Marble Solitaire, Board Game, Puzzle, 3D Game, Casual Game" />
+    
+    <!-- iOS Support -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Brainvita">
+
+    <title>Brainvita Master 3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #020617;
+        overflow: auto;
+        touch-action: manipulation;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      
+      .board-container-3d {
+        perspective: 1200px;
+        transform-style: preserve-3d;
+      }
+
+      .board-base {
+        transform-style: preserve-3d;
+        box-shadow: 
+          0 50px 100px -20px rgba(0,0,0,0.7),
+          0 30px 60px -30px rgba(0,0,0,0.8),
+          0 0 0 1px rgba(255,255,255,0.05);
+        will-change: transform;
+      }
+
+      .btn-3d {
+        position: relative;
+        transition: all 0.1s;
+        transform-style: preserve-3d;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      .btn-3d:active:not(:disabled) {
+        transform: translateY(6px);
+      }
+      
+      .btn-surface {
+        position: relative;
+        z-index: 10;
+        transition: all 0.1s;
+      }
+      
+      .btn-3d:active:not(:disabled) .btn-surface {
+         box-shadow: inset 0 10px 20px rgba(0,0,0,0.3);
+      }
+
+      .btn-edge {
+        position: absolute;
+        inset: 0;
+        top: 6px;
+        z-index: 0;
+        border-radius: 9999px;
+        transition: all 0.1s;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
+      }
+      
+      .btn-3d:active:not(:disabled) .btn-edge {
+        top: 0px;
+        box-shadow: none;
+      }
+
+      .hole-3d {
+        background: radial-gradient(circle at 50% 50%, #020617 0%, #1e293b 100%);
+        box-shadow: 
+          inset 2px 4px 8px rgba(0,0,0,0.8),
+          inset -2px -2px 4px rgba(255,255,255,0.05),
+          0 1px 0px rgba(255,255,255,0.1);
+      }
+
+      .marble-3d {
+        box-shadow: 
+          inset -6px -10px 15px rgba(0,0,0,0.5),
+          inset 4px 4px 10px rgba(255,255,255,0.4),
+          0 8px 10px -4px rgba(0,0,0,0.6),
+          0 15px 25px -5px rgba(0,0,0,0.4);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s;
+      }
+      
+      .marble-selected {
+        transform: translateY(-25px) scale(1.15);
+        z-index: 100;
+        filter: brightness(1.2) contrast(1.1);
+        box-shadow: 
+          inset -4px -8px 15px rgba(0,0,0,0.6),
+          inset 4px 4px 12px rgba(255,255,255,0.6),
+          0 0 25px rgba(255, 255, 255, 0.4),
+          0 40px 40px -10px rgba(0,0,0,0.4);
+      }
+
+      /* --- ANIMATED BACKGROUND THEMES --- */
+      
+      /* Shared Base */
+      .bg-anim-base {
+        width: 100%;
+        height: 100%;
+        background-size: 400% 400%;
+      }
+
+      /* 1. Underwater: Deep swirling blues */
+      .bg-anim-ocean {
+        background: linear-gradient(-45deg, #001e3c, #003366, #004d40, #006064);
+        background-size: 400% 400%;
+        animation: ocean-flow 15s ease infinite;
+      }
+      @keyframes ocean-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      /* 2. Unicorn: Pastel Rainbow */
+      .bg-anim-unicorn {
+        background: linear-gradient(45deg, #ffc4e6, #e7c6ff, #c4f0ff, #caffbf, #ffd6a5);
+        background-size: 300% 300%;
+        animation: rainbow-slide 10s linear infinite;
+      }
+      @keyframes rainbow-slide {
+        0% { background-position: 0% 0%; }
+        50% { background-position: 100% 100%; }
+        100% { background-position: 0% 0%; }
+      }
+
+      /* 3. Barbie: Hot Pink Pulse */
+      .bg-anim-barbie {
+        background: radial-gradient(circle at center, #ff99c8, #ff5c9e, #d6006e, #880044);
+        background-size: 200% 200%;
+        animation: pink-pulse 8s ease-in-out infinite;
+      }
+      @keyframes pink-pulse {
+        0% { background-size: 200% 200%; background-position: center; }
+        50% { background-size: 250% 250%; }
+        100% { background-size: 200% 200%; }
+      }
+
+      /* 4. Nature: Enchanted Night Forest (Blue/Teal/Indigo) */
+      .bg-anim-nature {
+        background: linear-gradient(120deg, #0f172a, #1e1b4b, #312e81, #0f172a);
+        background-size: 300% 300%;
+        animation: forest-breathe 20s ease infinite;
+      }
+      @keyframes forest-breathe {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      /* 5. Frozen/Ice Aurora */
+      .bg-anim-ice {
+        background: linear-gradient(180deg, #020617 0%, #1e3a8a 100%);
+      }
+      .bg-anim-ice::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.2) 25%, rgba(168, 85, 247, 0.2) 50%, rgba(56, 189, 248, 0.2) 75%, transparent 100%);
+        background-size: 200% 100%;
+        animation: aurora 8s ease-in-out infinite;
+        opacity: 0.6;
+      }
+      @keyframes aurora {
+        0% { background-position: 0% 0%; }
+        50% { background-position: 100% 0%; }
+        100% { background-position: 0% 0%; }
+      }
+
+      /* 6. Crystal: Shimmering Cave */
+      .bg-anim-crystal {
+        background: radial-gradient(circle at 50% 50%, #2e1065, #0f172a);
+        background-size: 200% 200%;
+        animation: crystal-pulse 10s ease infinite;
+      }
+      @keyframes crystal-pulse {
+        0% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+        50% { background-position: 100% 50%; filter: hue-rotate(15deg); }
+        100% { background-position: 0% 50%; filter: hue-rotate(0deg); }
+      }
+
+      /* 7. Christmas: Red/Gold/Green */
+      .bg-anim-christmas {
+        background: linear-gradient(135deg, #450a0a, #022c22, #713f12, #450a0a);
+        background-size: 400% 400%;
+        animation: christmas-shimmer 12s ease infinite;
+      }
+      @keyframes christmas-shimmer {
+         0% { background-position: 0% 50%; }
+         50% { background-position: 100% 50%; }
+         100% { background-position: 0% 50%; }
+      }
+
+      /* 8. Disney: Purple/Magic */
+      .bg-anim-disney {
+         background: radial-gradient(circle at center, #3b0764, #172554, #000000);
+         background-size: 150% 150%;
+         animation: disney-sky 10s alternate infinite;
+      }
+      @keyframes disney-sky {
+         0% { background-position: center; filter: brightness(1); }
+         100% { background-position: center; filter: brightness(1.2); }
+      }
+
+      /* 9. Sky: Gentle Day Blue */
+      .bg-anim-sky {
+         background: linear-gradient(180deg, #bae6fd 0%, #38bdf8 100%);
+         background-size: 100% 200%;
+         animation: sky-drift 20s ease-in-out infinite alternate;
+      }
+      @keyframes sky-drift {
+         0% { background-position: 0% 0%; }
+         100% { background-position: 0% 100%; }
+      }
+
+
+      /* --- OVERLAYS (Particles) --- */
+      .overlay-base {
+        position: absolute;
+        inset: -20%;
+        width: 140%;
+        height: 140%;
+        pointer-events: none;
+        mix-blend-mode: overlay;
+      }
+
+      /* Ocean: Caustics */
+      .overlay-ocean {
+        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC4wMiIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC41Ii8+PC9zdmc+');
+        opacity: 0.2;
+        filter: blur(2px) contrast(150%);
+        animation: drift-rotate 40s infinite linear;
+      }
+
+      /* Disney/Frozen: Snow */
+      .overlay-snow {
+        background-image: 
+            radial-gradient(3px 3px at 50% 50%, rgba(255,255,255,0.9) 50%, transparent),
+            radial-gradient(2px 2px at 20% 20%, rgba(255,255,255,0.8) 50%, transparent),
+            radial-gradient(4px 4px at 80% 80%, rgba(255,255,255,0.7) 50%, transparent);
+        background-size: 400px 400px, 300px 300px, 500px 500px;
+        opacity: 0.8;
+        animation: snow-fall 15s linear infinite;
+      }
+
+      /* Unicorn: Rainbow Sheen */
+      .overlay-sparkle {
+        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 10%);
+        background-size: 100px 100px;
+        animation: sparkle-drift 5s linear infinite;
+        opacity: 0.4;
+      }
+
+      /* Barbie: Hearts/Bokeh */
+      .overlay-hearts {
+         background-image: 
+            radial-gradient(circle, rgba(255,255,255,0.7) 5%, transparent 10%),
+            radial-gradient(circle, rgba(255,182,193,0.5) 8%, transparent 12%);
+         background-size: 60px 60px, 90px 90px;
+         background-position: 0 0, 30px 30px;
+         opacity: 0.5;
+         animation: drift-up 10s infinite linear;
+      }
+
+      /* Nature: Fog/Mist */
+      .overlay-fog {
+        background: radial-gradient(ellipse at center, rgba(255,255,255,0.15) 0%, transparent 70%);
+        background-size: 150% 150%;
+        animation: pulse-fog 10s ease-in-out infinite;
+      }
+
+      /* Crystal Overlay: Prismatic sparkles */
+      .overlay-crystal {
+         background: linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.4) 45%, transparent 50%),
+                     radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 40%);
+         background-size: 200% 200%, 100% 100%;
+         animation: sheen 4s infinite ease-in-out;
+         mix-blend-mode: hard-light;
+      }
+      
+      /* Disney/Fireworks Overlay */
+      .overlay-fireworks {
+         background-image: 
+             radial-gradient(circle, rgba(255,215,0,0.6) 2%, transparent 5%),
+             radial-gradient(circle, rgba(147,51,234,0.6) 2%, transparent 5%),
+             radial-gradient(circle, rgba(59,130,246,0.6) 2%, transparent 5%);
+         background-size: 200px 200px, 150px 150px, 250px 250px;
+         background-position: 0 0, 75px 75px, 120px 20px;
+         animation: pulse-fireworks 4s ease-in-out infinite;
+         opacity: 0.6;
+      }
+
+      @keyframes drift-rotate {
+        0% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(5deg) scale(1.1); }
+        100% { transform: rotate(0deg) scale(1); }
+      }
+      @keyframes snow-fall {
+        0% { background-position: 0 0, 0 0, 0 0; }
+        100% { background-position: 50px 400px, -50px 300px, 100px 500px; }
+      }
+      @keyframes sparkle-drift {
+        0% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(-50px) rotate(45deg); }
+      }
+      @keyframes drift-up {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-100px); }
+      }
+      @keyframes pulse-fog {
+        0% { opacity: 0.1; transform: scale(1); }
+        50% { opacity: 0.3; transform: scale(1.1); }
+        100% { opacity: 0.1; transform: scale(1); }
+      }
+      @keyframes sheen {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      @keyframes pulse-fireworks {
+         0% { transform: scale(1); opacity: 0.4; }
+         50% { transform: scale(1.05); opacity: 0.8; }
+         100% { transform: scale(1); opacity: 0.4; }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/client": "https://esm.sh/react-dom@^19.2.3/client",
+    "react-dom": "https://esm.sh/react-dom@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "vite": "https://esm.sh/vite@^7.2.7",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
