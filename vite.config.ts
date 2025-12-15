@@ -32,7 +32,7 @@ export default defineConfig({
             purpose: "maskable"
           }
         ],
-        // Removing 'sizes' from screenshots to avoid strict dimension mismatch errors
+        // Removed 'sizes' from screenshots to avoid strict dimension mismatch errors in PWABuilder
         screenshots: [
           {
             src: "https://i.postimg.cc/rzwb1LBd/Nature.jpg",
@@ -46,10 +46,9 @@ export default defineConfig({
             type: "image/jpeg",
             form_factor: "narrow",
             label: "Classic Gameplay",
-            sizes: "750x1334"
+            sizes: "720x1280"
           }
         ],
-        // Removing 'sizes' from shortcuts
         shortcuts: [
           {
             name: "Play Now",
