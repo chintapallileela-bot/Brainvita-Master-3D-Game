@@ -43,7 +43,7 @@ const App: React.FC = () => {
   useEffect(() => {
     let interval: number;
     if (gameStatus === GameStatus.PLAYING) {
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         setTimer(t => t + 1);
       }, 1000);
     }
@@ -130,7 +130,7 @@ const App: React.FC = () => {
       duration: `${Math.random() * 15 + 10}s`,
       delay: `${Math.random() * 10}s`,
       depth: Math.random(),
-      key: i // used key to silence unused variable warning if necessary, though mapped index is standard
+      key: i
     }));
   }, []);
 

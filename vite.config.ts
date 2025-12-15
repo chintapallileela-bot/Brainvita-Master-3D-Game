@@ -39,13 +39,15 @@ export default defineConfig({
             src: "https://i.postimg.cc/rzwb1LBd/Nature.jpg",
             type: "image/jpeg",
             form_factor: "wide",
-            label: "Immersive 3D Themes"
+            label: "Immersive 3D Themes",
+            sizes: "1280x720"
           },
           {
             src: "https://i.postimg.cc/GH3fjn62/Barbie.jpg",
             type: "image/jpeg",
             form_factor: "narrow",
-            label: "Classic Gameplay"
+            label: "Classic Gameplay",
+            sizes: "750x1334"
           }
         ],
         // Removing 'sizes' from shortcuts

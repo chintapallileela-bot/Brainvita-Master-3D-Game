@@ -43,7 +43,7 @@ const App: React.FC = () => {
   useEffect(() => {
     let interval: number;
     if (gameStatus === GameStatus.PLAYING) {
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         setTimer(t => t + 1);
       }, 1000);
     }
