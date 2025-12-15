@@ -11,25 +11,38 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['vite.svg'],
       manifest: {
-        filename: 'manifest.json', // Explicitly name it manifest.json for compatibility
+        filename: 'manifest.json', // Explicitly name it manifest.json
         short_name: "Brainvita",
         name: "Brainvita Master 3D",
         description: "A classic single-player board game involving movement of marbles. Jump marbles to remove them and try to leave just one!",
         id: "/",
         start_url: "/",
         categories: ["game", "puzzle", "casual", "strategy"],
+        // Strict icon definitions: split 'any' and 'maskable' into separate objects
         icons: [
           {
             src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
             sizes: "192x192",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any"
+          },
+          {
+            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "maskable"
           },
           {
             src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
             sizes: "512x512",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any"
+          },
+          {
+            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
           }
         ],
         screenshots: [
@@ -70,7 +83,6 @@ export default defineConfig({
         orientation: "portrait"
       },
       workbox: {
-        // Cache the Tailwind CDN and Google Fonts so the app works offline
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/cdn\.tailwindcss\.com/,
@@ -79,7 +91,7 @@ export default defineConfig({
               cacheName: 'tailwind-cdn',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+                maxAgeSeconds: 60 * 60 * 24 * 365 
               },
               cacheableResponse: {
                 statuses: [0, 200]
@@ -105,14 +117,13 @@ export default defineConfig({
             }
           },
           {
-            // Cache external images used for backgrounds/screenshots/icons
             urlPattern: /^https:\/\/i\.postimg\.cc/,
             handler: 'CacheFirst',
             options: {
               cacheName: 'game-assets',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+                maxAgeSeconds: 60 * 60 * 24 * 30 
               },
               cacheableResponse: {
                 statuses: [0, 200]
