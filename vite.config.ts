@@ -8,6 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       includeAssets: ['vite.svg'],
       manifest: {
         short_name: "Brainvita",
@@ -19,15 +20,27 @@ export default defineConfig({
         icons: [
           {
             src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
-            type: "image/png",
             sizes: "192x192",
-            purpose: "any maskable"
+            type: "image/png",
+            purpose: "any"
           },
           {
             src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
-            type: "image/png",
             sizes: "512x512",
-            purpose: "any maskable"
+            type: "image/png",
+            purpose: "any"
+          },
+          {
+            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "maskable"
+          },
+          {
+            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable"
           }
         ],
         screenshots: [
