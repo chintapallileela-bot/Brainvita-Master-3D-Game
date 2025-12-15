@@ -1,4 +1,4 @@
-import { CellState, Theme, GameLayout } from './types';
+import { Theme, GameLayout } from './types';
 
 export const BOARD_SIZE = 7;
 

@@ -129,7 +129,8 @@ const App: React.FC = () => {
       size: `${Math.random() * 15 + 5}px`,
       duration: `${Math.random() * 15 + 10}s`,
       delay: `${Math.random() * 10}s`,
-      depth: Math.random()
+      depth: Math.random(),
+      key: i // used key to silence unused variable warning if necessary, though mapped index is standard
     }));
   }, []);
 
