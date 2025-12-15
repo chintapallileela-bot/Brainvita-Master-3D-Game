@@ -11,27 +11,15 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['vite.svg'],
       manifest: {
-        filename: 'manifest.json', // Explicitly name it manifest.json
+        filename: 'manifest.json', 
         short_name: "Brainvita",
         name: "Brainvita Master 3D",
         description: "A classic single-player board game involving movement of marbles. Jump marbles to remove them and try to leave just one!",
         id: "/",
         start_url: "/",
         categories: ["game", "puzzle", "casual", "strategy"],
-        // Strict icon definitions: split 'any' and 'maskable' into separate objects
+        // Strict icon definition: Only declaring 512x512 to avoid mismatch errors since we only have a high-res image
         icons: [
-          {
-            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
-            sizes: "192x192",
-            type: "image/png",
-            purpose: "any"
-          },
-          {
-            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
-            sizes: "192x192",
-            type: "image/png",
-            purpose: "maskable"
-          },
           {
             src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
             sizes: "512x512",
@@ -45,22 +33,22 @@ export default defineConfig({
             purpose: "maskable"
           }
         ],
+        // Removing 'sizes' from screenshots to avoid strict dimension mismatch errors
         screenshots: [
           {
             src: "https://i.postimg.cc/rzwb1LBd/Nature.jpg",
-            sizes: "1280x720",
             type: "image/jpeg",
             form_factor: "wide",
             label: "Immersive 3D Themes"
           },
           {
             src: "https://i.postimg.cc/GH3fjn62/Barbie.jpg",
-            sizes: "720x1280",
             type: "image/jpeg",
             form_factor: "narrow",
             label: "Classic Gameplay"
           }
         ],
+        // Removing 'sizes' from shortcuts
         shortcuts: [
           {
             name: "Play Now",
@@ -69,11 +57,12 @@ export default defineConfig({
             url: "/",
             icons: [{ 
               src: "https://i.postimg.cc/y6R5kVMY/Brainvita_Shortcut_Icon.png", 
-              sizes: "192x192", 
               type: "image/png" 
             }]
           }
         ],
+        // PWA Builder specific setting to avoid "Specify your native app" warning
+        prefer_related_applications: false,
         launch_handler: {
           client_mode: "navigate-existing"
         },

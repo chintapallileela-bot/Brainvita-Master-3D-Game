@@ -6,18 +6,6 @@
     {
       "src": "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
       "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any"
-    },
-    {
-      "src": "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
-      "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "maskable"
-    },
-    {
-      "src": "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
-      "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
     },
@@ -33,17 +21,16 @@
   "theme_color": "#020617",
   "background_color": "#020617",
   "orientation": "portrait",
+  "prefer_related_applications": false,
   "screenshots": [
     {
       "src": "https://i.postimg.cc/rzwb1LBd/Nature.jpg",
-      "sizes": "1280x720",
       "type": "image/jpeg",
       "form_factor: "wide",
       "label: "Immersive 3D Themes"
     },
     {
       "src": "https://i.postimg.cc/GH3fjn62/Barbie.jpg",
-      "sizes": "720x1280",
       "type": "image/jpeg",
       "form_factor: "narrow",
       "label: "Classic Gameplay"
@@ -57,7 +44,6 @@
       "url": "/",
       "icons": [{ 
         "src": "https://i.postimg.cc/y6R5kVMY/Brainvita_Shortcut_Icon.png", 
-        "sizes": "192x192",
         "type": "image/png" 
       }]
     }
