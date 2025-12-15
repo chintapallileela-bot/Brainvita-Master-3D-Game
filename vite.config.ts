@@ -18,15 +18,15 @@ export default defineConfig({
         categories: ["game", "puzzle", "casual", "strategy"],
         icons: [
           {
-            src: "/vite.svg",
-            type: "image/svg+xml",
-            sizes: "512x512",
+            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+            type: "image/png",
+            sizes: "192x192",
             purpose: "any maskable"
           },
           {
-            src: "/vite.svg",
-            type: "image/svg+xml",
-            sizes: "192x192",
+            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+            type: "image/png",
+            sizes: "512x512",
             purpose: "any maskable"
           }
         ],
@@ -52,7 +52,11 @@ export default defineConfig({
             short_name: "Play",
             description: "Start a new game of Brainvita",
             url: "/",
-            icons: [{ src: "/vite.svg", sizes: "192x192" }]
+            icons: [{ 
+              src: "https://i.postimg.cc/y6R5kVMY/Brainvita_Shortcut_Icon.png", 
+              sizes: "192x192", 
+              type: "image/png" 
+            }]
           }
         ],
         launch_handler: {
@@ -99,13 +103,13 @@ export default defineConfig({
             }
           },
           {
-            // Cache external images used for backgrounds/screenshots
+            // Cache external images used for backgrounds/screenshots/icons
             urlPattern: /^https:\/\/i\.postimg\.cc/,
             handler: 'CacheFirst',
             options: {
               cacheName: 'game-assets',
               expiration: {
-                maxEntries: 20,
+                maxEntries: 50,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
               },
               cacheableResponse: {

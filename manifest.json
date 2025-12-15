@@ -4,15 +4,15 @@
   "description": "A classic single-player board game involving movement of marbles. Jump marbles to remove them and try to leave just one!",
   "icons": [
     {
-      "src": "/vite.svg",
-      "type": "image/svg+xml",
-      "sizes": "512x512",
+      "src": "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+      "type": "image/png",
+      "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "/vite.svg",
-      "type": "image/svg+xml",
-      "sizes": "192x192",
+      "src": "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
       "purpose": "any maskable"
     }
   ],
@@ -20,5 +20,18 @@
   "display": "standalone",
   "theme_color": "#020617",
   "background_color": "#020617",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "shortcuts": [
+    {
+      "name": "Play Now",
+      "short_name": "Play",
+      "description": "Start a new game of Brainvita",
+      "url": "/",
+      "icons": [{ 
+        "src": "https://i.postimg.cc/y6R5kVMY/Brainvita_Shortcut_Icon.png", 
+        "sizes": "192x192",
+        "type": "image/png" 
+      }]
+    }
+  ]
 }
