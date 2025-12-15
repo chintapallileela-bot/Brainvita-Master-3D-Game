@@ -5,7 +5,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   HelpCircle, Trophy, AlertCircle, Volume2, VolumeX, X, Square,
-  Timer as TimerIcon, Play, Palette, Check, LayoutGrid
+  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Download
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
@@ -26,6 +26,9 @@ const App: React.FC = () => {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [timer, setTimer] = useState(0);
   
+  // PWA Install State
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+  
   // Animation State
   const [animatingMove, setAnimatingMove] = useState<{from: Position, to: Position, mid: Position} | null>(null);
 
@@ -38,6 +41,31 @@ const App: React.FC = () => {
   
   // Mouse position tracker
   const mouseRef = useRef({ x: 0, y: 0 });
+
+  // PWA Install Prompt Listener
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    installPrompt.userChoice.then((choiceResult: { outcome: string }) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      }
+      setInstallPrompt(null);
+    });
+  };
 
   // Timer Effect
   useEffect(() => {
@@ -315,6 +343,17 @@ const App: React.FC = () => {
         </div>
         
         <div className="flex items-center gap-2 pointer-events-auto">
+          {/* Install Button (PWA) */}
+          {installPrompt && (
+             <button
+               onClick={handleInstallClick}
+               className={`flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-green-500/20 hover:bg-green-500/30 border-green-500/50 text-green-300' : 'bg-green-500/10 hover:bg-green-500/20 border-green-600/30 text-green-700'} backdrop-blur-md border shadow-lg`}
+             >
+               <Download size={16} />
+               <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest">Install</span>
+             </button>
+          )}
+
           <div className={`flex items-center gap-2 px-3 py-2 rounded-full ${currentTheme.isDark ? 'bg-white/10' : 'bg-white/60'} backdrop-blur-md border border-white/10 shadow-lg`}>
               <TimerIcon size={16} className={currentTheme.isDark ? "text-green-400" : "text-green-600"} />
               <span className={`font-mono text-sm font-bold shadow-black drop-shadow-md min-w-[45px] text-center ${currentTheme.isDark ? 'text-white/90' : 'text-slate-800'}`}>
