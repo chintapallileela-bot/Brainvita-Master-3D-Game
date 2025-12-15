@@ -11,6 +11,7 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['vite.svg'],
       manifest: {
+        filename: 'manifest.json', // Explicitly name it manifest.json for compatibility
         short_name: "Brainvita",
         name: "Brainvita Master 3D",
         description: "A classic single-player board game involving movement of marbles. Jump marbles to remove them and try to leave just one!",
@@ -22,25 +23,13 @@ export default defineConfig({
             src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
             sizes: "192x192",
             type: "image/png",
-            purpose: "any"
+            purpose: "any maskable"
           },
           {
             src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
             sizes: "512x512",
             type: "image/png",
-            purpose: "any"
-          },
-          {
-            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
-            sizes: "192x192",
-            type: "image/png",
-            purpose: "maskable"
-          },
-          {
-            src: "https://i.postimg.cc/mrf6y73t/Brainvita-Icon.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable"
+            purpose: "any maskable"
           }
         ],
         screenshots: [

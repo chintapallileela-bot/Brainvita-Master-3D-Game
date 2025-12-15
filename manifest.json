@@ -21,6 +21,22 @@
   "theme_color": "#020617",
   "background_color": "#020617",
   "orientation": "portrait",
+  "screenshots": [
+    {
+      "src": "https://i.postimg.cc/rzwb1LBd/Nature.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor: "wide",
+      "label: "Immersive 3D Themes"
+    },
+    {
+      "src": "https://i.postimg.cc/GH3fjn62/Barbie.jpg",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "form_factor: "narrow",
+      "label: "Classic Gameplay"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Play Now",

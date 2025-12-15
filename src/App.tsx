@@ -530,7 +530,7 @@ const App: React.FC = () => {
       {/* Layout Selector Modal */}
       {showLayoutModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className={`relative max-w-lg w-full p-5 rounded-3xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
+          <div className={`relative max-w-lg w-full p-5 rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
              
              {/* Modal Header */}
              <div className="flex justify-between items-center mb-4 shrink-0">
