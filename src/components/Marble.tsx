@@ -20,17 +20,13 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
       return x - Math.floor(x);
     };
 
-    // For 'Gem Stones', we want a full rainbow spectrum (Rubies, Emeralds, Sapphires, etc.)
-    // For other themes, we just want subtle variation.
     const isGemTheme = theme.name === 'Gem Stones';
     const hueShift = isGemTheme 
         ? Math.floor(rnd(1) * 360) 
         : Math.floor(rnd(1) * 60) - 30;
     
-    // Complex internal pattern for "Cat's Eye" glass marble look
     const rotation = Math.floor(rnd(2) * 360);
     
-    // Internal swirl pattern
     const innerTexture = `
       radial-gradient(ellipse at 30% 70%, rgba(255,255,255,0.3) 0%, transparent 60%),
       linear-gradient(${rotation}deg, transparent 40%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.15) 55%, transparent 60%)
@@ -46,7 +42,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
   if (isGhost) {
      return (
         <div 
-          className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-black/20 transform scale-50 blur-[2px]"
+          className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/20 transform scale-50 blur-[2px]"
         />
      )
   }
@@ -55,7 +51,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     <div
       onClick={onClick}
       className={`
-        w-8 h-8 md:w-10 md:h-10 rounded-full cursor-pointer
+        w-7 h-7 md:w-10 md:h-10 rounded-full cursor-pointer
         relative transition-all duration-300
         ${isRemoving ? 'scale-0 opacity-0 rotate-180' : ''}
         ${isSelected ? `marble-selected ring-4 ring-white/60 ring-offset-2 ring-offset-transparent` : 'marble-3d hover:translate-y-[-4px] hover:brightness-110'}

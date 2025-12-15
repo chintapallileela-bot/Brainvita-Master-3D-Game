@@ -4,13 +4,13 @@ import { RemovedMarbles } from './components/RemovedMarbles';
 import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types';
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
-  RotateCcw, HelpCircle, Trophy, AlertCircle, Sparkles, Volume2, VolumeX, X, Square,
+  HelpCircle, Trophy, AlertCircle, Volume2, VolumeX, X, Square,
   Timer as TimerIcon, Play, Palette, Check, LayoutGrid
 } from 'lucide-react';
-import { TOTAL_MARBLES, THEMES, LAYOUTS } from './constants';
+import { THEMES, LAYOUTS } from './constants';
 import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
 
-export const App: React.FC = () => {
+const App: React.FC = () => {
   // Initialize with the first theme or random
   const [currentTheme, setCurrentTheme] = useState(() => THEMES[0]);
   const [currentLayout, setCurrentLayout] = useState(() => LAYOUTS[0]);
@@ -575,3 +575,5 @@ export const App: React.FC = () => {
     </div>
   );
 };
+
+export default App;

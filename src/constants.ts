@@ -1,7 +1,6 @@
 import { CellState, Theme, GameLayout } from './types';
 
 export const BOARD_SIZE = 7;
-export const TOTAL_MARBLES = 32; // This is for classic, but counts change per layout
 
 // Helper to create the board grid easily
 const I = -1; // Invalid
@@ -62,9 +61,6 @@ export const LAYOUTS: GameLayout[] = [
     ]
   }
 ];
-
-// Fallback for types
-export const INITIAL_BOARD_LAYOUT = LAYOUTS[0].board;
 
 export const THEMES: Theme[] = [
   {
