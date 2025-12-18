@@ -1,0 +1,35 @@
+--- GOOGLE PLAY STORE LISTING INFO ---
+
+APP TITLE: 
+Brainvita Master 3D: Peg Solitaire
+
+SHORT DESCRIPTION (Max 80 characters):
+Classic Peg Solitaire in stunning 3D. Challenge your brain and clear the board!
+
+FULL DESCRIPTION:
+Experience the ultimate version of the classic Peg Solitaire (Brainvita) board game! Brainvita Master 3D brings the timeless puzzle to life with beautiful 3D graphics, immersive environments, and intuitive touch controls.
+
+Whether you're a puzzle master or a casual player, Brainvita Master 3D offers a relaxing yet stimulating challenge. The goal is simple: jump over marbles to remove them until only one remains. Can you reach the center hole?
+
+KEY FEATURES:
+- STUNNING 3D VISUALS: Choose from 10+ high-quality themes including Under Water, Frozen, Gem Stones, and more.
+- DYNAMIC LAYOUTS: Play the Classic Cross, Circular Board, Pyramid, or Diamond formations.
+- IMMERSIVE AUDIO: Relaxing, procedurally generated sounds and theme-specific music.
+- SMOOTH CONTROLS: Intuitive 3D marble movement and satisfying haptic feedback.
+- TRACK YOUR PROGRESS: Integrated timer and collection tray for removed marbles.
+- PURE GAMEPLAY: No data collection, works 100% offline.
+
+How to Play:
+1. Select a marble that has an empty hole two spaces away.
+2. Jump over a neighboring marble into that hole.
+3. The jumped marble is removed.
+4. Keep going until no more moves are possible.
+5. Win by leaving just one marble on the board!
+
+Download Brainvita Master 3D today and master the board!
+
+CATEGORIES:
+Puzzle, Strategy, Brain Games, Casual.
+
+TAGS:
+Brainvita, Peg Solitaire, Marble Solitaire, Board Game, 3D Puzzle, Offline Games.

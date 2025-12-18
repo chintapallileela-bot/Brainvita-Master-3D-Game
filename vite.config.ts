@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -11,13 +10,12 @@ export default defineConfig({
       injectRegister: 'auto',
       includeAssets: ['vite.svg'],
       manifest: {
-        short_name: "Brainvita",
-        name: "Brainvita Master 3D",
-        description: "A classic single-player board game involving movement of marbles. Jump marbles to remove them and try to leave just one!",
-        id: "/",
-        start_url: "/",
-        categories: ["game", "puzzle", "casual", "strategy"],
-        // Strict icon definition: Only declaring 512x512 to avoid mismatch errors since we only have a high-res image
+        short_name: "Brainvita 3D",
+        name: "Brainvita Master 3D: Peg Solitaire",
+        description: "A classic single-player board game with stunning 3D themes and multiple layouts.",
+        id: "com.brainvita.master3d",
+        start_url: "/?utm_source=pwa&utm_medium=homescreen",
+        categories: ["games", "puzzle", "strategy", "brain"],
         icons: [
           {
             src: "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
@@ -32,7 +30,6 @@ export default defineConfig({
             purpose: "maskable"
           }
         ],
-        // Removed 'sizes' from screenshots to avoid strict dimension mismatch errors in PWABuilder
         screenshots: [
           {
             src: "https://i.postimg.cc/rzwb1LBd/Nature.jpg",
@@ -51,9 +48,9 @@ export default defineConfig({
         ],
         shortcuts: [
           {
-            name: "Play Now",
+            name: "New Game",
             short_name: "Play",
-            description: "Start a new game of Brainvita",
+            description: "Start a new session of Brainvita",
             url: "/",
             icons: [{ 
               src: "https://i.postimg.cc/y6R5kVMY/Brainvita_Shortcut_Icon.png", 
@@ -61,7 +58,6 @@ export default defineConfig({
             }]
           }
         ],
-        // PWA Builder specific setting to avoid "Specify your native app" warning
         prefer_related_applications: false,
         launch_handler: {
           client_mode: "navigate-existing"
@@ -69,7 +65,7 @@ export default defineConfig({
         theme_color: "#020617",
         background_color: "#020617",
         display: "standalone",
-        orientation: "portrait"
+        orientation: "any"
       },
       workbox: {
         runtimeCaching: [
@@ -81,27 +77,6 @@ export default defineConfig({
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365 
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'google-fonts-stylesheets'
-            }
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-webfonts',
-              expiration: {
-                maxEntries: 30,
-                maxAgeSeconds: 60 * 60 * 24 * 365
               }
             }
           },
@@ -113,9 +88,6 @@ export default defineConfig({
               expiration: {
                 maxEntries: 50,
                 maxAgeSeconds: 60 * 60 * 24 * 30 
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
               }
             }
           }
