@@ -5,7 +5,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   HelpCircle, Trophy, AlertCircle, Volume2, VolumeX, X, Square,
-  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Download
+  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Download, ShieldCheck
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
@@ -493,6 +493,17 @@ const App: React.FC = () => {
                     <li>The jumped marble is removed.</li>
                     <li>No diagonal moves allowed.</li>
                     </ul>
+                </div>
+
+                {/* Privacy Policy Link */}
+                <div className="pt-4 border-t border-slate-200 mt-4 text-center">
+                    <a 
+                      href="/privacy.html" 
+                      target="_blank" 
+                      className={`inline-flex items-center gap-2 text-xs font-semibold underline ${currentTheme.isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-800'}`}
+                    >
+                      <ShieldCheck size={14} /> Privacy Policy
+                    </a>
                 </div>
               </div>
 
