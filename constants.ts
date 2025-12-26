@@ -1,7 +1,6 @@
 import { Theme, GameLayout } from './types';
 
 export const BOARD_SIZE = 7;
-export const TOTAL_MARBLES = 32; // Default for classic board
 
 const I = -1; // Invalid
 const O = 1;  // Marble
@@ -73,8 +72,8 @@ export const THEMES: Theme[] = [
     boardBorder: 'border-white/70',
     grooveBorder: 'border-pink-200/50',
     holeBg: 'bg-rose-900/10',
-    marbleStart: '#fff0f5',
-    marbleEnd: '#ec4899',
+    marbleStart: '#fff7ed',
+    marbleEnd: '#db2777',
     selectionRing: 'ring-fuchsia-300',
     accentColor: 'bg-pink-500 hover:bg-pink-400',
     overlayClass: 'overlay-hearts'
@@ -142,5 +141,37 @@ export const THEMES: Theme[] = [
     selectionRing: 'ring-white',
     accentColor: 'bg-indigo-600 hover:bg-indigo-500',
     overlayClass: 'overlay-crystal'
+  },
+  {
+    name: 'Disney Magic',
+    isDark: true,
+    appBg: 'bg-violet-950',
+    bgAnimClass: 'bg-anim-disney',
+    bgImage: 'https://i.postimg.cc/bZ48Mvjt/Disney.jpg', 
+    boardBg: 'bg-gradient-to-br from-violet-900/50 to-fuchsia-900/50 backdrop-blur-md',
+    boardBorder: 'border-yellow-200/40',
+    grooveBorder: 'border-white/20',
+    holeBg: 'bg-violet-950/60',
+    marbleStart: '#fae8ff',
+    marbleEnd: '#9333ea',
+    selectionRing: 'ring-yellow-300',
+    accentColor: 'bg-violet-600 hover:bg-violet-500',
+    overlayClass: 'overlay-fireworks'
+  },
+  {
+    name: 'Sky Kingdom',
+    isDark: false,
+    appBg: 'bg-sky-100',
+    bgAnimClass: 'bg-anim-sky',
+    bgImage: 'https://i.postimg.cc/tYLMGnYX/Sky.jpg', 
+    boardBg: 'bg-gradient-to-br from-white/50 to-sky-200/50 backdrop-blur-xl',
+    boardBorder: 'border-white/80',
+    grooveBorder: 'border-sky-200/40',
+    holeBg: 'bg-sky-900/10',
+    marbleStart: '#f0f9ff',
+    marbleEnd: '#0ea5e9',
+    selectionRing: 'ring-yellow-400',
+    accentColor: 'bg-sky-500 hover:bg-sky-400',
+    overlayClass: 'overlay-snow'
   }
 ];

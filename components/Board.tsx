@@ -51,13 +51,8 @@ export const Board: React.FC<BoardProps> = ({
             `}>
                 {/* Board Surface Refinements */}
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
-                    {/* Specular Surface Sheen */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent mix-blend-soft-light"></div>
-                    
-                    {/* High-res texture overlay */}
                     <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')] mix-blend-multiply"></div>
-
-                    {/* Decorative Ring */}
                     <div className={`absolute inset-5 md:inset-7 rounded-full border-2 opacity-20 ${theme.grooveBorder} shadow-[inset_0_4px_8px_rgba(0,0,0,0.6)]`}></div>
                 </div>
                 
@@ -101,7 +96,6 @@ export const Board: React.FC<BoardProps> = ({
                                 transform: 'translateZ(2px)' 
                             }}
                           >
-                            {/* Deep High-Contrast Hole */}
                             <div className={`
                                 absolute w-8 h-8 md:w-13 md:h-13 rounded-full hole-3d 
                                 transition-all duration-300

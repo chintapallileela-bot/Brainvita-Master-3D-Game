@@ -11,10 +11,10 @@ import { THEMES, LAYOUTS } from './constants';
 import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
 
 const App: React.FC = () => {
-  const [currentTheme, setCurrentTheme] = useState(() => THEMES[0]);
-  const [currentLayout, setCurrentLayout] = useState(() => LAYOUTS[0]);
+  const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
+  const [currentLayout, setCurrentLayout] = useState<GameLayout>(() => LAYOUTS[0]);
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.IDLE);
-  const [board, setBoard] = useState<BoardState>(createInitialBoard(LAYOUTS[0].board));
+  const [board, setBoard] = useState<BoardState>(() => createInitialBoard(LAYOUTS[0].board));
   const [selectedPos, setSelectedPos] = useState<Position | null>(null);
   const [showRules, setShowRules] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
@@ -27,7 +27,6 @@ const App: React.FC = () => {
   const bgLayerRef = useRef<HTMLDivElement>(null);
   const floatLayerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
-  const trayRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -64,7 +63,6 @@ const App: React.FC = () => {
          });
       }
       if (titleRef.current) titleRef.current.style.transform = `translate(${targetX * 10}px, ${targetY * 10}px)`;
-      if (trayRef.current) trayRef.current.style.transform = `translate(${targetX * 8}px, ${targetY * 8}px)`;
       animationFrameId = requestAnimationFrame(animate);
     };
     animate();
@@ -155,8 +153,20 @@ const App: React.FC = () => {
     if (soundEnabled) playLoseSound();
   };
 
-  const handleThemeChange = (theme: Theme) => { setCurrentTheme(theme); setShowThemeModal(false); if (soundEnabled) playSelectSound(); };
-  const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
+  const handleThemeChange = (theme: Theme) => { 
+    setCurrentTheme(theme); 
+    setShowThemeModal(false); 
+    if (soundEnabled) playSelectSound(); 
+  };
+  
+  const handleLayoutChange = (layout: GameLayout) => { 
+    setCurrentLayout(layout); 
+    setBoard(createInitialBoard(layout.board)); 
+    setGameStatus(GameStatus.IDLE); 
+    setTimer(0); 
+    setShowLayoutModal(false); 
+    if (soundEnabled) playSelectSound(); 
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -166,9 +176,7 @@ const App: React.FC = () => {
           text: 'Challenge your brain with this 3D Peg Solitaire game!',
           url: window.location.href,
         });
-      } catch (err) {
-        console.log('Error sharing:', err);
-      }
+      } catch (err) { console.log('Error sharing:', err); }
     } else {
       navigator.clipboard.writeText(window.location.href);
       alert('Link copied to clipboard!');
@@ -177,6 +185,7 @@ const App: React.FC = () => {
 
   return (
     <div className={`min-h-[100dvh] w-full flex flex-col items-center py-2 px-3 font-sans relative overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>
+      {/* Background Layers */}
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] transition-all duration-300 ease-out z-0 will-change-transform">
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 bg-slate-900" 
@@ -194,20 +203,21 @@ const App: React.FC = () => {
         ))}
       </div>
 
+      {/* Header UI */}
       <div className="w-full max-w-4xl flex justify-between items-center mb-1 relative z-50 shrink-0 px-2 pt-4 pointer-events-none origin-top">
         <div className="flex flex-wrap items-center gap-2 md:gap-3 pointer-events-auto">
            <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
              {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
            </button>
            
-           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-pink-500/90 to-rose-600/90 backdrop-blur-xl border border-white/40 shadow-2xl z-50`}>
+           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-pink-500 to-rose-600 backdrop-blur-xl border border-white/40 shadow-2xl z-50`}>
              <Palette size={18} className="text-white drop-shadow-sm"/>
              <span className="text-xs font-black uppercase tracking-[0.15em] text-white drop-shadow-md">
                {currentTheme.name}
              </span>
            </button>
            
-           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-blue-500/90 to-cyan-600/90 backdrop-blur-xl border border-white/40 shadow-2xl z-50`}>
+           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-blue-500 to-cyan-600 backdrop-blur-xl border border-white/40 shadow-2xl z-50`}>
              <LayoutGrid size={18} className="text-white drop-shadow-sm"/>
              <span className="text-xs font-black uppercase tracking-[0.15em] text-white drop-shadow-md">
                {currentLayout.name}
@@ -226,6 +236,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
+      {/* Title */}
       <div ref={titleRef} className="text-center mb-1 relative z-10 pointer-events-none will-change-transform shrink-0 mt-6">
         <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)] leading-tight">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-500"}>3D</span>
@@ -237,12 +248,14 @@ const App: React.FC = () => {
         </div>
       </div>
 
+      {/* Board */}
       <div className="flex-1 w-full flex flex-col justify-center items-center min-h-0 relative z-40">
          <div className="scale-90 md:scale-100 lg:scale-110 origin-center transition-transform duration-300">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </div>
 
+      {/* Footer Controls */}
       <div className="flex gap-4 -mt-16 mb-2 relative z-50 pointer-events-none shrink-0 scale-95 md:scale-100 origin-bottom">
         <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d group relative w-28 h-12 disabled:opacity-50 disabled:cursor-not-allowed pointer-events-auto">
           <div className="btn-edge bg-red-900 shadow-xl group-hover:bg-red-800"></div>
@@ -258,12 +271,14 @@ const App: React.FC = () => {
         </button>
       </div>
 
-      <div ref={trayRef} className="relative z-30 w-full will-change-transform pb-4 shrink-0 pointer-events-none">
+      {/* Collection Tray */}
+      <div className="relative z-30 w-full pb-4 shrink-0 pointer-events-none">
         <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
       </div>
 
+      {/* Modals */}
       {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-300 pointer-events-auto">
           <div className={`relative max-w-xs w-full p-8 rounded-[2rem] shadow-[0_50px_100px_rgba(0,0,0,0.8)] text-center transform scale-100 animate-in zoom-in-95 duration-300 border border-white/20 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/95'}`}>
             {gameStatus === GameStatus.WON ? (
               <div className="mb-6 inline-flex p-5 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 text-white shadow-2xl animate-bounce"><Trophy size={64} fill="currentColor" /></div>
@@ -272,7 +287,7 @@ const App: React.FC = () => {
             )}
             <h2 className={`text-4xl font-black mb-2 drop-shadow-md tracking-tight ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{gameStatus === GameStatus.WON ? 'VICTORY!' : 'GAME OVER'}</h2>
             <p className={`mb-6 text-xl font-bold ${currentTheme.isDark ? 'text-slate-300' : 'text-slate-600'}`}>{gameStatus === GameStatus.WON ? "Master Mind!" : `Marbles: ${marblesRemaining}`}</p>
-            <button onClick={startGame} className="btn-3d group relative w-full h-16">
+            <button onClick={startGame} className="btn-3d group relative w-full h-16 pointer-events-auto">
               <div className={`btn-edge shadow-xl ${currentTheme.isDark ? 'bg-cyan-900' : 'bg-blue-900'}`}></div>
               <div className={`btn-surface w-full h-full rounded-2xl bg-gradient-to-b ${currentTheme.isDark ? 'from-cyan-500 to-cyan-600 border-cyan-400' : 'from-blue-500 to-blue-600 border-blue-400'} flex items-center justify-center gap-3 text-white text-xl font-black shadow-inner border-t group-hover:brightness-110`}>PLAY AGAIN</div>
             </button>
@@ -280,18 +295,41 @@ const App: React.FC = () => {
         </div>
       )}
 
+      {showRules && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in duration-200 pointer-events-auto">
+           <div className={`relative max-w-md w-full p-8 rounded-[2rem] shadow-2xl border border-white/20 animate-in zoom-in-95 ${currentTheme.isDark ? 'bg-slate-900/95' : 'bg-white/95'}`}>
+              <button onClick={() => setShowRules(false)} className={`absolute top-6 right-6 p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={28} /></button>
+              <h2 className={`text-3xl font-black mb-6 flex items-center gap-4 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><HelpCircle size={32} className="text-cyan-400" />How to Play</h2>
+              <div className={`space-y-4 text-base leading-relaxed ${currentTheme.isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                <p><strong>Goal:</strong> Eliminate marbles until only <strong>one</strong> remains in the center!</p>
+                <div className={`p-5 rounded-2xl border ${currentTheme.isDark ? 'bg-white/5 border-white/10' : 'bg-slate-100 border-slate-200'}`}>
+                    <ul className="list-disc pl-5 space-y-3 font-medium">
+                    <li>Select a marble to see valid moves.</li>
+                    <li>Jump over a neighbor into an empty hole.</li>
+                    <li>The jumped marble is removed.</li>
+                    <li>No diagonal moves allowed.</li>
+                    </ul>
+                </div>
+                <div className="pt-4 flex flex-col items-center gap-4">
+                    <button onClick={handleShare} className="flex items-center gap-2 px-8 py-3 rounded-full font-black transition-all bg-blue-600 text-white hover:bg-blue-500 shadow-xl uppercase text-xs tracking-widest pointer-events-auto"><Share2 size={18} /> Share with Friends</button>
+                </div>
+              </div>
+           </div>
+        </div>
+      )}
+
       {showThemeModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 pointer-events-auto">
           <div className={`relative max-w-2xl w-full p-6 rounded-[2.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.9)] overflow-hidden max-h-[85vh] flex flex-col border border-white/20 animate-in zoom-in-95 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/90'}`}>
              <div className="flex justify-between items-center mb-6 shrink-0">
                 <h2 className={`text-2xl font-black flex items-center gap-3 uppercase tracking-tighter ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><Palette className="text-fuchsia-500" size={28}/> Select Theme</h2>
-                <button onClick={() => setShowThemeModal(false)} className={`p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={28} /></button>
+                <button onClick={() => setShowThemeModal(false)} className={`p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'} pointer-events-auto`}><X size={28} /></button>
              </div>
-             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto p-2 custom-scrollbar">
+             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto p-2 custom-scrollbar pointer-events-auto">
                 {THEMES.map(t => {
                    const isActive = currentTheme.name === t.name;
                    return (
-                     <button key={t.name} onClick={() => handleThemeChange(t)} className={`relative group rounded-2xl overflow-hidden text-left transition-all duration-300 border-4 ${isActive ? 'border-green-400 scale-[1.05]' : 'border-transparent hover:border-white/30 hover:scale-[1.02]'}`}>
+                     <button key={t.name} onClick={() => handleThemeChange(t)} className={`relative group rounded-2xl overflow-hidden text-left transition-all duration-300 border-4 ${isActive ? 'border-green-400 scale-[1.05]' : 'border-transparent hover:border-white/30 hover:scale-[1.02]'} pointer-events-auto`}>
                         <div className={`h-32 w-full bg-cover bg-center`} style={{ backgroundImage: `url(${t.bgImage})` }}>
                            <div className={`absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors`}></div>
                            {isActive && <div className="absolute top-3 right-3 bg-green-500 text-white p-1.5 rounded-full shadow-2xl border-2 border-white"><Check size={16} strokeWidth={4} /></div>}
@@ -306,17 +344,17 @@ const App: React.FC = () => {
       )}
 
       {showLayoutModal && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 pointer-events-auto">
           <div className={`relative max-w-lg w-full p-6 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-white/20 animate-in zoom-in-95 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/90'}`}>
              <div className="flex justify-between items-center mb-6 shrink-0">
                 <h2 className={`text-2xl font-black flex items-center gap-3 uppercase tracking-tighter ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><LayoutGrid className="text-cyan-500" size={28}/> Select Layout</h2>
-                <button onClick={() => setShowLayoutModal(false)} className={`p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={28} /></button>
+                <button onClick={() => setShowLayoutModal(false)} className={`p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'} pointer-events-auto`}><X size={28} /></button>
              </div>
-             <div className="space-y-4 overflow-y-auto p-2 custom-scrollbar">
+             <div className="space-y-4 overflow-y-auto p-2 custom-scrollbar pointer-events-auto">
                 {LAYOUTS.map(layout => {
                    const isActive = currentLayout.name === layout.name;
                    return (
-                     <button key={layout.name} onClick={() => handleLayoutChange(layout)} className={`w-full relative group rounded-2xl p-6 text-left transition-all duration-300 border-2 flex items-center justify-between shadow-lg ${isActive ? 'border-green-400 bg-green-400/20' : `border-transparent ${currentTheme.isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-white hover:bg-slate-50'}`}`}>
+                     <button key={layout.name} onClick={() => handleLayoutChange(layout)} className={`w-full relative group rounded-2xl p-6 text-left transition-all duration-300 border-2 flex items-center justify-between shadow-lg ${isActive ? 'border-green-400 bg-green-400/20' : `border-transparent ${currentTheme.isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-white hover:bg-slate-50'}`} pointer-events-auto`}>
                         <div><p className={`font-black text-lg uppercase tracking-tight ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{layout.name}</p><p className={`text-xs mt-1 font-bold ${currentTheme.isDark ? 'text-slate-400' : 'text-slate-500'}`}>{layout.description}</p></div>
                         {isActive && <div className="bg-green-500 text-white p-2 rounded-full shadow-2xl border-2 border-white"><Check size={20} strokeWidth={4} /></div>}
                      </button>
