@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     
     <meta name="theme-color" content="#020617" />
-    <meta name="description" content="Play Brainvita Master 3D (Peg Solitaire). A classic marble puzzle game with stunning 3D graphics and themes. Challenge yourself to leave only one marble!" />
+    <meta name="description" content="Play Brainvita Master 3D. A classic marble puzzle game with stunning 3D graphics and themes." />
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,6 +21,8 @@
       body {
         font-family: 'Poppins', sans-serif;
         background-color: #020617;
+        margin: 0;
+        padding: 0;
         overflow: hidden;
         touch-action: manipulation;
         -webkit-user-select: none;
@@ -47,7 +50,7 @@
       }
       
       .btn-3d:active:not(:disabled) {
-        transform: translateY(6px);
+        transform: translateY(4px);
       }
       
       .btn-edge {
@@ -74,28 +77,17 @@
       }
       
       .marble-selected {
-        transform: translateY(-30px) scale(1.2);
+        transform: translateY(-30px) scale(1.1);
         z-index: 100;
-        filter: brightness(1.3) contrast(1.2);
-        box-shadow: 0 0 35px rgba(255, 255, 255, 0.5), 0 50px 50px -15px rgba(0,0,0,0.5);
+        filter: brightness(1.3);
+        box-shadow: 0 0 35px rgba(255, 255, 255, 0.4), 0 50px 50px -15px rgba(0,0,0,0.5);
       }
 
-      /* Animations */
-      .animate-in { animation-duration: 0.3s; animation-fill-mode: both; }
+      .animate-in { animation-duration: 0.25s; animation-fill-mode: both; }
       .fade-in { animation-name: fadeIn; }
-      .zoom-in-95 { animation-name: zoomIn95; }
+      .zoom-in { animation-name: zoomIn; }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-      @keyframes zoomIn95 { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-      /* Animated Backgrounds */
-      .bg-anim-barbie {
-        background: radial-gradient(circle at center, #ff99c8, #ff5c9e, #880044);
-        animation: pink-pulse 12s ease-in-out infinite;
-      }
-      @keyframes pink-pulse {
-        0%, 100% { filter: brightness(1); }
-        50% { filter: brightness(1.2); }
-      }
+      @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
       .bubble {
         position: absolute;
@@ -105,13 +97,12 @@
       }
       @keyframes bubble-up {
         0% { transform: translateY(0); opacity: 0; }
-        10% { opacity: 0.5; }
-        90% { opacity: 0.5; }
-        100% { transform: translateY(-120vh); opacity: 0; }
+        10% { opacity: 0.4; }
+        90% { opacity: 0.4; }
+        100% { transform: translateY(-110vh); opacity: 0; }
       }
 
       .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
       .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
     </style>
   <script type="importmap">
