@@ -195,7 +195,6 @@ const App: React.FC = () => {
     <div className={`min-h-[100dvh] w-full flex flex-col items-center py-2 px-3 font-sans relative overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>
       {/* --- PARALLAX BACKGROUND SYSTEM --- */}
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] transition-all duration-300 ease-out z-0 will-change-transform">
-          {/* Base Layer: Static Image with Fallback Gradient */}
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 bg-slate-900" 
             style={{ 
@@ -203,53 +202,52 @@ const App: React.FC = () => {
               opacity: 1 
             }}
           ></div>
-
-          {/* Animation Layer: Glow & Movement (Increased Opacity) */}
           <div className={`absolute inset-0 ${currentTheme.bgAnimClass} opacity-40 mix-blend-screen`}></div>
-          
-          {/* Darkness Filter for Focus */}
           <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/20' : 'bg-white/5'}`}></div>
       </div>
 
-      {/* Particle Overlays */}
       <div className={`overlay-base z-0 fixed ${currentTheme.overlayClass} opacity-60 pointer-events-none`}></div>
       
-      {/* Floating 3D Bubbles */}
       <div ref={floatLayerRef} className="fixed inset-0 pointer-events-none z-0 overflow-hidden will-change-transform">
          {bubbles.map((b, i) => (
           <div key={i} className="bubble opacity-50" style={{ left: b.left, width: b.size, height: b.size, animationDuration: b.duration, animationDelay: b.delay, background: currentTheme.isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.5)', }} />
         ))}
       </div>
 
-      <div className="w-full max-w-xl flex justify-between items-center mb-1 relative z-10 shrink-0 pointer-events-none scale-90 md:scale-100 origin-top">
+      <div className="w-full max-w-4xl flex justify-between items-center mb-1 relative z-50 shrink-0 px-2 pt-2 pointer-events-none scale-95 md:scale-100 origin-top">
         <div className="flex items-center gap-2 pointer-events-auto">
-           <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-3 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
-             {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+           <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-black/5 hover:bg-black/10 text-slate-800'} backdrop-blur-md shadow-lg border border-white/10`}>
+             {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
            </button>
-           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-4 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
-             <Palette size={18} className={currentTheme.isDark ? "text-yellow-300" : "text-fuchsia-600"}/>
-             <span className={`hidden xs:inline text-xs font-bold uppercase tracking-widest ${currentTheme.isDark ? 'text-white' : 'text-slate-800'}`}>{currentTheme.name}</span>
+           
+           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
+             <Palette size={16} className={currentTheme.isDark ? "text-yellow-300" : "text-fuchsia-600"}/>
+             <span className={`text-[10px] md:text-xs font-black uppercase tracking-widest ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{currentTheme.name}</span>
            </button>
-           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-4 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
-             <LayoutGrid size={18} className={currentTheme.isDark ? "text-cyan-300" : "text-blue-600"}/>
-             <span className={`hidden xs:inline text-xs font-bold uppercase tracking-widest ${currentTheme.isDark ? 'text-white' : 'text-slate-800'}`}>{currentLayout.name}</span>
+           
+           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
+             <LayoutGrid size={16} className={currentTheme.isDark ? "text-cyan-300" : "text-blue-600"}/>
+             <span className={`text-[10px] md:text-xs font-black uppercase tracking-widest ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{currentLayout.name}</span>
            </button>
         </div>
+        
         <div className="flex items-center gap-2 pointer-events-auto">
-          {installPrompt && (
-             <button onClick={handleInstallClick} className={`p-3 rounded-full transition-colors bg-green-500/20 text-green-300 backdrop-blur-md shadow-lg border border-green-500/50`}>
-               <Download size={20} />
-             </button>
-          )}
-          <button onClick={handleShare} className={`p-3 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
-             <Share2 size={20} />
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${currentTheme.isDark ? 'bg-white/10' : 'bg-white/60'} backdrop-blur-md border border-white/20 shadow-lg`}>
+              <TimerIcon size={16} className={currentTheme.isDark ? "text-green-400" : "text-green-600"} />
+              <span className={`font-mono text-xs font-black ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{formatTime(timer)}</span>
+          </div>
+
+          <button onClick={handleShare} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-black/5 hover:bg-black/10 text-slate-800'} backdrop-blur-md shadow-lg border border-white/10`}>
+             <Share2 size={18} />
           </button>
-          <button onClick={() => setShowRules(true)} className={`p-3 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
-            <HelpCircle size={24} />
+          
+          <button onClick={() => setShowRules(true)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-black/5 hover:bg-black/10 text-slate-800'} backdrop-blur-md shadow-lg border border-white/10`}>
+            <HelpCircle size={18} />
           </button>
         </div>
       </div>
-      <div ref={titleRef} className="text-center mb-1 relative z-10 pointer-events-none will-change-transform shrink-0">
+
+      <div ref={titleRef} className="text-center mb-1 relative z-10 pointer-events-none will-change-transform shrink-0 mt-4">
         <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] leading-tight">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-500"}>3D</span>
         </h1>
@@ -257,17 +255,15 @@ const App: React.FC = () => {
             <p className={`text-sm md:text-lg font-bold drop-shadow-lg tracking-wide ${currentTheme.isDark ? 'text-blue-100' : 'text-slate-700'}`}>
               Marbles: <span className={`text-xl md:text-2xl ml-1 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{marblesRemaining}</span>
             </p>
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentTheme.isDark ? 'bg-black/30' : 'bg-white/50'} border border-white/10 backdrop-blur-sm`}>
-              <TimerIcon size={16} className={currentTheme.isDark ? "text-green-400" : "text-green-600"} />
-              <span className={`font-mono text-sm font-bold ${currentTheme.isDark ? 'text-white' : 'text-slate-800'}`}>{formatTime(timer)}</span>
-            </div>
         </div>
       </div>
+
       <div className="flex-1 w-full flex flex-col justify-center items-center min-h-0 relative z-40">
          <div className="scale-90 md:scale-100 lg:scale-110 origin-center transition-transform duration-300">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </div>
+
       <div className="flex gap-4 -mt-16 mb-2 relative z-50 pointer-events-none shrink-0 scale-95 md:scale-100 origin-bottom">
         <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d group relative w-28 h-12 disabled:opacity-50 disabled:cursor-not-allowed pointer-events-auto">
           <div className="btn-edge bg-red-900 shadow-xl group-hover:bg-red-800"></div>
@@ -282,9 +278,11 @@ const App: React.FC = () => {
           </div>
         </button>
       </div>
+
       <div ref={trayRef} className="relative z-30 w-full will-change-transform pb-4 shrink-0 pointer-events-none">
         <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
       </div>
+
       {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-lg animate-in fade-in duration-300">
           <div className={`relative max-w-xs w-full p-6 rounded-3xl shadow-[0_50px_100px_rgba(0,0,0,0.5)] text-center transform scale-100 animate-in zoom-in-95 duration-300 border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
@@ -306,6 +304,7 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
+
       {showRules && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
            <div className={`relative max-w-md w-full p-6 rounded-3xl shadow-2xl border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
@@ -341,6 +340,7 @@ const App: React.FC = () => {
            </div>
         </div>
       )}
+
       {showThemeModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div className={`relative max-w-2xl w-full p-5 rounded-3xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
@@ -365,6 +365,7 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
+
       {showLayoutModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
           <div className={`relative max-w-lg w-full p-5 rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
