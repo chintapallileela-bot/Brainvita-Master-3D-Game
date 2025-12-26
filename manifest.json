@@ -26,14 +26,14 @@
     {
       "src": "https://i.postimg.cc/rzwb1LBd/Nature.jpg",
       "type": "image/jpeg",
-      "form_factor: "wide",
-      "label: "Immersive 3D Themes"
+      "form_factor": "wide",
+      "label": "Immersive 3D Themes"
     },
     {
       "src": "https://i.postimg.cc/GH3fjn62/Barbie.jpg",
       "type": "image/jpeg",
-      "form_factor: "narrow",
-      "label: "Classic Gameplay"
+      "form_factor": "narrow",
+      "label": "Classic Gameplay"
     }
   ],
   "shortcuts": [
