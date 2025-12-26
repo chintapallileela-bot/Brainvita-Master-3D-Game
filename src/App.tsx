@@ -89,15 +89,15 @@ const App: React.FC = () => {
       const targetX = x === 0 ? 0 : (x / window.innerWidth) * 2 - 1;
       const targetY = y === 0 ? 0 : (y / window.innerHeight) * 2 - 1;
       if (boardRef.current) boardRef.current.style.transform = `rotateX(${15 + targetY * -5}deg) rotateY(${targetX * 5}deg)`;
-      if (bgLayerRef.current) bgLayerRef.current.style.transform = `translate(${-targetX * 10}px, ${-targetY * 10}px) scale(1.05)`;
+      if (bgLayerRef.current) bgLayerRef.current.style.transform = `translate(${-targetX * 20}px, ${-targetY * 20}px) scale(1.1)`;
       if (floatLayerRef.current) {
          Array.from(floatLayerRef.current.children).forEach((child: any, i) => {
              const depth = (i % 3) + 1;
-             child.style.transform = `translate(${targetX * 15 * depth}px, ${targetY * 15 * depth}px)`;
+             child.style.transform = `translate(${targetX * 25 * depth}px, ${targetY * 25 * depth}px)`;
          });
       }
-      if (titleRef.current) titleRef.current.style.transform = `translate(${targetX * 8}px, ${targetY * 8}px)`;
-      if (trayRef.current) trayRef.current.style.transform = `translate(${targetX * 5}px, ${targetY * 5}px)`;
+      if (titleRef.current) titleRef.current.style.transform = `translate(${targetX * 10}px, ${targetY * 10}px)`;
+      if (trayRef.current) trayRef.current.style.transform = `translate(${targetX * 8}px, ${targetY * 8}px)`;
       animationFrameId = requestAnimationFrame(animate);
     };
     animate();
@@ -116,10 +116,10 @@ const App: React.FC = () => {
   }, [currentLayout]);
   const marblesRemoved = totalLayoutMarbles - marblesRemaining;
 
-  const bubbles = useMemo(() => Array.from({ length: 20 }).map((_, i) => ({
+  const bubbles = useMemo(() => Array.from({ length: 30 }).map((_, i) => ({
     left: `${Math.random() * 100}%`,
-    size: `${Math.random() * 15 + 5}px`,
-    duration: `${Math.random() * 15 + 10}s`,
+    size: `${Math.random() * 20 + 10}px`,
+    duration: `${Math.random() * 20 + 10}s`,
     delay: `${Math.random() * 10}s`,
     depth: Math.random(),
     key: i
@@ -192,18 +192,35 @@ const App: React.FC = () => {
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
 
   return (
-    <div className={`min-h-[100dvh] w-full flex flex-col items-center py-2 px-3 font-sans relative overflow-auto ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>
-      <div ref={bgLayerRef} className="fixed inset-[-5%] w-[110%] h-[110%] transition-all duration-300 ease-out z-0 will-change-transform">
-          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-500" style={{ backgroundImage: `url(${currentTheme.bgImage})`, opacity: 1 }}></div>
-          <div className={`absolute inset-0 ${currentTheme.bgAnimClass} opacity-10 mix-blend-overlay`}></div>
-          <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/10' : 'bg-white/5'}`}></div>
+    <div className={`min-h-[100dvh] w-full flex flex-col items-center py-2 px-3 font-sans relative overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>
+      {/* --- PARALLAX BACKGROUND SYSTEM --- */}
+      <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] transition-all duration-300 ease-out z-0 will-change-transform">
+          {/* Base Layer: Static Image with Fallback Gradient */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 bg-slate-900" 
+            style={{ 
+              backgroundImage: `url(${currentTheme.bgImage})`,
+              opacity: 1 
+            }}
+          ></div>
+
+          {/* Animation Layer: Glow & Movement (Increased Opacity) */}
+          <div className={`absolute inset-0 ${currentTheme.bgAnimClass} opacity-40 mix-blend-screen`}></div>
+          
+          {/* Darkness Filter for Focus */}
+          <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/20' : 'bg-white/5'}`}></div>
       </div>
-      <div className={`overlay-base z-0 fixed ${currentTheme.overlayClass} opacity-40 pointer-events-none`}></div>
+
+      {/* Particle Overlays */}
+      <div className={`overlay-base z-0 fixed ${currentTheme.overlayClass} opacity-60 pointer-events-none`}></div>
+      
+      {/* Floating 3D Bubbles */}
       <div ref={floatLayerRef} className="fixed inset-0 pointer-events-none z-0 overflow-hidden will-change-transform">
          {bubbles.map((b, i) => (
-          <div key={i} className="bubble" style={{ left: b.left, width: b.size, height: b.size, animationDuration: b.duration, animationDelay: b.delay, background: currentTheme.isDark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.4)', }} />
+          <div key={i} className="bubble opacity-50" style={{ left: b.left, width: b.size, height: b.size, animationDuration: b.duration, animationDelay: b.delay, background: currentTheme.isDark ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.5)', }} />
         ))}
       </div>
+
       <div className="w-full max-w-xl flex justify-between items-center mb-1 relative z-10 shrink-0 pointer-events-none scale-90 md:scale-100 origin-top">
         <div className="flex items-center gap-2 pointer-events-auto">
            <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-3 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
@@ -233,14 +250,14 @@ const App: React.FC = () => {
         </div>
       </div>
       <div ref={titleRef} className="text-center mb-1 relative z-10 pointer-events-none will-change-transform shrink-0">
-        <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] leading-tight">
+        <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] leading-tight">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-500"}>3D</span>
         </h1>
         <div className="flex justify-center items-center gap-6 mt-1">
             <p className={`text-sm md:text-lg font-bold drop-shadow-lg tracking-wide ${currentTheme.isDark ? 'text-blue-100' : 'text-slate-700'}`}>
               Marbles: <span className={`text-xl md:text-2xl ml-1 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{marblesRemaining}</span>
             </p>
-            <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentTheme.isDark ? 'bg-black/20' : 'bg-white/40'} border border-white/10`}>
+            <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentTheme.isDark ? 'bg-black/30' : 'bg-white/50'} border border-white/10 backdrop-blur-sm`}>
               <TimerIcon size={16} className={currentTheme.isDark ? "text-green-400" : "text-green-600"} />
               <span className={`font-mono text-sm font-bold ${currentTheme.isDark ? 'text-white' : 'text-slate-800'}`}>{formatTime(timer)}</span>
             </div>

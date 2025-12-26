@@ -23,50 +23,44 @@ export const Board: React.FC<BoardProps> = ({
   boardRef
 }) => {
   return (
-    // Increased bottom padding (pb-28) to ensure the bounding box covers the 3D projection of the bottom marbles
-    <div className="board-container-3d flex justify-center pt-4 pb-28 relative pointer-events-none" style={{ touchAction: 'none' }}>
+    <div className="board-container-3d flex justify-center pt-4 pb-32 relative pointer-events-none" style={{ touchAction: 'none' }}>
       
-      {/* Decorative Glow behind the board */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[160%] bg-cyan-500/10 blur-[100px] rounded-full -z-10 transition-colors duration-1000 ${theme.isDark ? 'bg-cyan-500/10' : 'bg-blue-500/10'}`}></div>
+      {/* Dynamic Background Glow */}
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] bg-white/5 blur-[120px] rounded-full -z-10 transition-colors duration-1000 ${theme.isDark ? 'bg-indigo-500/10' : 'bg-blue-300/10'}`}></div>
 
-      {/* The Board Structure with Dynamic Tilt via ref (App.tsx) */}
       <div 
         ref={boardRef}
-        // Changed to pointer-events-none so the square bounding box doesn't block buttons behind it
         className={`
-          relative p-3 md:p-5 rounded-full inline-block
+          relative p-3 md:p-6 rounded-full inline-block
           board-base pointer-events-none
-          bg-gradient-to-b from-slate-700 to-slate-900
+          bg-gradient-to-b from-slate-600 to-slate-900
         `}
       >
-          {/* Outer Rim Bezel (Chrome/Metal Finish) */}
+          {/* Outer Bezel (Brushed Metal look) */}
           <div className={`
-             rounded-full p-2 md:p-3
-             bg-gradient-to-br from-slate-400 via-slate-600 to-slate-800
-             shadow-[0_20px_40px_-10px_rgba(0,0,0,0.7),_inset_0_2px_4px_rgba(255,255,255,0.3),_0_0_0_1px_rgba(0,0,0,0.5)]
-             border-b-4 border-slate-900/50
+             rounded-full p-2 md:p-4
+             bg-gradient-to-br from-slate-300 via-slate-600 to-slate-900
+             shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),_inset_0_2px_6px_rgba(255,255,255,0.4),_0_0_0_1px_rgba(0,0,0,0.6)]
+             border-b-[6px] border-black/40
           `}>
             
-            {/* The Main Playing Surface Container */}
             <div className={`
-              relative p-6 md:p-8 rounded-full
+              relative p-6 md:p-10 rounded-full
               ${theme.boardBg} ${theme.boardBorder} border border-white/20
-              shadow-[inset_0_20px_50px_rgba(0,0,0,0.9)]
+              shadow-[inset_0_25px_60px_rgba(0,0,0,0.95)]
             `}>
-                {/* --- BACKGROUND LAYER (Clipped) --- */}
-                {/* We move textures here so they stay inside the circle, while marbles can pop out */}
+                {/* Board Surface Refinements */}
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
-                    {/* Wet Surface Reflection */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent mix-blend-overlay"></div>
+                    {/* Specular Surface Sheen */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent mix-blend-soft-light"></div>
                     
-                    {/* Texture */}
-                    <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] mix-blend-multiply"></div>
+                    {/* High-res texture overlay */}
+                    <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')] mix-blend-multiply"></div>
 
-                    {/* Inner Decorative Groove */}
-                    <div className={`absolute inset-4 md:inset-5 rounded-full border opacity-30 ${theme.grooveBorder} shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]`}></div>
+                    {/* Decorative Ring */}
+                    <div className={`absolute inset-5 md:inset-7 rounded-full border-2 opacity-20 ${theme.grooveBorder} shadow-[inset_0_4px_8px_rgba(0,0,0,0.6)]`}></div>
                 </div>
                 
-                {/* Animation Overlay */}
                 {animatingMove && (
                   <MoveOverlay 
                     from={animatingMove.from} 
@@ -75,57 +69,49 @@ export const Board: React.FC<BoardProps> = ({
                   />
                 )}
 
-                {/* --- GRID LAYER (Unclipped 3D) --- */}
-                <div className="grid grid-cols-7 gap-2 md:gap-4 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+                <div className="grid grid-cols-7 gap-3 md:gap-5 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
                         const isInvalid = cell === CellState.INVALID;
                         const isSelected = selectedPos?.row === rIndex && selectedPos?.col === cIndex;
                         const hasMarble = cell === CellState.MARBLE;
-                        
                         const isValidDestination = validMoves.some(m => m.row === rIndex && m.col === cIndex);
 
-                        // Animation checks
                         const isAnimatingSource = animatingMove?.from.row === rIndex && animatingMove?.from.col === cIndex;
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
 
                         if (isInvalid) {
-                          return <div key={`${rIndex}-${cIndex}`} className="w-9 h-9 md:w-14 md:h-14" />;
+                          return <div key={`${rIndex}-${cIndex}`} className="w-9 h-9 md:w-16 md:h-16" />;
                         }
 
-                        // Unique ID for the marble based on position.
                         const marbleId = rIndex * 7 + cIndex;
 
                         return (
                           <div
                             key={`${rIndex}-${cIndex}`}
                             id={`cell-${rIndex}-${cIndex}`}
-                            // Added pointer-events-auto here so only the actual cells capture clicks
                             className={`
-                              w-9 h-9 md:w-14 md:h-14 rounded-full flex items-center justify-center relative pointer-events-auto
+                              w-9 h-9 md:w-16 md:h-16 rounded-full flex items-center justify-center relative pointer-events-auto
                               ${(hasMarble || isValidDestination) ? 'cursor-pointer' : ''}
                             `}
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
                             style={{ 
                                 transformStyle: 'preserve-3d',
-                                // Force GPU layer and slightly elevate touch target for easier hitting
-                                transform: 'translateZ(1px)' 
+                                transform: 'translateZ(2px)' 
                             }}
                           >
-                            {/* The Hole (Deep Recessed) */}
+                            {/* Deep High-Contrast Hole */}
                             <div className={`
-                                absolute w-7 h-7 md:w-12 md:h-12 rounded-full hole-3d 
+                                absolute w-8 h-8 md:w-13 md:h-13 rounded-full hole-3d 
                                 transition-all duration-300
-                                ${isValidDestination ? 'bg-green-500/20 shadow-[inset_0_0_15px_rgba(74,222,128,0.5)] scale-110 ring-2 ring-green-400/50' : ''}
+                                ${isValidDestination ? 'bg-green-500/30 shadow-[inset_0_0_20px_rgba(74,222,128,0.7)] scale-110 ring-2 ring-green-400' : ''}
                             `}>
-                                {/* Destination pulse */}
                                 {isValidDestination && (
-                                  <div className="absolute inset-0 rounded-full animate-pulse bg-green-400/20 box-border border border-green-400/50"></div>
+                                  <div className="absolute inset-0 rounded-full animate-pulse bg-green-400/30 box-border border border-green-400"></div>
                                 )}
                             </div>
 
-                            {/* The Marble */}
                             {hasMarble && !isAnimatingSource && (
                               <div className="relative z-10 transition-transform duration-200" style={{ transformStyle: 'preserve-3d' }}>
                                 <Marble 
@@ -137,10 +123,9 @@ export const Board: React.FC<BoardProps> = ({
                               </div>
                             )}
                             
-                            {/* Destination Marker Guide - 3D Floating Dot */}
                             {isValidDestination && (
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-3 h-3 rounded-full bg-green-400 shadow-[0_0_15px_#4ade80] animate-bounce"
-                                     style={{ transform: 'translateZ(20px)' }}
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-4 h-4 rounded-full bg-green-400 shadow-[0_0_20px_#4ade80] animate-bounce"
+                                     style={{ transform: 'translateZ(40px)' }}
                                 ></div>
                             )}
                           </div>

@@ -21,19 +21,21 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     };
 
     const isGemTheme = theme.name === 'Gem Stones';
+    // Increased hue range for high contrast "gem" designs
     const hueShift = isGemTheme 
         ? Math.floor(rnd(1) * 360) 
-        : Math.floor(rnd(1) * 60) - 30;
+        : Math.floor(rnd(1) * 80) - 40;
     
     const rotation = Math.floor(rnd(2) * 360);
     
+    // Increased opacity in swirls to ensure "design" is seen
     const innerTexture = `
-      radial-gradient(ellipse at 30% 70%, rgba(255,255,255,0.3) 0%, transparent 60%),
-      linear-gradient(${rotation}deg, transparent 40%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.15) 55%, transparent 60%)
+      radial-gradient(ellipse at 35% 65%, rgba(255,255,255,0.5) 0%, transparent 70%),
+      linear-gradient(${rotation}deg, transparent 40%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.2) 55%, transparent 60%)
     `;
 
     return {
-      filter: `hue-rotate(${hueShift}deg)`,
+      filter: `hue-rotate(${hueShift}deg) contrast(1.1) brightness(1.1)`,
       pattern: innerTexture,
     };
 
@@ -42,7 +44,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
   if (isGhost) {
      return (
         <div 
-          className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/20 transform scale-50 blur-[2px]"
+          className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 transform scale-50 blur-[2px]"
         />
      )
   }
@@ -51,37 +53,38 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     <div
       onClick={onClick}
       className={`
-        w-7 h-7 md:w-10 md:h-10 rounded-full cursor-pointer
+        w-8 h-8 md:w-11 md:h-11 rounded-full cursor-pointer
         relative transition-all duration-300
         ${isRemoving ? 'scale-0 opacity-0 rotate-180' : ''}
-        ${isSelected ? `marble-selected ring-4 ring-white/60 ring-offset-2 ring-offset-transparent` : 'marble-3d hover:translate-y-[-4px] hover:brightness-110'}
+        ${isSelected ? `marble-selected ring-4 ring-white/70 ring-offset-2 ring-offset-transparent` : 'marble-3d hover:translate-y-[-6px] hover:brightness-110'}
       `}
       style={{
         // High fidelity material stack
         background: `
           ${visualStyle.pattern},
-          radial-gradient(circle at 35% 35%, ${theme.marbleStart} 0%, ${theme.marbleEnd} 90%, #020617 100%)
+          radial-gradient(circle at 35% 35%, ${theme.marbleStart} 0%, ${theme.marbleEnd} 85%, #000 100%)
         `,
-        filter: `${visualStyle.filter} contrast(1.15) saturate(1.1)`,
+        filter: visualStyle.filter,
       }}
     >
       {/* --- Ray-traced Lighting Simulation --- */}
 
-      {/* 1. Sharp Specular Highlight (Sun Reflection) - Crisp edges for "wet/glass" look */}
-      <div className="absolute top-[15%] left-[18%] w-[12%] h-[8%] rounded-[50%] bg-white blur-[0.5px] shadow-[0_0_4px_rgba(255,255,255,0.9)] z-20"></div>
+      {/* 1. Sharp Specular Highlight (High Gloss Reflection) */}
+      <div className="absolute top-[12%] left-[15%] w-[15%] h-[10%] rounded-[50%] bg-white blur-[0.2px] shadow-[0_0_6px_rgba(255,255,255,1)] z-20"></div>
       
-      {/* 2. Soft Secondary Glint */}
-      <div className="absolute top-[12%] left-[25%] w-[30%] h-[15%] rounded-[50%] bg-gradient-to-r from-white/70 to-transparent blur-[1px] z-10"></div>
+      {/* 2. Soft Secondary Glint (Larger Surface) */}
+      <div className="absolute top-[8%] left-[22%] w-[35%] h-[18%] rounded-[50%] bg-gradient-to-r from-white/60 to-transparent blur-[2px] z-10"></div>
       
-      {/* 3. Subsurface Scattering (Glow at the bottom opposite light) */}
-      <div className="absolute bottom-[5%] right-[10%] w-[60%] h-[40%] rounded-full bg-gradient-to-tl from-white/20 to-transparent blur-[2px] opacity-90 mix-blend-overlay"></div>
+      {/* 3. Subsurface Scattering (Internal Glow) */}
+      <div className="absolute bottom-[8%] right-[12%] w-[55%] h-[35%] rounded-full bg-gradient-to-tl from-white/30 to-transparent blur-[3px] opacity-100 mix-blend-overlay"></div>
 
-      {/* 4. Fresnel Rim Light (Edges) - Thinner and sharper */}
-      <div className="absolute inset-0 rounded-full ring-1 ring-inset ring-white/20 pointer-events-none"></div>
+      {/* 4. Extra Crisp Fresnel Rim Light */}
+      <div className="absolute inset-0 rounded-full border border-white/30 pointer-events-none"></div>
+      <div className="absolute inset-1 rounded-full border border-white/10 pointer-events-none"></div>
 
-      {/* 5. Ambient Occlusion Cap - Darkens the very bottom where it touches the hole */}
+      {/* 5. Ambient Occlusion Mask */}
       {!isSelected && (
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[20%] bg-black/40 blur-[2px] rounded-full pointer-events-none mix-blend-multiply"></div>
+        <div className="absolute bottom-[-2px] left-1/2 -translate-x-1/2 w-[85%] h-[20%] bg-black/60 blur-[3px] rounded-full pointer-events-none mix-blend-multiply"></div>
       )}
 
     </div>
