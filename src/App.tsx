@@ -5,7 +5,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   HelpCircle, Trophy, AlertCircle, Volume2, VolumeX, X, Square,
-  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Download, ShieldCheck, Share2, MessageSquare
+  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Download, Share2, MessageSquare
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
@@ -202,7 +202,7 @@ const App: React.FC = () => {
               opacity: 1 
             }}
           ></div>
-          <div className={`absolute inset-0 ${currentTheme.bgAnimClass} opacity-40 mix-blend-screen`}></div>
+          <div className={`absolute inset-0 ${currentTheme.bgAnimClass} opacity-50 mix-blend-screen`}></div>
           <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/20' : 'bg-white/5'}`}></div>
       </div>
 
@@ -214,46 +214,53 @@ const App: React.FC = () => {
         ))}
       </div>
 
-      <div className="w-full max-w-4xl flex justify-between items-center mb-1 relative z-50 shrink-0 px-2 pt-2 pointer-events-none scale-95 md:scale-100 origin-top">
-        <div className="flex items-center gap-2 pointer-events-auto">
-           <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-black/5 hover:bg-black/10 text-slate-800'} backdrop-blur-md shadow-lg border border-white/10`}>
-             {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+      {/* --- TOP HEADER (MATCHING SCREENSHOT) --- */}
+      <div className="w-full max-w-4xl flex justify-between items-start mb-1 relative z-50 shrink-0 px-2 pt-4 pointer-events-none origin-top">
+        <div className="flex flex-wrap items-center gap-3 pointer-events-auto">
+           {/* Sound Toggle */}
+           <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
+             {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
            </button>
            
-           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
-             <Palette size={16} className={currentTheme.isDark ? "text-yellow-300" : "text-fuchsia-600"}/>
-             <span className={`text-[10px] md:text-xs font-black uppercase tracking-widest ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{currentTheme.name}</span>
+           {/* THEME BADGE (BARBIE WORLD) */}
+           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-pink-500/80 to-rose-600/80 backdrop-blur-xl border border-white/30 shadow-2xl`}>
+             <Palette size={18} className="text-white drop-shadow-sm"/>
+             <span className="text-xs font-black uppercase tracking-[0.15em] text-white drop-shadow-md">
+               {currentTheme.name}
+             </span>
            </button>
            
-           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
-             <LayoutGrid size={16} className={currentTheme.isDark ? "text-cyan-300" : "text-blue-600"}/>
-             <span className={`text-[10px] md:text-xs font-black uppercase tracking-widest ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{currentLayout.name}</span>
+           {/* LAYOUT BADGE (CLASSIC CROSS) */}
+           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-blue-500/80 to-cyan-600/80 backdrop-blur-xl border border-white/30 shadow-2xl`}>
+             <LayoutGrid size={18} className="text-white drop-shadow-sm"/>
+             <span className="text-xs font-black uppercase tracking-[0.15em] text-white drop-shadow-md">
+               {currentLayout.name}
+             </span>
            </button>
         </div>
         
-        <div className="flex items-center gap-2 pointer-events-auto">
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${currentTheme.isDark ? 'bg-white/10' : 'bg-white/60'} backdrop-blur-md border border-white/20 shadow-lg`}>
-              <TimerIcon size={16} className={currentTheme.isDark ? "text-green-400" : "text-green-600"} />
-              <span className={`font-mono text-xs font-black ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{formatTime(timer)}</span>
+        <div className="flex items-center gap-3 pointer-events-auto">
+          {/* STATS BADGE (TIMER & MARBLES) */}
+          <div className={`flex items-center gap-4 px-4 py-2.5 rounded-full ${currentTheme.isDark ? 'bg-black/40' : 'bg-white/70'} backdrop-blur-xl border border-white/20 shadow-2xl`}>
+              <div className="flex items-center gap-2">
+                 <TimerIcon size={18} className="text-green-500" />
+                 <span className={`font-mono text-sm font-black ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{formatTime(timer)}</span>
+              </div>
           </div>
 
-          <button onClick={handleShare} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-black/5 hover:bg-black/10 text-slate-800'} backdrop-blur-md shadow-lg border border-white/10`}>
-             <Share2 size={18} />
-          </button>
-          
           <button onClick={() => setShowRules(true)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-black/5 hover:bg-black/10 text-slate-800'} backdrop-blur-md shadow-lg border border-white/10`}>
-            <HelpCircle size={18} />
+            <HelpCircle size={22} />
           </button>
         </div>
       </div>
 
-      <div ref={titleRef} className="text-center mb-1 relative z-10 pointer-events-none will-change-transform shrink-0 mt-4">
-        <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] leading-tight">
+      <div ref={titleRef} className="text-center mb-1 relative z-10 pointer-events-none will-change-transform shrink-0 mt-6">
+        <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)] leading-tight">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-500"}>3D</span>
         </h1>
-        <div className="flex justify-center items-center gap-6 mt-1">
-            <p className={`text-sm md:text-lg font-bold drop-shadow-lg tracking-wide ${currentTheme.isDark ? 'text-blue-100' : 'text-slate-700'}`}>
-              Marbles: <span className={`text-xl md:text-2xl ml-1 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{marblesRemaining}</span>
+        <div className="flex justify-center items-center gap-6 mt-2">
+            <p className={`text-lg md:text-2xl font-black drop-shadow-2xl tracking-widest uppercase ${currentTheme.isDark ? 'text-white/90' : 'text-slate-800'}`}>
+              Marbles Left: <span className="text-3xl md:text-4xl ml-2">{marblesRemaining}</span>
             </p>
         </div>
       </div>
@@ -283,81 +290,65 @@ const App: React.FC = () => {
         <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
       </div>
 
+      {/* Result & Rules Modals (Remain largely same but with better backdrop blur) */}
       {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-lg animate-in fade-in duration-300">
-          <div className={`relative max-w-xs w-full p-6 rounded-3xl shadow-[0_50px_100px_rgba(0,0,0,0.5)] text-center transform scale-100 animate-in zoom-in-95 duration-300 border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-3xl pointer-events-none">
-                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-b from-white/5 to-transparent"></div>
-            </div>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-300">
+          <div className={`relative max-w-xs w-full p-8 rounded-[2rem] shadow-[0_50px_100px_rgba(0,0,0,0.8)] text-center transform scale-100 animate-in zoom-in-95 duration-300 border border-white/20 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/95'}`}>
             {gameStatus === GameStatus.WON ? (
-              <div className="mb-4 inline-flex p-4 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 text-white shadow-[0_10px_20px_rgba(234,179,8,0.3)] animate-bounce"><Trophy size={48} fill="currentColor" /></div>
+              <div className="mb-6 inline-flex p-5 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 text-white shadow-2xl animate-bounce"><Trophy size={64} fill="currentColor" /></div>
             ) : (
-              <div className="mb-4 inline-flex p-4 rounded-full bg-gradient-to-br from-red-500 to-red-800 text-white shadow-[0_10px_20px_rgba(239,68,68,0.3)]"><AlertCircle size={48} /></div>
+              <div className="mb-6 inline-flex p-5 rounded-full bg-gradient-to-br from-red-500 to-red-800 text-white shadow-2xl"><AlertCircle size={64} /></div>
             )}
             <h2 className={`text-4xl font-black mb-2 drop-shadow-md tracking-tight ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{gameStatus === GameStatus.WON ? 'VICTORY!' : 'GAME OVER'}</h2>
-            <p className={`mb-2 text-lg font-medium ${currentTheme.isDark ? 'text-slate-300' : 'text-slate-600'}`}>{gameStatus === GameStatus.WON ? "You are a Master!" : `Marbles left: ${marblesRemaining}`}</p>
-            <p className={`mb-6 text-base ${currentTheme.isDark ? 'text-slate-400' : 'text-slate-500'}`}>Time: {formatTime(timer)}</p>
-            <button onClick={startGame} className="btn-3d group relative w-full h-14">
+            <p className={`mb-6 text-xl font-bold ${currentTheme.isDark ? 'text-slate-300' : 'text-slate-600'}`}>{gameStatus === GameStatus.WON ? "Master Mind!" : `Marbles: ${marblesRemaining}`}</p>
+            <button onClick={startGame} className="btn-3d group relative w-full h-16">
               <div className={`btn-edge shadow-xl ${currentTheme.isDark ? 'bg-cyan-900' : 'bg-blue-900'}`}></div>
-              <div className={`btn-surface w-full h-full rounded-2xl bg-gradient-to-b ${currentTheme.isDark ? 'from-cyan-500 to-cyan-600 border-cyan-400' : 'from-blue-500 to-blue-600 border-blue-400'} flex items-center justify-center gap-3 text-white text-lg font-bold shadow-inner border-t group-hover:brightness-110`}>PLAY AGAIN</div>
+              <div className={`btn-surface w-full h-full rounded-2xl bg-gradient-to-b ${currentTheme.isDark ? 'from-cyan-500 to-cyan-600 border-cyan-400' : 'from-blue-500 to-blue-600 border-blue-400'} flex items-center justify-center gap-3 text-white text-xl font-black shadow-inner border-t group-hover:brightness-110`}>PLAY AGAIN</div>
             </button>
           </div>
         </div>
       )}
-
+      
       {showRules && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-           <div className={`relative max-w-md w-full p-6 rounded-3xl shadow-2xl border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
-              <button onClick={() => setShowRules(false)} className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={24} /></button>
-              <h2 className={`text-2xl font-bold mb-4 flex items-center gap-3 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><HelpCircle size={28} className="text-cyan-400" />Help & Feedback</h2>
-              <div className={`space-y-3 text-sm leading-relaxed ${currentTheme.isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                <p><strong>Goal:</strong> Eliminate marbles until only <strong>one</strong> remains (center is best!).</p>
-                <div className={`p-4 rounded-xl border ${currentTheme.isDark ? 'bg-white/5 border-white/5' : 'bg-slate-100 border-slate-200'}`}>
-                    <ul className="list-disc pl-5 space-y-2">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
+           <div className={`relative max-w-md w-full p-8 rounded-[2rem] shadow-2xl border border-white/20 ${currentTheme.isDark ? 'bg-slate-900/95' : 'bg-white/95'}`}>
+              <button onClick={() => setShowRules(false)} className={`absolute top-6 right-6 p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={28} /></button>
+              <h2 className={`text-3xl font-black mb-6 flex items-center gap-4 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><HelpCircle size={32} className="text-cyan-400" />How to Play</h2>
+              <div className={`space-y-4 text-base leading-relaxed ${currentTheme.isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                <p><strong>Goal:</strong> Eliminate marbles until only <strong>one</strong> remains in the center!</p>
+                <div className={`p-5 rounded-2xl border ${currentTheme.isDark ? 'bg-white/5 border-white/10' : 'bg-slate-100 border-slate-200'}`}>
+                    <ul className="list-disc pl-5 space-y-3 font-medium">
                     <li>Select a marble to see valid moves.</li>
                     <li>Jump over a neighbor into an empty hole.</li>
                     <li>The jumped marble is removed.</li>
                     <li>No diagonal moves allowed.</li>
                     </ul>
                 </div>
-                
                 <div className="pt-4 flex flex-col items-center gap-4">
-                    <a 
-                      href="mailto:support@brainvita3d.com?subject=Brainvita 3D Tester Feedback" 
-                      className={`flex items-center gap-2 px-6 py-2 rounded-full font-bold transition-all ${currentTheme.isDark ? 'bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30' : 'bg-blue-600 text-white hover:bg-blue-700'} shadow-lg`}
-                    >
-                        <MessageSquare size={18} /> Send Tester Feedback
-                    </a>
-                    <a href="/privacy.html" target="_blank" className={`inline-flex items-center gap-2 text-xs font-semibold underline ${currentTheme.isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-800'}`}>
-                      <ShieldCheck size={14} /> Privacy Policy
-                    </a>
+                    <a href="mailto:support@brainvita3d.com" className={`flex items-center gap-2 px-8 py-3 rounded-full font-black transition-all bg-blue-600 text-white hover:bg-blue-500 shadow-xl uppercase text-xs tracking-widest`}><MessageSquare size={18} /> Send Feedback</a>
                 </div>
               </div>
-              <button onClick={() => { setShowRules(false); if (gameStatus === GameStatus.IDLE) startGame(); }} className="mt-6 btn-3d group relative w-full h-12">
-                <div className={`btn-edge shadow-xl ${currentTheme.isDark ? 'bg-cyan-900' : 'bg-blue-900'}`}></div>
-                <div className={`btn-surface w-full h-full rounded-xl bg-gradient-to-b ${currentTheme.isDark ? 'from-cyan-500 to-cyan-600 border-cyan-400' : 'from-blue-500 to-blue-600 border-blue-400'} flex items-center justify-center gap-2 text-white font-bold shadow-inner border-t group-hover:brightness-110`}>LET'S PLAY</div>
-              </button>
            </div>
         </div>
       )}
 
       {showThemeModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className={`relative max-w-2xl w-full p-5 rounded-3xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
-             <div className="flex justify-between items-center mb-4 shrink-0">
-                <h2 className={`text-xl font-bold flex items-center gap-2 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><Palette className="text-fuchsia-500"/> Select Theme</h2>
-                <button onClick={() => setShowThemeModal(false)} className={`p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={24} /></button>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+          <div className={`relative max-w-2xl w-full p-6 rounded-[2.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.9)] overflow-hidden max-h-[85vh] flex flex-col border border-white/20 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/90'}`}>
+             <div className="flex justify-between items-center mb-6 shrink-0">
+                <h2 className={`text-2xl font-black flex items-center gap-3 uppercase tracking-tighter ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><Palette className="text-fuchsia-500" size={28}/> Select Theme</h2>
+                <button onClick={() => setShowThemeModal(false)} className={`p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={28} /></button>
              </div>
-             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 overflow-y-auto p-1 custom-scrollbar">
+             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto p-2 custom-scrollbar">
                 {THEMES.map(t => {
                    const isActive = currentTheme.name === t.name;
                    return (
-                     <button key={t.name} onClick={() => handleThemeChange(t)} className={`relative group rounded-xl overflow-hidden text-left transition-all duration-200 border-2 ${isActive ? 'border-green-400 ring-2 ring-green-400/30 scale-[1.02]' : 'border-transparent hover:border-white/30 hover:scale-[1.02]'}`}>
-                        <div className={`h-24 w-full ${t.bgAnimClass} bg-cover bg-center`} style={{ backgroundImage: `url(${t.bgImage})` }}>
-                           <div className={`absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors`}></div>
-                           {isActive && <div className="absolute top-2 right-2 bg-green-500 text-white p-1 rounded-full shadow-lg"><Check size={12} strokeWidth={4} /></div>}
+                     <button key={t.name} onClick={() => handleThemeChange(t)} className={`relative group rounded-2xl overflow-hidden text-left transition-all duration-300 border-4 ${isActive ? 'border-green-400 scale-[1.05]' : 'border-transparent hover:border-white/30 hover:scale-[1.02]'}`}>
+                        <div className={`h-32 w-full bg-cover bg-center`} style={{ backgroundImage: `url(${t.bgImage})` }}>
+                           <div className={`absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors`}></div>
+                           {isActive && <div className="absolute top-3 right-3 bg-green-500 text-white p-1.5 rounded-full shadow-2xl border-2 border-white"><Check size={16} strokeWidth={4} /></div>}
                         </div>
-                        <div className={`p-2 ${t.isDark ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-900'}`}><p className="font-bold text-xs truncate">{t.name}</p></div>
+                        <div className={`p-3 ${t.isDark ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'}`}><p className="font-black text-[10px] uppercase tracking-widest truncate">{t.name}</p></div>
                      </button>
                    );
                 })}
@@ -367,19 +358,19 @@ const App: React.FC = () => {
       )}
 
       {showLayoutModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className={`relative max-w-lg w-full p-5 rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
-             <div className="flex justify-between items-center mb-4 shrink-0">
-                <h2 className={`text-xl font-bold flex items-center gap-2 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><LayoutGrid className="text-cyan-500"/> Select Layout</h2>
-                <button onClick={() => setShowLayoutModal(false)} className={`p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={24} /></button>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+          <div className={`relative max-w-lg w-full p-6 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-white/20 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/90'}`}>
+             <div className="flex justify-between items-center mb-6 shrink-0">
+                <h2 className={`text-2xl font-black flex items-center gap-3 uppercase tracking-tighter ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><LayoutGrid className="text-cyan-500" size={28}/> Select Layout</h2>
+                <button onClick={() => setShowLayoutModal(false)} className={`p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={28} /></button>
              </div>
-             <div className="space-y-3 overflow-y-auto p-1 custom-scrollbar">
+             <div className="space-y-4 overflow-y-auto p-2 custom-scrollbar">
                 {LAYOUTS.map(layout => {
                    const isActive = currentLayout.name === layout.name;
                    return (
-                     <button key={layout.name} onClick={() => handleLayoutChange(layout)} className={`w-full relative group rounded-xl p-4 text-left transition-all duration-200 border-2 flex items-center justify-between ${isActive ? 'border-green-400 bg-green-400/10' : `border-transparent ${currentTheme.isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-black/5 hover:bg-black/10'}`}`}>
-                        <div><p className={`font-bold text-base ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{layout.name}</p><p className={`text-xs mt-1 ${currentTheme.isDark ? 'text-slate-400' : 'text-slate-500'}`}>{layout.description}</p></div>
-                        {isActive && <div className="bg-green-500 text-white p-1 rounded-full shadow-lg"><Check size={16} strokeWidth={4} /></div>}
+                     <button key={layout.name} onClick={() => handleLayoutChange(layout)} className={`w-full relative group rounded-2xl p-6 text-left transition-all duration-300 border-2 flex items-center justify-between shadow-lg ${isActive ? 'border-green-400 bg-green-400/20' : `border-transparent ${currentTheme.isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-white hover:bg-slate-50'}`}`}>
+                        <div><p className={`font-black text-lg uppercase tracking-tight ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{layout.name}</p><p className={`text-xs mt-1 font-bold ${currentTheme.isDark ? 'text-slate-400' : 'text-slate-500'}`}>{layout.description}</p></div>
+                        {isActive && <div className="bg-green-500 text-white p-2 rounded-full shadow-2xl border-2 border-white"><Check size={20} strokeWidth={4} /></div>}
                      </button>
                    );
                 })}
