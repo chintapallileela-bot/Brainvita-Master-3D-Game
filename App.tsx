@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/Board';
 import { RemovedMarbles } from './components/RemovedMarbles';
@@ -224,8 +223,13 @@ const App: React.FC = () => {
          </div>
       </main>
 
+      {/* Tray Area - Shifted outside flex-1 main to prevent clipping */}
+      <div className="relative z-30 w-full pb-6 px-4 shrink-0 pointer-events-auto mt-[-2rem]">
+        <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
+      </div>
+
       {/* Controls */}
-      <div className="flex gap-4 -mt-12 mb-2 relative z-50 pointer-events-none shrink-0">
+      <div className="flex gap-4 mb-4 relative z-50 shrink-0">
         <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d group relative w-28 h-12 disabled:opacity-50 pointer-events-auto">
           <div className="btn-edge bg-red-900 group-hover:bg-red-800"></div>
           <div className="btn-surface w-full h-full rounded-full bg-gradient-to-b from-red-500 to-red-600 flex items-center justify-center gap-2 text-white text-sm font-bold border-t border-red-400">
@@ -240,11 +244,7 @@ const App: React.FC = () => {
         </button>
       </div>
 
-      <div className="relative z-30 w-full pb-4 shrink-0 pointer-events-none">
-        <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
-      </div>
-
-      {/* Theme Modal */}
+      {/* Modals remain the same but ensured z-index */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-2xl animate-in fade-in pointer-events-auto">
           <div className={`relative max-w-2xl w-full p-6 rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[85vh] flex flex-col border border-white/20 animate-in zoom-in ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/90'}`}>
@@ -270,7 +270,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Rules Modal */}
       {showRules && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in pointer-events-auto">
            <div className={`relative max-w-md w-full p-8 rounded-[2rem] shadow-2xl border border-white/20 animate-in zoom-in ${currentTheme.isDark ? 'bg-slate-900/95' : 'bg-white/95'}`}>
@@ -289,7 +288,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Game End Modal */}
       {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl animate-in fade-in pointer-events-auto">
           <div className={`relative max-w-xs w-full p-8 rounded-[2rem] text-center border border-white/20 animate-in zoom-in ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/95'}`}>
@@ -305,7 +303,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Layout Modal */}
       {showLayoutModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in pointer-events-auto">
           <div className={`relative max-w-lg w-full p-6 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-white/20 animate-in zoom-in ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/90'}`}>
