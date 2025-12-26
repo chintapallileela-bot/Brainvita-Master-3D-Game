@@ -10,7 +10,7 @@ interface BoardProps {
   onCellClick: (pos: Position) => void;
   theme: Theme;
   animatingMove: { from: Position; to: Position; mid: Position } | null;
-  boardRef: React.RefObject<HTMLDivElement | null>;
+  boardRef: React.RefObject<HTMLDivElement>;
 }
 
 export const Board: React.FC<BoardProps> = ({ 
