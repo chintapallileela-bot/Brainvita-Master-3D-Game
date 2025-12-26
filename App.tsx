@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/Board';
 import { RemovedMarbles } from './components/RemovedMarbles';
@@ -5,7 +6,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   HelpCircle, Trophy, AlertCircle, Volume2, VolumeX, X, Square,
-  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Share2
+  Timer as TimerIcon, Play, Palette, Check, LayoutGrid
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
@@ -162,21 +163,6 @@ const App: React.FC = () => {
   const handleThemeChange = (theme: Theme) => { setCurrentTheme(theme); setShowThemeModal(false); if (soundEnabled) playSelectSound(); };
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Brainvita Master 3D',
-          text: 'Can you solve this Brainvita puzzle?',
-          url: window.location.href,
-        });
-      } catch (err) { console.log('Share error'); }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Link copied!');
-    }
-  };
-
   return (
     <div className={`min-h-[100dvh] w-full flex flex-col items-center py-2 px-3 relative overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>
       {/* Background */}
@@ -298,9 +284,6 @@ const App: React.FC = () => {
                   <li>The jumped marble is removed from the board.</li>
                   <li>Moves must be horizontal or vertical.</li>
                 </ul>
-                <div className="pt-6">
-                    <button onClick={handleShare} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 shadow-xl uppercase tracking-widest text-xs"><Share2 size={16} /> Share Game</button>
-                </div>
               </div>
            </div>
         </div>
