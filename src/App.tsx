@@ -5,7 +5,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   HelpCircle, Trophy, AlertCircle, Volume2, VolumeX, X, Square,
-  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Download, ShieldCheck, Share2
+  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Download, ShieldCheck, Share2, MessageSquare
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
@@ -51,14 +51,13 @@ const App: React.FC = () => {
       try {
         await navigator.share({
           title: 'Brainvita Master 3D',
-          text: 'Check out this amazing 3D Peg Solitaire game! Can you leave only one marble?',
+          text: 'Challenge your brain with this 3D Peg Solitaire game!',
           url: window.location.href,
         });
       } catch (err) {
         console.log('Error sharing:', err);
       }
     } else {
-      // Fallback: Copy to clipboard
       navigator.clipboard.writeText(window.location.href);
       alert('Link copied to clipboard!');
     }
@@ -207,50 +206,52 @@ const App: React.FC = () => {
       </div>
       <div className="w-full max-w-xl flex justify-between items-center mb-1 relative z-10 shrink-0 pointer-events-none scale-90 md:scale-100 origin-top">
         <div className="flex items-center gap-2 pointer-events-auto">
-           <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
-             {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+           <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-3 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
+             {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
            </button>
-           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
-             <Palette size={16} className={currentTheme.isDark ? "text-yellow-300" : "text-fuchsia-600"}/>
-             <span className={`text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-black drop-shadow-md ${currentTheme.isDark ? 'text-white/90' : 'text-slate-800'}`}>{currentTheme.name}</span>
+           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-4 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
+             <Palette size={18} className={currentTheme.isDark ? "text-yellow-300" : "text-fuchsia-600"}/>
+             <span className={`hidden xs:inline text-xs font-bold uppercase tracking-widest ${currentTheme.isDark ? 'text-white' : 'text-slate-800'}`}>{currentTheme.name}</span>
            </button>
-           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
-             <LayoutGrid size={16} className={currentTheme.isDark ? "text-cyan-300" : "text-blue-600"}/>
-             <span className={`text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-black drop-shadow-md ${currentTheme.isDark ? 'text-white/90' : 'text-slate-800'}`}>{currentLayout.name}</span>
+           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-4 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-white/60 hover:bg-white/80'} backdrop-blur-md border border-white/20 shadow-lg`}>
+             <LayoutGrid size={18} className={currentTheme.isDark ? "text-cyan-300" : "text-blue-600"}/>
+             <span className={`hidden xs:inline text-xs font-bold uppercase tracking-widest ${currentTheme.isDark ? 'text-white' : 'text-slate-800'}`}>{currentLayout.name}</span>
            </button>
         </div>
         <div className="flex items-center gap-2 pointer-events-auto">
           {installPrompt && (
-             <button onClick={handleInstallClick} className={`flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer hover:scale-105 transition-transform ${currentTheme.isDark ? 'bg-green-500/20 hover:bg-green-500/30 border-green-500/50 text-green-300' : 'bg-green-500/10 hover:bg-green-500/20 border-green-600/30 text-green-700'} backdrop-blur-md border shadow-lg`}>
-               <Download size={16} /> <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest">Install</span>
+             <button onClick={handleInstallClick} className={`p-3 rounded-full transition-colors bg-green-500/20 text-green-300 backdrop-blur-md shadow-lg border border-green-500/50`}>
+               <Download size={20} />
              </button>
           )}
-          <button onClick={handleShare} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
-             <Share2 size={18} />
+          <button onClick={handleShare} className={`p-3 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
+             <Share2 size={20} />
           </button>
-          <div className={`flex items-center gap-2 px-3 py-2 rounded-full ${currentTheme.isDark ? 'bg-white/10' : 'bg-white/60'} backdrop-blur-md border border-white/10 shadow-lg`}>
-              <TimerIcon size={16} className={currentTheme.isDark ? "text-green-400" : "text-green-600"} />
-              <span className={`font-mono text-sm font-bold shadow-black drop-shadow-md min-w-[45px] text-center ${currentTheme.isDark ? 'text-white/90' : 'text-slate-800'}`}>{formatTime(timer)}</span>
-          </div>
-          <button onClick={() => setShowRules(true)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
-            <HelpCircle size={22} />
+          <button onClick={() => setShowRules(true)} className={`p-3 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
+            <HelpCircle size={24} />
           </button>
         </div>
       </div>
       <div ref={titleRef} className="text-center mb-1 relative z-10 pointer-events-none will-change-transform shrink-0">
-        <h1 className="text-3xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] leading-tight">
+        <h1 className="text-4xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] leading-tight">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-500"}>3D</span>
         </h1>
-        <p className={`text-sm md:text-lg font-bold drop-shadow-lg tracking-wide ${currentTheme.isDark ? 'text-blue-100' : 'text-slate-700'}`}>
-          Marbles Left: <span className={`text-xl md:text-2xl ml-1 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{marblesRemaining}</span>
-        </p>
+        <div className="flex justify-center items-center gap-6 mt-1">
+            <p className={`text-sm md:text-lg font-bold drop-shadow-lg tracking-wide ${currentTheme.isDark ? 'text-blue-100' : 'text-slate-700'}`}>
+              Marbles: <span className={`text-xl md:text-2xl ml-1 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{marblesRemaining}</span>
+            </p>
+            <div className={`flex items-center gap-2 px-3 py-1 rounded-full ${currentTheme.isDark ? 'bg-black/20' : 'bg-white/40'} border border-white/10`}>
+              <TimerIcon size={16} className={currentTheme.isDark ? "text-green-400" : "text-green-600"} />
+              <span className={`font-mono text-sm font-bold ${currentTheme.isDark ? 'text-white' : 'text-slate-800'}`}>{formatTime(timer)}</span>
+            </div>
+        </div>
       </div>
       <div className="flex-1 w-full flex flex-col justify-center items-center min-h-0 relative z-40">
-         <div className="scale-90 md:scale-100 origin-center transition-transform duration-300">
+         <div className="scale-90 md:scale-100 lg:scale-110 origin-center transition-transform duration-300">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </div>
-      <div className="flex gap-4 -mt-16 mb-2 relative z-50 pointer-events-none shrink-0 scale-90 md:scale-100 origin-bottom">
+      <div className="flex gap-4 -mt-16 mb-2 relative z-50 pointer-events-none shrink-0 scale-95 md:scale-100 origin-bottom">
         <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d group relative w-28 h-12 disabled:opacity-50 disabled:cursor-not-allowed pointer-events-auto">
           <div className="btn-edge bg-red-900 shadow-xl group-hover:bg-red-800"></div>
           <div className="btn-surface w-full h-full rounded-full bg-gradient-to-b from-red-500 to-red-600 flex items-center justify-center gap-2 text-white text-sm font-bold shadow-inner border-t border-red-400 group-hover:from-red-400 group-hover:to-red-500">
@@ -292,7 +293,7 @@ const App: React.FC = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
            <div className={`relative max-w-md w-full p-6 rounded-3xl shadow-2xl border border-white/10 ${currentTheme.isDark ? 'bg-slate-900' : 'bg-white'}`}>
               <button onClick={() => setShowRules(false)} className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={24} /></button>
-              <h2 className={`text-2xl font-bold mb-4 flex items-center gap-3 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><HelpCircle size={28} className="text-cyan-400" />How to Play</h2>
+              <h2 className={`text-2xl font-bold mb-4 flex items-center gap-3 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><HelpCircle size={28} className="text-cyan-400" />Help & Feedback</h2>
               <div className={`space-y-3 text-sm leading-relaxed ${currentTheme.isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                 <p><strong>Goal:</strong> Eliminate marbles until only <strong>one</strong> remains (center is best!).</p>
                 <div className={`p-4 rounded-xl border ${currentTheme.isDark ? 'bg-white/5 border-white/5' : 'bg-slate-100 border-slate-200'}`}>
@@ -303,7 +304,14 @@ const App: React.FC = () => {
                     <li>No diagonal moves allowed.</li>
                     </ul>
                 </div>
-                <div className="pt-4 border-t border-slate-200 mt-4 text-center">
+                
+                <div className="pt-4 flex flex-col items-center gap-4">
+                    <a 
+                      href="mailto:support@brainvita3d.com?subject=Brainvita 3D Tester Feedback" 
+                      className={`flex items-center gap-2 px-6 py-2 rounded-full font-bold transition-all ${currentTheme.isDark ? 'bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30' : 'bg-blue-600 text-white hover:bg-blue-700'} shadow-lg`}
+                    >
+                        <MessageSquare size={18} /> Send Tester Feedback
+                    </a>
                     <a href="/privacy.html" target="_blank" className={`inline-flex items-center gap-2 text-xs font-semibold underline ${currentTheme.isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-800'}`}>
                       <ShieldCheck size={14} /> Privacy Policy
                     </a>
