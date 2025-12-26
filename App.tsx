@@ -180,10 +180,7 @@ const App: React.FC = () => {
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] transition-all duration-300 ease-out z-0 will-change-transform">
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 bg-slate-900" 
-            style={{ 
-              backgroundImage: `url(${currentTheme.bgImage})`,
-              opacity: 1 
-            }}
+            style={{ backgroundImage: `url(${currentTheme.bgImage})`, opacity: 1 }}
           ></div>
           <div className={`absolute inset-0 ${currentTheme.bgAnimClass} opacity-50 mix-blend-screen`}></div>
           <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/20' : 'bg-white/5'}`}></div>
@@ -203,14 +200,14 @@ const App: React.FC = () => {
              {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
            </button>
            
-           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-pink-500/80 to-rose-600/80 backdrop-blur-xl border border-white/30 shadow-2xl`}>
+           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-pink-500/90 to-rose-600/90 backdrop-blur-xl border border-white/40 shadow-2xl z-50`}>
              <Palette size={18} className="text-white drop-shadow-sm"/>
              <span className="text-xs font-black uppercase tracking-[0.15em] text-white drop-shadow-md">
                {currentTheme.name}
              </span>
            </button>
            
-           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-blue-500/80 to-cyan-600/80 backdrop-blur-xl border border-white/30 shadow-2xl`}>
+           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-blue-500/90 to-cyan-600/90 backdrop-blur-xl border border-white/40 shadow-2xl z-50`}>
              <LayoutGrid size={18} className="text-white drop-shadow-sm"/>
              <span className="text-xs font-black uppercase tracking-[0.15em] text-white drop-shadow-md">
                {currentLayout.name}
@@ -266,7 +263,7 @@ const App: React.FC = () => {
       </div>
 
       {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-300">
           <div className={`relative max-w-xs w-full p-8 rounded-[2rem] shadow-[0_50px_100px_rgba(0,0,0,0.8)] text-center transform scale-100 animate-in zoom-in-95 duration-300 border border-white/20 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/95'}`}>
             {gameStatus === GameStatus.WON ? (
               <div className="mb-6 inline-flex p-5 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 text-white shadow-2xl animate-bounce"><Trophy size={64} fill="currentColor" /></div>
@@ -283,31 +280,8 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {showRules && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl animate-in fade-in duration-200">
-           <div className={`relative max-w-md w-full p-8 rounded-[2rem] shadow-2xl border border-white/20 animate-in zoom-in-95 ${currentTheme.isDark ? 'bg-slate-900/95' : 'bg-white/95'}`}>
-              <button onClick={() => setShowRules(false)} className={`absolute top-6 right-6 p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={28} /></button>
-              <h2 className={`text-3xl font-black mb-6 flex items-center gap-4 ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><HelpCircle size={32} className="text-cyan-400" />How to Play</h2>
-              <div className={`space-y-4 text-base leading-relaxed ${currentTheme.isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                <p><strong>Goal:</strong> Eliminate marbles until only <strong>one</strong> remains in the center!</p>
-                <div className={`p-5 rounded-2xl border ${currentTheme.isDark ? 'bg-white/5 border-white/10' : 'bg-slate-100 border-slate-200'}`}>
-                    <ul className="list-disc pl-5 space-y-3 font-medium">
-                    <li>Select a marble to see valid moves.</li>
-                    <li>Jump over a neighbor into an empty hole.</li>
-                    <li>The jumped marble is removed.</li>
-                    <li>No diagonal moves allowed.</li>
-                    </ul>
-                </div>
-                <div className="pt-4 flex flex-col items-center gap-4">
-                    <button onClick={handleShare} className="flex items-center gap-2 px-8 py-3 rounded-full font-black transition-all bg-blue-600 text-white hover:bg-blue-500 shadow-xl uppercase text-xs tracking-widest"><Share2 size={18} /> Share with Friends</button>
-                </div>
-              </div>
-           </div>
-        </div>
-      )}
-
       {showThemeModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
           <div className={`relative max-w-2xl w-full p-6 rounded-[2.5rem] shadow-[0_50px_100px_rgba(0,0,0,0.9)] overflow-hidden max-h-[85vh] flex flex-col border border-white/20 animate-in zoom-in-95 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/90'}`}>
              <div className="flex justify-between items-center mb-6 shrink-0">
                 <h2 className={`text-2xl font-black flex items-center gap-3 uppercase tracking-tighter ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><Palette className="text-fuchsia-500" size={28}/> Select Theme</h2>
@@ -332,7 +306,7 @@ const App: React.FC = () => {
       )}
 
       {showLayoutModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
           <div className={`relative max-w-lg w-full p-6 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-white/20 animate-in zoom-in-95 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/90'}`}>
              <div className="flex justify-between items-center mb-6 shrink-0">
                 <h2 className={`text-2xl font-black flex items-center gap-3 uppercase tracking-tighter ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}><LayoutGrid className="text-cyan-500" size={28}/> Select Layout</h2>

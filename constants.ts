@@ -1,14 +1,26 @@
-import { CellState, Theme, GameLayout } from './types';
+import { Theme, GameLayout } from './types';
 
 export const BOARD_SIZE = 7;
-export const TOTAL_MARBLES = 32; // This is for classic, but counts change per layout
+export const TOTAL_MARBLES = 32; // Default for classic board
 
-// Helper to create the board grid easily
 const I = -1; // Invalid
 const O = 1;  // Marble
 const E = 0;  // Empty
 
 export const LAYOUTS: GameLayout[] = [
+  {
+    name: "Circular Board",
+    description: "37 holes. The classic round layout.",
+    board: [
+      [I, I, O, O, O, I, I],
+      [I, O, O, O, O, O, I],
+      [O, O, O, O, O, O, O],
+      [O, O, O, E, O, O, O],
+      [O, O, O, O, O, O, O],
+      [I, O, O, O, O, O, I],
+      [I, I, O, O, O, I, I],
+    ]
+  },
   {
     name: "Classic Cross",
     description: "The standard 33-hole English board.",
@@ -19,19 +31,6 @@ export const LAYOUTS: GameLayout[] = [
       [O, O, O, E, O, O, O],
       [O, O, O, O, O, O, O],
       [I, I, O, O, O, I, I],
-      [I, I, O, O, O, I, I],
-    ]
-  },
-  {
-    name: "European Circle",
-    description: "37 holes. A true circular challenge.",
-    board: [
-      [I, I, O, O, O, I, I],
-      [I, O, O, O, O, O, I],
-      [O, O, O, O, O, O, O],
-      [O, O, O, E, O, O, O],
-      [O, O, O, O, O, O, O],
-      [I, O, O, O, O, O, I],
       [I, I, O, O, O, I, I],
     ]
   },
@@ -63,9 +62,6 @@ export const LAYOUTS: GameLayout[] = [
   }
 ];
 
-// Fallback for types
-export const INITIAL_BOARD_LAYOUT = LAYOUTS[0].board;
-
 export const THEMES: Theme[] = [
   {
     name: 'Barbie World',
@@ -77,8 +73,8 @@ export const THEMES: Theme[] = [
     boardBorder: 'border-white/70',
     grooveBorder: 'border-pink-200/50',
     holeBg: 'bg-rose-900/10',
-    marbleStart: '#fff0f5', // Lavender Blush
-    marbleEnd: '#ec4899',   // Pink 500
+    marbleStart: '#fff0f5',
+    marbleEnd: '#ec4899',
     selectionRing: 'ring-fuchsia-300',
     accentColor: 'bg-pink-500 hover:bg-pink-400',
     overlayClass: 'overlay-hearts'
@@ -93,8 +89,8 @@ export const THEMES: Theme[] = [
     boardBorder: 'border-sky-200/50',
     grooveBorder: 'border-white/30',
     holeBg: 'bg-sky-950/60',
-    marbleStart: '#e0f2fe', // Sky 100 (Ice)
-    marbleEnd: '#0284c7',   // Sky 600 (Deep Ice)
+    marbleStart: '#e0f2fe',
+    marbleEnd: '#0284c7',
     selectionRing: 'ring-white',
     accentColor: 'bg-sky-500 hover:bg-sky-400',
     overlayClass: 'overlay-snow'
@@ -107,10 +103,10 @@ export const THEMES: Theme[] = [
     bgImage: 'https://i.postimg.cc/rzwb1LBd/Nature.jpg', 
     boardBg: 'bg-gradient-to-br from-indigo-900/50 to-blue-900/50 backdrop-blur-md',
     boardBorder: 'border-indigo-400/50',
-    grooveBorder: 'border-amber-200/40', // Golden groove
+    grooveBorder: 'border-amber-200/40',
     holeBg: 'bg-indigo-950/60',
-    marbleStart: '#fef3c7', // Pale Gold/Yellow (Firefly light)
-    marbleEnd: '#d97706',   // Deep Amber/Orange
+    marbleStart: '#fef3c7',
+    marbleEnd: '#d97706',
     selectionRing: 'ring-amber-300', 
     accentColor: 'bg-amber-600 hover:bg-amber-500',
     overlayClass: 'overlay-fog'
@@ -146,85 +142,5 @@ export const THEMES: Theme[] = [
     selectionRing: 'ring-white',
     accentColor: 'bg-indigo-600 hover:bg-indigo-500',
     overlayClass: 'overlay-crystal'
-  },
-  {
-    name: 'Christmas',
-    isDark: true,
-    appBg: 'bg-red-950',
-    bgAnimClass: 'bg-anim-christmas',
-    bgImage: 'https://i.postimg.cc/30FPxKVK/Christmas.jpg', 
-    boardBg: 'bg-gradient-to-br from-red-900/50 to-green-900/50 backdrop-blur-xl',
-    boardBorder: 'border-yellow-400/50',
-    grooveBorder: 'border-yellow-200/30',
-    holeBg: 'bg-black/40',
-    marbleStart: '#fef3c7', // Gold
-    marbleEnd: '#ef4444',   // Red
-    selectionRing: 'ring-yellow-400',
-    accentColor: 'bg-red-600 hover:bg-red-500',
-    overlayClass: 'overlay-snow' 
-  },
-  {
-    name: 'Disney Magic',
-    isDark: true,
-    appBg: 'bg-violet-950',
-    bgAnimClass: 'bg-anim-disney',
-    bgImage: 'https://i.postimg.cc/bZ48Mvjt/Disney.jpg', 
-    boardBg: 'bg-gradient-to-br from-violet-900/50 to-fuchsia-900/50 backdrop-blur-md',
-    boardBorder: 'border-yellow-200/40',
-    grooveBorder: 'border-white/20',
-    holeBg: 'bg-violet-950/60',
-    marbleStart: '#fae8ff', // Light Purple
-    marbleEnd: '#9333ea',   // Deep Purple
-    selectionRing: 'ring-yellow-300',
-    accentColor: 'bg-violet-600 hover:bg-violet-500',
-    overlayClass: 'overlay-fireworks'
-  },
-  {
-    name: 'Unicorn Rainbow',
-    isDark: false, 
-    appBg: 'bg-fuchsia-100',
-    bgAnimClass: 'bg-anim-unicorn',
-    bgImage: 'https://i.postimg.cc/JyKx0s4q/Unicorn.jpg', 
-    boardBg: 'bg-gradient-to-br from-white/40 to-fuchsia-200/40 backdrop-blur-md',
-    boardBorder: 'border-fuchsia-300/80',
-    grooveBorder: 'border-white/50',
-    holeBg: 'bg-fuchsia-900/20',
-    marbleStart: '#cffafe', // Cyan highlight 
-    marbleEnd: '#d946ef',   // Fuchsia core
-    selectionRing: 'ring-cyan-400',
-    accentColor: 'bg-fuchsia-500 hover:bg-fuchsia-400',
-    overlayClass: 'overlay-sparkle'
-  },
-  {
-    name: 'Fairy Castle',
-    isDark: false,
-    appBg: 'bg-pink-100',
-    bgAnimClass: 'bg-anim-barbie',
-    bgImage: 'https://i.postimg.cc/PpQjPzvw/Fairy-Castle.jpg', 
-    boardBg: 'bg-gradient-to-br from-pink-300/50 to-purple-400/50 backdrop-blur-xl',
-    boardBorder: 'border-yellow-100/60',
-    grooveBorder: 'border-pink-200/50',
-    holeBg: 'bg-purple-900/10',
-    marbleStart: '#fff7ed', // Orange 50
-    marbleEnd: '#db2777',   // Pink 600
-    selectionRing: 'ring-yellow-300',
-    accentColor: 'bg-pink-500 hover:bg-pink-400',
-    overlayClass: 'overlay-sparkle'
-  },
-  {
-    name: 'Sky Kingdom',
-    isDark: false,
-    appBg: 'bg-sky-100',
-    bgAnimClass: 'bg-anim-sky',
-    bgImage: 'https://i.postimg.cc/tYLMGnYX/Sky.jpg', 
-    boardBg: 'bg-gradient-to-br from-white/50 to-sky-200/50 backdrop-blur-xl',
-    boardBorder: 'border-white/80',
-    grooveBorder: 'border-sky-200/40',
-    holeBg: 'bg-sky-900/10',
-    marbleStart: '#f0f9ff', // Sky 50
-    marbleEnd: '#0ea5e9',   // Sky 500
-    selectionRing: 'ring-yellow-400',
-    accentColor: 'bg-sky-500 hover:bg-sky-400',
-    overlayClass: 'overlay-snow' // Reusing snow as cloud particles
   }
 ];
