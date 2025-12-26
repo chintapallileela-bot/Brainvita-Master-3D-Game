@@ -5,7 +5,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   HelpCircle, Trophy, AlertCircle, Volume2, VolumeX, X, Square,
-  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Download, Share2, MessageSquare
+  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Share2, MessageSquare
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
@@ -21,7 +21,6 @@ const App: React.FC = () => {
   const [showLayoutModal, setShowLayoutModal] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [timer, setTimer] = useState(0);
-  const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [animatingMove, setAnimatingMove] = useState<{from: Position, to: Position, mid: Position} | null>(null);
 
   const boardRef = useRef<HTMLDivElement>(null);
@@ -30,38 +29,6 @@ const App: React.FC = () => {
   const titleRef = useRef<HTMLDivElement>(null);
   const trayRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: any) => {
-      e.preventDefault();
-      setInstallPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-  }, []);
-
-  const handleInstallClick = () => {
-    if (!installPrompt) return;
-    installPrompt.prompt();
-    installPrompt.userChoice.then(() => setInstallPrompt(null));
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Brainvita Master 3D',
-          text: 'Challenge your brain with this 3D Peg Solitaire game!',
-          url: window.location.href,
-        });
-      } catch (err) {
-        console.log('Error sharing:', err);
-      }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
-    }
-  };
 
   useEffect(() => {
     let interval: number;
@@ -191,6 +158,23 @@ const App: React.FC = () => {
   const handleThemeChange = (theme: Theme) => { setCurrentTheme(theme); setShowThemeModal(false); if (soundEnabled) playSelectSound(); };
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Brainvita Master 3D',
+          text: 'Challenge your brain with this 3D Peg Solitaire game!',
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    }
+  };
+
   return (
     <div className={`min-h-[100dvh] w-full flex flex-col items-center py-2 px-3 font-sans relative overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>
       {/* --- PARALLAX BACKGROUND SYSTEM --- */}
@@ -215,36 +199,36 @@ const App: React.FC = () => {
       </div>
 
       {/* --- TOP HEADER (MATCHING SCREENSHOT) --- */}
-      <div className="w-full max-w-4xl flex justify-between items-start mb-1 relative z-50 shrink-0 px-2 pt-4 pointer-events-none origin-top">
-        <div className="flex flex-wrap items-center gap-3 pointer-events-auto">
+      <div className="w-full max-w-4xl flex justify-between items-center mb-1 relative z-50 shrink-0 px-2 pt-4 pointer-events-none origin-top">
+        <div className="flex flex-wrap items-center gap-2 pointer-events-auto">
            {/* Sound Toggle */}
            <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
              {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
            </button>
            
            {/* THEME BADGE (BARBIE WORLD) */}
-           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-pink-500/80 to-rose-600/80 backdrop-blur-xl border border-white/30 shadow-2xl`}>
-             <Palette size={18} className="text-white drop-shadow-sm"/>
-             <span className="text-xs font-black uppercase tracking-[0.15em] text-white drop-shadow-md">
+           <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-pink-400/80 to-rose-500/80 backdrop-blur-xl border border-white/40 shadow-xl`}>
+             <Palette size={16} className="text-white drop-shadow-sm"/>
+             <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-white drop-shadow-md">
                {currentTheme.name}
              </span>
            </button>
            
            {/* LAYOUT BADGE (CLASSIC CROSS) */}
-           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-5 py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-blue-500/80 to-cyan-600/80 backdrop-blur-xl border border-white/30 shadow-2xl`}>
-             <LayoutGrid size={18} className="text-white drop-shadow-sm"/>
-             <span className="text-xs font-black uppercase tracking-[0.15em] text-white drop-shadow-md">
+           <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-blue-400/80 to-cyan-500/80 backdrop-blur-xl border border-white/40 shadow-xl`}>
+             <LayoutGrid size={16} className="text-white drop-shadow-sm"/>
+             <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-white drop-shadow-md">
                {currentLayout.name}
              </span>
            </button>
         </div>
         
-        <div className="flex items-center gap-3 pointer-events-auto">
+        <div className="flex items-center gap-2 pointer-events-auto">
           {/* STATS BADGE (TIMER & MARBLES) */}
-          <div className={`flex items-center gap-4 px-4 py-2.5 rounded-full ${currentTheme.isDark ? 'bg-black/40' : 'bg-white/70'} backdrop-blur-xl border border-white/20 shadow-2xl`}>
+          <div className={`flex items-center gap-3 px-4 py-2 rounded-full ${currentTheme.isDark ? 'bg-black/40' : 'bg-white/70'} backdrop-blur-xl border border-white/20 shadow-xl`}>
               <div className="flex items-center gap-2">
-                 <TimerIcon size={18} className="text-green-500" />
-                 <span className={`font-mono text-sm font-black ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{formatTime(timer)}</span>
+                 <TimerIcon size={16} className="text-green-500" />
+                 <span className={`font-mono text-xs font-black ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{formatTime(timer)}</span>
               </div>
           </div>
 
@@ -290,7 +274,6 @@ const App: React.FC = () => {
         <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
       </div>
 
-      {/* Result & Rules Modals (Remain largely same but with better backdrop blur) */}
       {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-2xl animate-in fade-in duration-300">
           <div className={`relative max-w-xs w-full p-8 rounded-[2rem] shadow-[0_50px_100px_rgba(0,0,0,0.8)] text-center transform scale-100 animate-in zoom-in-95 duration-300 border border-white/20 ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/95'}`}>
@@ -325,7 +308,7 @@ const App: React.FC = () => {
                     </ul>
                 </div>
                 <div className="pt-4 flex flex-col items-center gap-4">
-                    <a href="mailto:support@brainvita3d.com" className={`flex items-center gap-2 px-8 py-3 rounded-full font-black transition-all bg-blue-600 text-white hover:bg-blue-500 shadow-xl uppercase text-xs tracking-widest`}><MessageSquare size={18} /> Send Feedback</a>
+                    <button onClick={handleShare} className="flex items-center gap-2 px-8 py-3 rounded-full font-black transition-all bg-blue-600 text-white hover:bg-blue-500 shadow-xl uppercase text-xs tracking-widest"><Share2 size={18} /> Share with Friends</button>
                 </div>
               </div>
            </div>
