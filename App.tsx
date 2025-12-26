@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/Board';
 import { RemovedMarbles } from './components/RemovedMarbles';
@@ -319,6 +318,29 @@ const App: React.FC = () => {
             <h2 className="text-3xl font-black mb-2 uppercase">{gameStatus === GameStatus.WON ? 'You Won!' : 'Out of Moves'}</h2>
             <p className="mb-6 text-lg font-bold opacity-70">{gameStatus === GameStatus.WON ? "Mastery Achieved!" : `Marbles Left: ${marblesRemaining}`}</p>
             <button onClick={startGame} className="w-full py-4 rounded-2xl bg-gradient-to-b from-blue-500 to-blue-600 text-white font-black text-lg shadow-xl hover:brightness-110">REPLAY</button>
+          </div>
+        </div>
+      )}
+
+      {/* Layout Modal */}
+      {showLayoutModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in pointer-events-auto">
+          <div className={`relative max-w-lg w-full p-6 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-white/20 animate-in zoom-in ${currentTheme.isDark ? 'bg-slate-900/90' : 'bg-white/90'}`}>
+             <div className="flex justify-between items-center mb-6 shrink-0">
+                <h2 className={`text-2xl font-black uppercase tracking-tight ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>Select Layout</h2>
+                <button onClick={() => setShowLayoutModal(false)} className={`p-2 rounded-full transition-colors ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={28} /></button>
+             </div>
+             <div className="space-y-4 overflow-y-auto p-2 custom-scrollbar">
+                {LAYOUTS.map(layout => {
+                   const isActive = currentLayout.name === layout.name;
+                   return (
+                     <button key={layout.name} onClick={() => handleLayoutChange(layout)} className={`w-full relative group rounded-2xl p-6 text-left transition-all border-2 flex items-center justify-between shadow-lg ${isActive ? 'border-green-400 bg-green-400/20' : `border-transparent ${currentTheme.isDark ? 'bg-white/5 hover:bg-white/10' : 'bg-white hover:bg-slate-50'}`}`}>
+                        <div><p className={`font-black text-lg uppercase tracking-tight ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{layout.name}</p><p className={`text-xs mt-1 font-bold ${currentTheme.isDark ? 'text-slate-400' : 'text-slate-500'}`}>{layout.description}</p></div>
+                        {isActive && <div className="bg-green-500 text-white p-2 rounded-full shadow-2xl border-2 border-white"><Check size={20} strokeWidth={4} /></div>}
+                     </button>
+                   );
+                })}
+             </div>
           </div>
         </div>
       )}
