@@ -5,7 +5,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   HelpCircle, Trophy, AlertCircle, Volume2, VolumeX, X, Square,
-  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Share2, MessageSquare
+  Timer as TimerIcon, Play, Palette, Check, LayoutGrid, Share2
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
@@ -177,7 +177,6 @@ const App: React.FC = () => {
 
   return (
     <div className={`min-h-[100dvh] w-full flex flex-col items-center py-2 px-3 font-sans relative overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>
-      {/* --- PARALLAX BACKGROUND SYSTEM --- */}
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] transition-all duration-300 ease-out z-0 will-change-transform">
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 bg-slate-900" 
@@ -198,15 +197,12 @@ const App: React.FC = () => {
         ))}
       </div>
 
-      {/* --- TOP HEADER (MATCHING SCREENSHOT STYLE) --- */}
       <div className="w-full max-w-4xl flex justify-between items-center mb-1 relative z-50 shrink-0 px-2 pt-4 pointer-events-none origin-top">
         <div className="flex flex-wrap items-center gap-2 md:gap-3 pointer-events-auto">
-           {/* Sound Toggle */}
            <button onClick={() => setSoundEnabled(!soundEnabled)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20' : 'bg-black/5 hover:bg-black/10'} backdrop-blur-md shadow-lg border border-white/10`}>
              {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
            </button>
            
-           {/* THEME PILL BADGE */}
            <button onClick={() => setShowThemeModal(true)} className={`flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-pink-500/80 to-rose-600/80 backdrop-blur-xl border border-white/40 shadow-2xl`}>
              <Palette size={16} className="text-white drop-shadow-sm"/>
              <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.1em] text-white drop-shadow-md">
@@ -214,7 +210,6 @@ const App: React.FC = () => {
              </span>
            </button>
            
-           {/* LAYOUT PILL BADGE */}
            <button onClick={() => setShowLayoutModal(true)} className={`flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 rounded-full cursor-pointer hover:scale-105 transition-all bg-gradient-to-r from-blue-500/80 to-cyan-600/80 backdrop-blur-xl border border-white/40 shadow-2xl`}>
              <LayoutGrid size={16} className="text-white drop-shadow-sm"/>
              <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.1em] text-white drop-shadow-md">
@@ -224,12 +219,10 @@ const App: React.FC = () => {
         </div>
         
         <div className="flex items-center gap-2 md:gap-3 pointer-events-auto">
-          {/* STATS BADGE (TIMER) */}
           <div className={`flex items-center gap-3 px-4 py-2 md:py-2.5 rounded-full ${currentTheme.isDark ? 'bg-black/40' : 'bg-white/70'} backdrop-blur-xl border border-white/20 shadow-2xl`}>
               <TimerIcon size={18} className="text-green-500" />
               <span className={`font-mono text-xs md:text-sm font-black ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>{formatTime(timer)}</span>
           </div>
-
           <button onClick={() => setShowRules(true)} className={`p-2.5 rounded-full transition-colors ${currentTheme.isDark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-black/5 hover:bg-black/10 text-slate-800'} backdrop-blur-md shadow-lg border border-white/10`}>
             <HelpCircle size={22} />
           </button>
