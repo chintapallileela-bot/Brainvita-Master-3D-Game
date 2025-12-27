@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import { Theme } from '../types';
 
@@ -6,11 +7,12 @@ interface MarbleProps {
   onClick?: () => void;
   isGhost?: boolean;
   isRemoving?: boolean;
+  isNew?: boolean;
   theme: Theme;
   id: number; // Unique ID for deterministic pattern generation
 }
 
-export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, isRemoving, theme, id }) => {
+export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, isRemoving, isNew, theme, id }) => {
   // Generate deterministic visual properties based on ID and Theme name
   const visualStyle = useMemo(() => {
     // Simple pseudo-random function
@@ -55,7 +57,8 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
       className={`
         w-8 h-8 md:w-11 md:h-11 rounded-full cursor-pointer
         relative transition-all duration-300
-        ${isRemoving ? 'scale-0 opacity-0 rotate-180' : ''}
+        ${isRemoving ? 'scale-0 opacity-0 rotate-180 pointer-events-none' : ''}
+        ${isNew ? 'marble-landed' : ''}
         ${isSelected ? `marble-selected ring-4 ring-white/70 ring-offset-2 ring-offset-transparent` : 'marble-3d hover:translate-y-[-6px] hover:brightness-110'}
       `}
       style={{
@@ -83,7 +86,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
       <div className="absolute inset-1 rounded-full border border-white/10 pointer-events-none"></div>
 
       {/* 5. Ambient Occlusion Mask */}
-      {!isSelected && (
+      {(!isSelected && !isRemoving) && (
         <div className="absolute bottom-[-2px] left-1/2 -translate-x-1/2 w-[85%] h-[20%] bg-black/60 blur-[3px] rounded-full pointer-events-none mix-blend-multiply"></div>
       )}
 

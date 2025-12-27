@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { BoardState, CellState, Position, Theme } from '../types';
 import { Marble } from './Marble';
 import { MoveOverlay } from './MoveOverlay';
@@ -22,6 +23,19 @@ export const Board: React.FC<BoardProps> = ({
   animatingMove,
   boardRef
 }) => {
+  const [lastLandedPos, setLastLandedPos] = useState<Position | null>(null);
+
+  // Detect when a move just finished to trigger landing animation
+  useEffect(() => {
+    if (animatingMove) {
+      setLastLandedPos(animatingMove.to);
+    } else {
+      // Keep the landing animation state for a short duration
+      const timer = setTimeout(() => setLastLandedPos(null), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [animatingMove]);
+
   return (
     <div className="board-container-3d flex justify-center relative pointer-events-none" style={{ touchAction: 'none' }}>
       <div 
@@ -50,6 +64,7 @@ export const Board: React.FC<BoardProps> = ({
                         const isValidDestination = validMoves.some(m => m.row === rIndex && m.col === cIndex);
                         const isAnimatingSource = animatingMove?.from.row === rIndex && animatingMove?.from.col === cIndex;
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
+                        const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
 
                         if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-9 h-9 md:w-16 md:h-16" />;
 
@@ -64,7 +79,13 @@ export const Board: React.FC<BoardProps> = ({
                             <div className={`absolute w-8 h-8 md:w-14 md:h-14 rounded-full hole-3d transition-all ${isValidDestination ? 'bg-green-500/40 ring-2 ring-green-400 shadow-[0_0_15px_rgba(74,222,128,0.5)]' : ''}`} />
                             {hasMarble && !isAnimatingSource && (
                               <div className="relative z-10" style={{ transformStyle: 'preserve-3d' }}>
-                                <Marble id={rIndex * 7 + cIndex} isSelected={isSelected} theme={theme} isRemoving={isAnimatingMid} />
+                                <Marble 
+                                  id={rIndex * 7 + cIndex} 
+                                  isSelected={isSelected} 
+                                  theme={theme} 
+                                  isRemoving={isAnimatingMid}
+                                  isNew={isJustLanded && !animatingMove}
+                                />
                               </div>
                             )}
                           </div>
