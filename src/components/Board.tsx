@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { BoardState, CellState, Position, Theme } from '../types';
 import { Marble } from './Marble';
@@ -30,31 +29,40 @@ export const Board: React.FC<BoardProps> = ({
     if (animatingMove) {
       setLastLandedPos(animatingMove.to);
     } else {
-      // Keep the landing animation state for a short duration
-      const timer = setTimeout(() => setLastLandedPos(null), 500);
+      const timer = setTimeout(() => setLastLandedPos(null), 600);
       return () => clearTimeout(timer);
     }
   }, [animatingMove]);
 
   return (
     <div className="board-container-3d flex justify-center relative pointer-events-none" style={{ touchAction: 'none' }}>
+      {/* Floor reflection / Glow */}
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] blur-[120px] rounded-full -z-10 opacity-30 ${theme.isDark ? 'bg-indigo-500/20' : 'bg-white/40'}`}></div>
+
       <div 
         ref={boardRef}
-        className="relative p-2 md:p-6 rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-600 to-slate-900 shadow-3xl"
+        className="relative p-2 md:p-6 rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-700 to-slate-950"
       >
-          {/* Outer Bezel */}
-          <div className="rounded-full p-2 md:p-4 bg-gradient-to-br from-slate-300 via-slate-600 to-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.95)] border-b-[4px] border-black/50">
+          {/* Main Bezel */}
+          <div className="rounded-full p-2 md:p-5 bg-gradient-to-br from-slate-400 via-slate-700 to-slate-900 shadow-[0_30px_70px_rgba(0,0,0,1)] border-b-[5px] border-black/60 relative">
             
-            <div className={`relative p-4 md:p-8 rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/20 shadow-[inset_0_20px_50px_rgba(0,0,0,1)]`}>
+            {/* Outer Rim Highlight */}
+            <div className="absolute inset-0 rounded-full border border-white/10 pointer-events-none"></div>
+
+            <div className={`relative p-5 md:p-10 rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/20 shadow-[inset_0_25px_60px_rgba(0,0,0,1)]`}>
+                
+                {/* Surface Specular Map / Grain */}
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
-                    <div className={`absolute inset-3 md:inset-7 rounded-full border opacity-15 ${theme.grooveBorder}`}></div>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1)_0%,transparent_60%)]"></div>
+                    <div className={`absolute inset-4 md:inset-8 rounded-full border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]`}></div>
+                    <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                 </div>
                 
                 {animatingMove && (
                   <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
                 )}
 
-                <div className="grid grid-cols-7 gap-2 md:gap-5 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+                <div className="grid grid-cols-7 gap-3 md:gap-6 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
@@ -66,17 +74,20 @@ export const Board: React.FC<BoardProps> = ({
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
                         const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
 
-                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-12 h-12 md:w-20 md:h-20" />;
+                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-11 h-11 md:w-18 md:h-18" />;
 
                         return (
                           <div
                             key={`${rIndex}-${cIndex}`}
                             id={`cell-${rIndex}-${cIndex}`}
-                            className="w-12 h-12 md:w-20 md:h-20 rounded-full flex items-center justify-center relative pointer-events-auto"
+                            className="w-11 h-11 md:w-18 md:h-18 rounded-full flex items-center justify-center relative pointer-events-auto"
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
-                            style={{ transformStyle: 'preserve-3d', transform: 'translateZ(1px)' }}
+                            style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                           >
-                            <div className={`absolute w-11 h-11 md:w-18 md:h-18 rounded-full hole-3d transition-all ${isValidDestination ? 'bg-green-500/40 ring-2 ring-green-400 shadow-[0_0_15px_rgba(74,222,128,0.5)]' : ''}`} />
+                            <div className={`absolute w-10 h-10 md:w-17 md:h-17 rounded-full hole-3d transition-all duration-300 ${isValidDestination ? 'bg-green-500/20 ring-2 ring-green-400 shadow-[0_0_25px_rgba(74,222,128,0.4)]' : ''}`}>
+                                <div className="hole-rim-highlight"></div>
+                            </div>
+
                             {hasMarble && !isAnimatingSource && (
                               <div className="relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                                 <Marble 
@@ -87,6 +98,12 @@ export const Board: React.FC<BoardProps> = ({
                                   isNew={isJustLanded && !animatingMove}
                                 />
                               </div>
+                            )}
+
+                            {isValidDestination && (
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-3 h-3 rounded-full bg-green-400/80 shadow-[0_0_15px_#4ade80] animate-pulse"
+                                     style={{ transform: 'translateZ(30px)' }}
+                                ></div>
                             )}
                           </div>
                         );

@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { Theme } from '../types';
 
@@ -23,21 +22,21 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     };
 
     const isGemTheme = theme.name === 'Gem Stones';
-    // Increased hue range for high contrast "gem" designs
+    // Deterministic variety in hue for gems, subtle for others
     const hueShift = isGemTheme 
         ? Math.floor(rnd(1) * 360) 
-        : Math.floor(rnd(1) * 80) - 40;
+        : Math.floor(rnd(1) * 60) - 30;
     
     const rotation = Math.floor(rnd(2) * 360);
     
-    // Increased opacity in swirls to ensure "design" is seen
+    // Internal swirl pattern for "Cat's Eye" glass marble look
     const innerTexture = `
-      radial-gradient(ellipse at 35% 65%, rgba(255,255,255,0.5) 0%, transparent 70%),
-      linear-gradient(${rotation}deg, transparent 40%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0.2) 55%, transparent 60%)
+      radial-gradient(ellipse at 35% 65%, rgba(255,255,255,0.4) 0%, transparent 60%),
+      linear-gradient(${rotation}deg, transparent 42%, rgba(255,255,255,0.15) 48%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.15) 52%, transparent 58%)
     `;
 
     return {
-      filter: `hue-rotate(${hueShift}deg) contrast(1.1) brightness(1.1)`,
+      filter: `hue-rotate(${hueShift}deg) contrast(1.1) saturate(1.15)`,
       pattern: innerTexture,
     };
 
@@ -46,7 +45,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
   if (isGhost) {
      return (
         <div 
-          className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-black/40 transform scale-50 blur-[2px]"
+          className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-black/50 transform scale-50 blur-[2px]"
         />
      )
   }
@@ -59,37 +58,44 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
         relative transition-all duration-300
         ${isRemoving ? 'scale-0 opacity-0 rotate-180 pointer-events-none' : ''}
         ${isNew ? 'marble-landed' : ''}
-        ${isSelected ? `marble-selected ring-4 ring-white/70 ring-offset-2 ring-offset-transparent` : 'marble-3d hover:translate-y-[-10px] hover:brightness-110'}
+        ${isSelected ? `marble-selected ring-2 ring-white/50 ring-offset-4 ring-offset-transparent` : 'marble-3d hover:translate-y-[-8px]'}
       `}
       style={{
-        // High fidelity material stack
         background: `
           ${visualStyle.pattern},
           radial-gradient(circle at 35% 35%, ${theme.marbleStart} 0%, ${theme.marbleEnd} 85%, #000 100%)
         `,
         filter: visualStyle.filter,
+        transformStyle: 'preserve-3d'
       }}
     >
-      {/* --- Ray-traced Lighting Simulation --- */}
-
-      {/* 1. Sharp Specular Highlight (High Gloss Reflection) */}
-      <div className="absolute top-[12%] left-[15%] w-[15%] h-[10%] rounded-[50%] bg-white blur-[0.2px] shadow-[0_0_6px_rgba(255,255,255,1)] z-20"></div>
+      {/* 1. Sharp Specular Highlight (Primary Light Source) */}
+      <div className="absolute top-[12%] left-[14%] w-[18%] h-[12%] rounded-[50%] bg-white blur-[0.3px] shadow-[0_0_8px_rgba(255,255,255,1)] z-20"></div>
       
-      {/* 2. Soft Secondary Glint (Larger Surface) */}
-      <div className="absolute top-[8%] left-[22%] w-[35%] h-[18%] rounded-[50%] bg-gradient-to-r from-white/60 to-transparent blur-[2px] z-10"></div>
+      {/* 2. Soft Secondary Glint */}
+      <div className="absolute top-[10%] left-[20%] w-[40%] h-[20%] rounded-[50%] bg-gradient-to-r from-white/50 to-transparent blur-[2px] z-10"></div>
       
-      {/* 3. Subsurface Scattering (Internal Glow) */}
-      <div className="absolute bottom-[8%] right-[12%] w-[55%] h-[35%] rounded-full bg-gradient-to-tl from-white/30 to-transparent blur-[3px] opacity-100 mix-blend-overlay"></div>
+      {/* 3. Subsurface Scattering / Internal Glow */}
+      <div className="absolute bottom-[10%] right-[15%] w-[50%] h-[40%] rounded-full bg-gradient-to-tl from-white/20 to-transparent blur-[4px] opacity-100 mix-blend-overlay"></div>
 
-      {/* 4. Extra Crisp Fresnel Rim Light */}
-      <div className="absolute inset-0 rounded-full border border-white/30 pointer-events-none"></div>
-      <div className="absolute inset-1 rounded-full border border-white/10 pointer-events-none"></div>
+      {/* 4. Bounce Light (Global Illumination from Board Surface) */}
+      <div 
+        className="absolute bottom-[2%] left-[20%] w-[60%] h-[20%] rounded-full opacity-60 blur-[3px] pointer-events-none"
+        style={{ background: `radial-gradient(ellipse at center, ${theme.marbleEnd} 0%, transparent 80%)` }}
+      ></div>
 
-      {/* 5. Ambient Occlusion Mask */}
-      {(!isSelected && !isRemoving) && (
-        <div className="absolute bottom-[-3px] left-1/2 -translate-x-1/2 w-[85%] h-[20%] bg-black/60 blur-[4px] rounded-full pointer-events-none mix-blend-multiply"></div>
+      {/* 5. Fresnel Rim Light */}
+      <div className="absolute inset-0 rounded-full border border-white/25 pointer-events-none"></div>
+
+      {/* 6. Dynamic Ambient Occlusion / Soft Shadow */}
+      {(!isRemoving) && (
+        <div 
+          className={`
+            absolute left-1/2 -translate-x-1/2 bg-black/70 blur-[5px] rounded-full pointer-events-none mix-blend-multiply transition-all duration-400
+            ${isSelected ? 'bottom-[-60px] w-[95%] h-[25%] opacity-40 blur-[10px]' : 'bottom-[-4px] w-[85%] h-[15%] opacity-80'}
+          `}
+        ></div>
       )}
-
     </div>
   );
 };
