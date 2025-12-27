@@ -247,8 +247,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Title Section - Adjusted margin to move the labels down "one step" without overlapping the board */}
-      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-24 md:mt-32">
+      {/* Title Section - Moved down "one step" (increased mt) to avoid overlap with header buttons */}
+      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-44 md:mt-56">
         <h1 className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
         </h1>
@@ -258,8 +258,8 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Game Area - Optimized scaling for mobile and desktop */}
-      <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible py-4 md:py-8">
+      {/* Main Game Area - Optimized scaling to ensure space for the lowered title */}
+      <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible py-2">
          <div className="scale-[0.45] xs:scale-[0.55] sm:scale-70 md:scale-80 lg:scale-95 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
@@ -290,7 +290,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Modals */}
+      {/* Modals remain the same */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl animate-in fade-in">
           <div className="relative max-w-2xl w-full p-8 rounded-[3rem] shadow-3xl overflow-hidden max-h-[85vh] flex flex-col border border-white/20 bg-slate-900 text-white">
