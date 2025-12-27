@@ -202,7 +202,7 @@ const App: React.FC = () => {
         ))}
       </div>
 
-      {/* Header - Stays Fixed at Top */}
+      {/* Header - Fixed to top */}
       <header className="w-full flex justify-between items-start absolute top-0 left-0 z-[100] pointer-events-none pt-4 px-3">
         {/* Left Section: Themes & Layouts */}
         <div className="flex flex-col gap-3 p-2 rounded-[2rem] bg-black/60 backdrop-blur-xl border border-white/20 shadow-3xl pointer-events-auto">
@@ -247,8 +247,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Title Section - Adjusted to clear layout button stack on all mobile screens */}
-      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-[240px] md:mt-[280px]">
+      {/* Title Section - Increased mt further to resolve layout button overlap on mobile */}
+      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-[340px] md:mt-[320px]">
         <h1 className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
         </h1>
@@ -258,9 +258,9 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Game Area - Negative margin used to decrease gap to title above */}
-      <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible -mt-10 md:-mt-16">
-         <div className="scale-[0.4] xs:scale-[0.5] sm:scale-65 md:scale-75 lg:scale-95 origin-center transition-transform duration-500">
+      {/* Main Game Area - Aggressive negative margin to pull board up closer to title */}
+      <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible -mt-44 md:-mt-32">
+         <div className="scale-[0.38] xs:scale-[0.48] sm:scale-65 md:scale-75 lg:scale-95 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
