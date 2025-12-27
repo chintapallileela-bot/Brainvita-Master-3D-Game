@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png" />
     <link rel="apple-touch-icon" href="https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
     <meta name="theme-color" content="#020617" />
     <meta name="description" content="Play Brainvita Master 3D. A classic marble puzzle game with stunning 3D graphics and themes." />
@@ -43,9 +43,12 @@
 
       .btn-3d {
         position: relative;
-        transition: all 0.1s;
+        transition: transform 0.1s;
         transform-style: preserve-3d;
         cursor: pointer;
+        border: none;
+        background: transparent;
+        padding: 0;
       }
       
       .btn-3d:active:not(:disabled) {
@@ -56,9 +59,22 @@
         position: absolute;
         inset: 0;
         top: 6px;
-        z-index: 0;
+        z-index: 1;
         border-radius: 9999px;
         box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
+      }
+
+      .btn-surface {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        transform: translateZ(5px);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
       }
 
       .hole-3d {
@@ -84,9 +100,9 @@
 
       .tray-inset {
         box-shadow: 
-          inset 0 10px 20px rgba(0,0,0,0.6),
-          inset 0 -1px 2px rgba(255,255,255,0.1),
-          0 1px 0 rgba(255,255,255,0.05);
+          inset 0 12px 24px rgba(0,0,0,0.8),
+          inset 0 -1px 2px rgba(255,255,255,0.15),
+          0 2px 4px rgba(0,0,0,0.4);
       }
 
       .animate-in { animation-duration: 0.25s; animation-fill-mode: both; }
