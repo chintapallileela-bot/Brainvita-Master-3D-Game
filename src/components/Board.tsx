@@ -24,13 +24,10 @@ export const Board: React.FC<BoardProps> = ({
 }) => {
   const [lastLandedPos, setLastLandedPos] = useState<Position | null>(null);
 
-  // Detect when a move just finished to trigger landing animation
   useEffect(() => {
     if (animatingMove) {
-      // Store the destination of the current animation
       setLastLandedPos(animatingMove.to);
     } else if (lastLandedPos) {
-      // Keep the landing state active briefly after move ends to show animation
       const timer = setTimeout(() => setLastLandedPos(null), 500);
       return () => clearTimeout(timer);
     }
@@ -43,20 +40,20 @@ export const Board: React.FC<BoardProps> = ({
 
       <div 
         ref={boardRef}
-        className="relative p-2 md:p-6 rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-700 to-slate-950"
+        className="relative p-3 md:p-8 rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-700 to-slate-950"
       >
           {/* Main Bezel */}
-          <div className="rounded-full p-2 md:p-5 bg-gradient-to-br from-slate-400 via-slate-700 to-slate-900 shadow-[0_30px_70px_rgba(0,0,0,1)] border-b-[5px] border-black/60 relative">
+          <div className="rounded-full p-3 md:p-6 bg-gradient-to-br from-slate-400 via-slate-700 to-slate-900 shadow-[0_30px_70px_rgba(0,0,0,1)] border-b-[6px] border-black/60 relative">
             
             {/* Outer Rim Highlight */}
             <div className="absolute inset-0 rounded-full border border-white/10 pointer-events-none"></div>
 
-            <div className={`relative p-5 md:p-10 rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/20 shadow-[inset_0_25px_60px_rgba(0,0,0,1)]`}>
+            <div className={`relative p-6 md:p-12 rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/20 shadow-[inset_0_25px_60px_rgba(0,0,0,1)]`}>
                 
                 {/* Surface Specular Map / Grain */}
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1)_0%,transparent_60%)]"></div>
-                    <div className={`absolute inset-4 md:inset-8 rounded-full border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]`}></div>
+                    <div className={`absolute inset-5 md:inset-10 rounded-full border border-white/5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]`}></div>
                     <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                 </div>
                 
@@ -64,7 +61,8 @@ export const Board: React.FC<BoardProps> = ({
                   <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
                 )}
 
-                <div className="grid grid-cols-7 gap-3 md:gap-6 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+                {/* Increased gap from 3/6 to 4/8 */}
+                <div className="grid grid-cols-7 gap-4 md:gap-8 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
@@ -76,17 +74,18 @@ export const Board: React.FC<BoardProps> = ({
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
                         const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
 
-                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-11 h-11 md:w-18 md:h-18" />;
+                        // Increased cell sizes from 11/18 to 12/20
+                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-12 h-12 md:w-20 md:h-20" />;
 
                         return (
                           <div
                             key={`${rIndex}-${cIndex}`}
                             id={`cell-${rIndex}-${cIndex}`}
-                            className="w-11 h-11 md:w-18 md:h-18 rounded-full flex items-center justify-center relative pointer-events-auto"
+                            className="w-12 h-12 md:w-20 md:h-20 rounded-full flex items-center justify-center relative pointer-events-auto"
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
                             style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                           >
-                            <div className={`absolute w-10 h-10 md:w-17 md:h-17 rounded-full hole-3d transition-all duration-300 
+                            <div className={`absolute w-11 h-11 md:w-19 md:h-19 rounded-full hole-3d transition-all duration-300 
                               ${isValidDestination ? 'bg-green-500/20 ring-2 ring-green-400 shadow-[0_0_25px_rgba(74,222,128,0.4)]' : ''}
                               ${(isJustLanded && !animatingMove) ? 'hole-impact' : ''}
                             `}>

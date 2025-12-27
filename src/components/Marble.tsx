@@ -12,9 +12,7 @@ interface MarbleProps {
 }
 
 export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, isRemoving, isNew, theme, id }) => {
-  // Generate deterministic visual properties based on ID and Theme name
   const visualStyle = useMemo(() => {
-    // Simple pseudo-random function
     const seed = id * 12345 + (theme.isDark ? 99 : 1);
     const rnd = (offset: number) => {
       const x = Math.sin(seed + offset) * 10000;
@@ -22,14 +20,12 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     };
 
     const isGemTheme = theme.name === 'Gem Stones';
-    // Deterministic variety in hue for gems, subtle for others
     const hueShift = isGemTheme 
         ? Math.floor(rnd(1) * 360) 
         : Math.floor(rnd(1) * 60) - 30;
     
     const rotation = Math.floor(rnd(2) * 360);
     
-    // Internal swirl pattern for "Cat's Eye" glass marble look
     const innerTexture = `
       radial-gradient(ellipse at 35% 65%, rgba(255,255,255,0.4) 0%, transparent 60%),
       linear-gradient(${rotation}deg, transparent 42%, rgba(255,255,255,0.15) 48%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.15) 52%, transparent 58%)
@@ -45,7 +41,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
   if (isGhost) {
      return (
         <div 
-          className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-black/50 transform scale-50 blur-[2px]"
+          className="w-11 h-11 md:w-19 md:h-19 rounded-full bg-black/50 transform scale-50 blur-[2px]"
         />
      )
   }
@@ -54,7 +50,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     <div
       onClick={onClick}
       className={`
-        w-11 h-11 md:w-18 md:h-18 rounded-full cursor-pointer
+        w-12 h-12 md:w-20 md:h-20 rounded-full cursor-pointer
         relative transition-all duration-300
         ${isRemoving ? 'scale-0 opacity-0 rotate-180 pointer-events-none' : ''}
         ${isNew ? 'marble-landed' : ''}
@@ -69,7 +65,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
         transformStyle: 'preserve-3d'
       }}
     >
-      {/* 1. Sharp Specular Highlight (Primary Light Source) */}
+      {/* 1. Sharp Specular Highlight */}
       <div className="absolute top-[12%] left-[14%] w-[18%] h-[12%] rounded-[50%] bg-white blur-[0.3px] shadow-[0_0_8px_rgba(255,255,255,1)] z-20"></div>
       
       {/* 2. Soft Secondary Glint */}
@@ -78,7 +74,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
       {/* 3. Subsurface Scattering / Internal Glow */}
       <div className="absolute bottom-[10%] right-[15%] w-[50%] h-[40%] rounded-full bg-gradient-to-tl from-white/20 to-transparent blur-[4px] opacity-100 mix-blend-overlay"></div>
 
-      {/* 4. Bounce Light (Global Illumination from Board Surface) */}
+      {/* 4. Bounce Light */}
       <div 
         className="absolute bottom-[2%] left-[20%] w-[60%] h-[20%] rounded-full opacity-60 blur-[3px] pointer-events-none"
         style={{ background: `radial-gradient(ellipse at center, ${theme.marbleEnd} 0%, transparent 80%)` }}
