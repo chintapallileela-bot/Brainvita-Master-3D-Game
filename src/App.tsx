@@ -204,7 +204,7 @@ const App: React.FC = () => {
 
       {/* FIXED Header - Horizontal placement to prevent overlap */}
       <header className="w-full flex justify-between items-start relative z-[100] shrink-0 pointer-events-none pt-4 px-3">
-        {/* Left Section: Themes & Layouts - Now explicitly row to avoid stacking */}
+        {/* Left Section: Themes & Layouts */}
         <div className="flex flex-row items-center gap-2 p-1.5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 shadow-3xl pointer-events-auto">
            <button onClick={() => setShowThemeModal(true)} className="btn-3d h-9 w-24 xs:w-32">
              <div className="btn-edge bg-pink-900 rounded-full"></div>
@@ -214,7 +214,6 @@ const App: React.FC = () => {
              </div>
            </button>
            
-           {/* Shifted towards center with margin and gap */}
            <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-9 w-24 xs:w-32 ml-1 xs:ml-3 sm:ml-6">
              <div className="btn-edge bg-cyan-900 rounded-full"></div>
              <div className="btn-surface bg-cyan-600 border-t border-cyan-400 rounded-full flex items-center justify-center gap-1.5">
@@ -249,7 +248,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Title Section - INCREASED MARGIN TOP TO PREVENT OVERLAP */}
+      {/* Title Section */}
       <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-20 xs:mt-24 sm:mt-28">
         <h1 className="text-3xl xs:text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
@@ -260,9 +259,9 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Game Area */}
+      {/* Main Game Area - Adjusted scales for larger marbles */}
       <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible py-2">
-         <div className="scale-[0.5] xs:scale-[0.6] sm:scale-75 md:scale-90 lg:scale-100 origin-center transition-transform duration-500">
+         <div className="scale-[0.42] xs:scale-[0.5] sm:scale-65 md:scale-80 lg:scale-95 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
@@ -292,7 +291,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Modals remain the same */}
+      {/* Modals */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl animate-in fade-in">
           <div className="relative max-w-2xl w-full p-8 rounded-[3rem] shadow-3xl overflow-hidden max-h-[85vh] flex flex-col border border-white/20 bg-slate-900 text-white">

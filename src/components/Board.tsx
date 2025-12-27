@@ -54,7 +54,7 @@ export const Board: React.FC<BoardProps> = ({
                   <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
                 )}
 
-                <div className="grid grid-cols-7 gap-1.5 md:gap-4 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+                <div className="grid grid-cols-7 gap-2 md:gap-5 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
@@ -66,17 +66,17 @@ export const Board: React.FC<BoardProps> = ({
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
                         const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
 
-                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-10 h-10 md:w-16 md:h-16" />;
+                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-12 h-12 md:w-20 md:h-20" />;
 
                         return (
                           <div
                             key={`${rIndex}-${cIndex}`}
                             id={`cell-${rIndex}-${cIndex}`}
-                            className="w-10 h-10 md:w-16 md:h-16 rounded-full flex items-center justify-center relative pointer-events-auto"
+                            className="w-12 h-12 md:w-20 md:h-20 rounded-full flex items-center justify-center relative pointer-events-auto"
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
                             style={{ transformStyle: 'preserve-3d', transform: 'translateZ(1px)' }}
                           >
-                            <div className={`absolute w-9 h-9 md:w-14 md:h-14 rounded-full hole-3d transition-all ${isValidDestination ? 'bg-green-500/40 ring-2 ring-green-400 shadow-[0_0_15px_rgba(74,222,128,0.5)]' : ''}`} />
+                            <div className={`absolute w-11 h-11 md:w-18 md:h-18 rounded-full hole-3d transition-all ${isValidDestination ? 'bg-green-500/40 ring-2 ring-green-400 shadow-[0_0_15px_rgba(74,222,128,0.5)]' : ''}`} />
                             {hasMarble && !isAnimatingSource && (
                               <div className="relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                                 <Marble 
