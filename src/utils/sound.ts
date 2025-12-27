@@ -3,6 +3,8 @@
 let audioCtx: AudioContext | null = null;
 let musicOscillators: OscillatorNode[] = [];
 let musicGainNodes: GainNode[] = [];
+let masterMusicGain: GainNode | null = null;
+let currentMusicVolume = 0.5;
 
 const getContext = () => {
   if (!audioCtx) {
@@ -37,22 +39,33 @@ const playTone = (freq: number, type: OscillatorType, duration: number, startTim
   osc.stop(ctx.currentTime + startTime + duration);
 };
 
+export const setMusicVolume = (volume: number) => {
+  currentMusicVolume = volume;
+  if (masterMusicGain && audioCtx) {
+    masterMusicGain.gain.setTargetAtTime(volume, audioCtx.currentTime, 0.1);
+  }
+};
+
 export const startBackgroundMusic = () => {
   const ctx = getContext();
   if (ctx.state === 'suspended') ctx.resume();
   
   stopBackgroundMusic(); // Ensure we don't double up
 
+  masterMusicGain = ctx.createGain();
+  masterMusicGain.gain.setValueAtTime(0, ctx.currentTime);
+  masterMusicGain.gain.linearRampToValueAtTime(currentMusicVolume, ctx.currentTime + 2);
+  masterMusicGain.connect(ctx.destination);
+
   const createLayer = (freq: number, vol: number, type: OscillatorType = 'sine') => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 2);
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
     
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    if (masterMusicGain) gain.connect(masterMusicGain);
     osc.start();
     
     musicOscillators.push(osc);
@@ -60,22 +73,28 @@ export const startBackgroundMusic = () => {
   };
 
   // Atmospheric ambient drone
-  createLayer(110, 0.05); // A2
-  createLayer(164.81, 0.03); // E3
-  createLayer(220, 0.02); // A3
+  createLayer(110, 0.4); // A2
+  createLayer(164.81, 0.3); // E3
+  createLayer(220, 0.2); // A3
 };
 
 export const stopBackgroundMusic = () => {
-  musicGainNodes.forEach(g => {
-    if (audioCtx) g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
-  });
+  if (masterMusicGain && audioCtx) {
+    masterMusicGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+  }
+  
+  const oldOscillators = musicOscillators;
+  musicOscillators = [];
+  musicGainNodes = [];
   
   setTimeout(() => {
-    musicOscillators.forEach(o => {
+    oldOscillators.forEach(o => {
       try { o.stop(); } catch(e) {}
     });
-    musicOscillators = [];
-    musicGainNodes = [];
+    if (masterMusicGain) {
+        masterMusicGain.disconnect();
+        masterMusicGain = null;
+    }
   }, 600);
 };
 

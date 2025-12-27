@@ -6,7 +6,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   HelpCircle, Trophy, AlertCircle, Volume2, VolumeX, X, Square,
-  Timer as TimerIcon, Play, Palette, Check, LayoutGrid
+  Timer as TimerIcon, Play, Pause, Palette, Check, LayoutGrid, Sliders
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { 
@@ -17,7 +17,8 @@ import {
   playSelectSound, 
   playInvalidSound,
   startBackgroundMusic,
-  stopBackgroundMusic
+  stopBackgroundMusic,
+  setMusicVolume
 } from './utils/sound';
 
 const App: React.FC = () => {
@@ -29,7 +30,11 @@ const App: React.FC = () => {
   const [showRules, setShowRules] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showLayoutModal, setShowLayoutModal] = useState(false);
+  const [showMusicControls, setShowMusicControls] = useState(false);
+  
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [musicPaused, setMusicPaused] = useState(false);
+  const [musicVol, setMusicVol] = useState(0.5);
   const [timer, setTimer] = useState(0);
   const [animatingMove, setAnimatingMove] = useState<{from: Position, to: Position, mid: Position} | null>(null);
 
@@ -149,6 +154,7 @@ const App: React.FC = () => {
     setGameStatus(GameStatus.PLAYING);
     setSelectedPos(null);
     setTimer(0);
+    setMusicPaused(false);
     if (soundEnabled) {
       playThemeSound();
       startBackgroundMusic();
@@ -160,17 +166,33 @@ const App: React.FC = () => {
     setTimer(0);
     setBoard(createInitialBoard(currentLayout.board));
     setSelectedPos(null);
+    setMusicPaused(false);
     stopBackgroundMusic();
+  };
+
+  const toggleMusic = () => {
+    if (musicPaused) {
+      setMusicPaused(false);
+      if (soundEnabled) startBackgroundMusic();
+    } else {
+      setMusicPaused(true);
+      stopBackgroundMusic();
+    }
+  };
+
+  const handleMusicVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseFloat(e.target.value);
+    setMusicVol(val);
+    setMusicVolume(val);
   };
 
   const handleThemeChange = (theme: Theme) => { setCurrentTheme(theme); setShowThemeModal(false); if (soundEnabled) playSelectSound(); };
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
 
   useEffect(() => {
-    // If user toggles sound off while music is playing
     if (!soundEnabled) {
       stopBackgroundMusic();
-    } else if (gameStatus === GameStatus.PLAYING) {
+    } else if (gameStatus === GameStatus.PLAYING && !musicPaused) {
       startBackgroundMusic();
     }
   }, [soundEnabled]);
@@ -183,14 +205,14 @@ const App: React.FC = () => {
           <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/40' : 'bg-white/10'}`}></div>
       </div>
 
-      {/* Re-positioned Header */}
-      <header className="w-full flex justify-between items-start relative z-50 shrink-0 pointer-events-none pt-2 px-1">
+      {/* Header */}
+      <header className="w-full flex justify-between items-start relative z-[100] shrink-0 pointer-events-none pt-2 px-1">
         <div className="flex flex-col gap-1.5 pointer-events-auto items-start">
-           <button onClick={() => setShowThemeModal(true)} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500 shadow-xl border border-white/40">
+           <button onClick={() => setShowThemeModal(true)} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500 shadow-xl border border-white/40 active:scale-95 transition-transform">
              <Palette size={12} className="text-white"/>
              <span className="text-[9px] font-black uppercase text-white whitespace-nowrap">{currentTheme.name}</span>
            </button>
-           <button onClick={() => setShowLayoutModal(true)} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500 shadow-xl border border-white/40">
+           <button onClick={() => setShowLayoutModal(true)} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500 shadow-xl border border-white/40 active:scale-95 transition-transform">
              <LayoutGrid size={12} className="text-white"/>
              <span className="text-[9px] font-black uppercase text-white whitespace-nowrap">{currentLayout.name}</span>
            </button>
@@ -202,11 +224,51 @@ const App: React.FC = () => {
               <span className="font-mono text-[10px] font-bold text-white">{formatTime(timer)}</span>
           </div>
           
-          <div className="flex flex-col gap-1.5 items-center">
-            <button onClick={() => setShowRules(true)} className="p-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-lg"><HelpCircle size={18} /></button>
-            <button onClick={() => setSoundEnabled(!soundEnabled)} className="p-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-lg">
-              {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+          <div className="flex flex-col gap-1.5 items-center relative">
+            <button onClick={() => setShowRules(true)} className="p-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-lg active:scale-95 transition-transform"><HelpCircle size={18} /></button>
+            
+            <button 
+                onClick={() => setShowMusicControls(!showMusicControls)} 
+                className={`p-1.5 rounded-full transition-all backdrop-blur-md border border-white/20 shadow-lg active:scale-95 ${showMusicControls ? 'bg-indigo-600 text-white' : 'bg-black/40 text-white'}`}
+            >
+                <Sliders size={18} />
             </button>
+
+            {/* Floating Music Control Panel */}
+            {showMusicControls && (
+                <div className="absolute top-0 right-10 w-48 bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl p-3 shadow-2xl animate-in fade-in zoom-in slide-in-from-right-2 origin-right pointer-events-auto">
+                    <div className="flex items-center justify-between mb-3">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Audio Settings</span>
+                        <button onClick={() => setSoundEnabled(!soundEnabled)} className="text-white/80 hover:text-white">
+                            {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                        </button>
+                    </div>
+                    
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                           <button 
+                            disabled={!soundEnabled || gameStatus !== GameStatus.PLAYING}
+                            onClick={toggleMusic} 
+                            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white disabled:opacity-20 transition-all active:scale-90"
+                           >
+                               {musicPaused ? <Play size={16} fill="currentColor" /> : <Pause size={16} fill="currentColor" />}
+                           </button>
+                           <div className="flex-1">
+                               <p className="text-[8px] font-bold text-white/50 uppercase mb-1">Music Volume</p>
+                               <input 
+                                 type="range" 
+                                 min="0" 
+                                 max="1" 
+                                 step="0.01" 
+                                 value={musicVol} 
+                                 onChange={handleMusicVolumeChange}
+                                 className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-indigo-400"
+                               />
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            )}
           </div>
         </div>
       </header>
