@@ -298,8 +298,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Title Section - Adjusted for requested "One Step Down" position */}
-      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-14 sm:mt-20">
+      {/* Title Section - Substantially increased margins to ensure it sits above the board area */}
+      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-40 sm:mt-52">
         <h1 className="text-3xl sm:text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
         </h1>
