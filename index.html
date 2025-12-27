@@ -50,10 +50,11 @@
         border: none;
         background: transparent;
         padding: 0;
+        display: inline-block;
       }
       
       .btn-3d:active:not(:disabled) {
-        transform: translateY(4px);
+        transform: translateY(3px);
       }
       
       .btn-edge {
@@ -61,7 +62,6 @@
         inset: 0;
         top: 6px;
         z-index: 1;
-        border-radius: 9999px;
         box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5);
       }
 
@@ -73,9 +73,26 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 9999px;
         transform: translateZ(5px);
         text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        overflow: hidden;
+      }
+
+      .btn-surface::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent 50%, rgba(0,0,0,0.1) 100%);
+        pointer-events: none;
+      }
+
+      .btn-surface::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 50%;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
+        border-radius: inherit;
+        pointer-events: none;
       }
 
       .hole-3d {
