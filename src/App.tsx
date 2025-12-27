@@ -189,7 +189,7 @@ const App: React.FC = () => {
   }, [soundEnabled, gameStatus]);
 
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-12`}>
+    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-6`}>
       {/* Background Layer */}
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-700 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
@@ -247,8 +247,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Title Section - Shifted down by mt-12 */}
-      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-12">
+      {/* Title Section - Adjusted margin to move the labels down "one step" without overlapping the board */}
+      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-24 md:mt-32">
         <h1 className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
         </h1>
@@ -258,34 +258,36 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Game Area */}
-      <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible py-4">
-         <div className="scale-[0.55] xs:scale-[0.6] sm:scale-75 md:scale-90 lg:scale-100 origin-center transition-transform duration-500">
+      {/* Main Game Area - Optimized scaling for mobile and desktop */}
+      <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible py-4 md:py-8">
+         <div className="scale-[0.45] xs:scale-[0.55] sm:scale-70 md:scale-80 lg:scale-95 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
 
-      {/* Footer Area - Shifted slightly with mb-4 to ensure visibility */}
-      <footer className="w-full max-w-lg flex flex-col gap-6 relative z-50 shrink-0 px-4 mb-4 pointer-events-auto items-center">
-        <div className="flex justify-center gap-6 w-full">
-          <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-32 h-14 disabled:opacity-50">
+      {/* Footer Area */}
+      <footer className="w-full max-w-lg flex flex-col gap-4 relative z-50 shrink-0 px-4 mb-4 pointer-events-auto items-center">
+        <div className="flex justify-center gap-4 w-full">
+          <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-28 h-12 md:w-32 md:h-14 disabled:opacity-50">
             <div className="btn-edge bg-red-900 rounded-2xl"></div>
             <div className="btn-surface bg-red-600 border-t border-red-400 rounded-2xl flex items-center justify-center gap-2">
-              <Square size={16} fill="currentColor" className="text-white" />
-              <span className="text-white text-sm font-black uppercase">Stop</span>
+              <Square size={14} fill="currentColor" className="text-white" />
+              <span className="text-white text-[11px] font-black uppercase">Stop</span>
             </div>
           </button>
           
-          <button onClick={startGame} className="btn-3d w-40 h-14">
+          <button onClick={startGame} className="btn-3d w-36 h-12 md:w-44 md:h-14">
             <div className="btn-edge bg-blue-900 rounded-2xl"></div>
             <div className="btn-surface bg-blue-600 border-t border-blue-400 rounded-2xl flex items-center justify-center gap-2">
-              <Play size={18} fill="currentColor" className="text-white" />
-              <span className="text-white text-sm font-black uppercase">Start</span>
+              <Play size={16} fill="currentColor" className="text-white" />
+              <span className="text-white text-[11px] font-black uppercase">Start</span>
             </div>
           </button>
         </div>
 
-        <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
+        <div className="w-full">
+          <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
+        </div>
       </footer>
 
       {/* Modals */}
