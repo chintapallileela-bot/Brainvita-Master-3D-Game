@@ -219,57 +219,65 @@ const App: React.FC = () => {
            </button>
         </div>
         
-        <div className="flex items-start gap-1.5 pointer-events-auto pr-1">
-          <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 shadow-xl">
-              <TimerIcon size={12} className="text-green-500" />
-              <span className="font-mono text-[10px] font-bold text-white">{formatTime(timer)}</span>
-          </div>
+        {/* Right Header Section: Help, Timer, and Volume stack */}
+        <div className="flex items-start gap-2 pointer-events-auto pr-1">
+          {/* Rules/Help button moved slightly to the left of the Timer/Audio stack */}
+          <button onClick={() => setShowRules(true)} className="p-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-lg active:scale-95 transition-transform">
+            <HelpCircle size={18} />
+          </button>
           
-          <div className="flex flex-col gap-1.5 items-center relative">
-            <button onClick={() => setShowRules(true)} className="p-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 shadow-lg active:scale-95 transition-transform"><HelpCircle size={18} /></button>
+          <div className="flex flex-col gap-1.5 items-end relative">
+            {/* Timer Box */}
+            <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 shadow-xl">
+                <TimerIcon size={12} className="text-green-500" />
+                <span className="font-mono text-[10px] font-bold text-white">{formatTime(timer)}</span>
+            </div>
             
-            <button 
-                onClick={() => setShowMusicControls(!showMusicControls)} 
-                className={`p-1.5 rounded-full transition-all backdrop-blur-md border border-white/20 shadow-lg active:scale-95 ${showMusicControls ? 'bg-indigo-600 text-white' : 'bg-black/40 text-white'}`}
-            >
-                <Sliders size={18} />
-            </button>
+            {/* Audio Controls Button below Timer */}
+            <div className="relative">
+              <button 
+                  onClick={() => setShowMusicControls(!showMusicControls)} 
+                  className={`p-1.5 rounded-full transition-all backdrop-blur-md border border-white/20 shadow-lg active:scale-95 ${showMusicControls ? 'bg-indigo-600 text-white' : 'bg-black/40 text-white'}`}
+              >
+                  <Sliders size={18} />
+              </button>
 
-            {/* Floating Music Control Panel */}
-            {showMusicControls && (
-                <div className="absolute top-0 right-10 w-48 bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl p-3 shadow-2xl animate-in fade-in zoom-in slide-in-from-right-2 origin-right pointer-events-auto">
-                    <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Audio Settings</span>
-                        <button onClick={() => setSoundEnabled(!soundEnabled)} className="text-white/80 hover:text-white">
-                            {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                        </button>
-                    </div>
-                    
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-2">
-                           <button 
-                            disabled={!soundEnabled || gameStatus !== GameStatus.PLAYING}
-                            onClick={toggleMusic} 
-                            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white disabled:opacity-20 transition-all active:scale-90"
-                           >
-                               {musicPaused ? <Play size={16} fill="currentColor" /> : <Pause size={16} fill="currentColor" />}
-                           </button>
-                           <div className="flex-1">
-                               <p className="text-[8px] font-bold text-white/50 uppercase mb-1">Music Volume</p>
-                               <input 
-                                 type="range" 
-                                 min="0" 
-                                 max="1" 
-                                 step="0.01" 
-                                 value={musicVol} 
-                                 onChange={handleMusicVolumeChange}
-                                 className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-indigo-400"
-                               />
-                           </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+              {/* Floating Music Control Panel - Opens to the left of the button stack */}
+              {showMusicControls && (
+                  <div className="absolute top-0 right-10 w-48 bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl p-3 shadow-2xl animate-in fade-in zoom-in slide-in-from-right-2 origin-right pointer-events-auto">
+                      <div className="flex items-center justify-between mb-3">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-white/70">Audio Settings</span>
+                          <button onClick={() => setSoundEnabled(!soundEnabled)} className="text-white/80 hover:text-white">
+                              {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                          </button>
+                      </div>
+                      
+                      <div className="space-y-4">
+                          <div className="flex items-center gap-2">
+                             <button 
+                              disabled={!soundEnabled || gameStatus !== GameStatus.PLAYING}
+                              onClick={toggleMusic} 
+                              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white disabled:opacity-20 transition-all active:scale-90"
+                             >
+                                 {musicPaused ? <Play size={16} fill="currentColor" /> : <Pause size={16} fill="currentColor" />}
+                             </button>
+                             <div className="flex-1">
+                                 <p className="text-[8px] font-bold text-white/50 uppercase mb-1">Music Volume</p>
+                                 <input 
+                                   type="range" 
+                                   min="0" 
+                                   max="1" 
+                                   step="0.01" 
+                                   value={musicVol} 
+                                   onChange={handleMusicVolumeChange}
+                                   className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-indigo-400"
+                                 />
+                             </div>
+                          </div>
+                      </div>
+                  </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
