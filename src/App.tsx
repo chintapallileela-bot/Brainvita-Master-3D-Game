@@ -204,7 +204,7 @@ const App: React.FC = () => {
 
       {/* Header */}
       <header className="w-full flex justify-between items-start relative z-[100] shrink-0 pointer-events-none pt-4 px-3">
-        {/* Unified 3D Frame for Control Buttons */}
+        {/* Left Section: Themes & Layouts */}
         <div className="flex flex-col gap-3 p-2 rounded-[2rem] bg-black/60 backdrop-blur-xl border border-white/20 shadow-3xl pointer-events-auto">
            <button onClick={() => setShowThemeModal(true)} className="btn-3d h-10 w-36">
              <div className="btn-edge bg-pink-900 rounded-full"></div>
@@ -220,30 +220,30 @@ const App: React.FC = () => {
                <span className="text-[10px] font-black uppercase text-white tracking-widest">{currentLayout.name}</span>
              </div>
            </button>
-           {/* Sound Toggle Button */}
-           <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d h-10 w-36">
-             <div className={`btn-edge ${soundEnabled ? 'bg-amber-900' : 'bg-slate-900'} rounded-full`}></div>
-             <div className={`btn-surface ${soundEnabled ? 'bg-amber-600 border-amber-400' : 'bg-slate-700 border-slate-500'} border-t rounded-full flex items-center justify-center gap-2`}>
-               {soundEnabled ? <Volume2 size={14} className="text-white"/> : <VolumeX size={14} className="text-white"/>}
-               <span className="text-[10px] font-black uppercase text-white tracking-widest">{soundEnabled ? 'Sound On' : 'Sound Off'}</span>
-             </div>
-           </button>
         </div>
         
-        {/* Right Header Section: Help & Timer */}
-        <div className="flex items-start gap-3 pointer-events-auto pr-1">
-          <button onClick={() => setShowRules(true)} className="btn-3d w-12 h-12">
-            <div className="btn-edge bg-slate-800 rounded-full"></div>
-            <div className="btn-surface bg-slate-700 border-t border-slate-500 rounded-full">
-              <HelpCircle size={22} className="text-white" />
-            </div>
-          </button>
+        {/* Right Section: Sound, Help & Timer */}
+        <div className="flex flex-col items-end gap-3 pointer-events-auto pr-1">
+          <div className="flex gap-3">
+            {/* Sound Toggle Button moved to opposite side */}
+            <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-12 h-12">
+              <div className={`btn-edge ${soundEnabled ? 'bg-amber-900' : 'bg-slate-900'} rounded-full`}></div>
+              <div className={`btn-surface ${soundEnabled ? 'bg-amber-600 border-amber-400' : 'bg-slate-700 border-slate-500'} border-t rounded-full flex items-center justify-center`}>
+                {soundEnabled ? <Volume2 size={22} className="text-white"/> : <VolumeX size={22} className="text-white"/>}
+              </div>
+            </button>
+
+            <button onClick={() => setShowRules(true)} className="btn-3d w-12 h-12">
+              <div className="btn-edge bg-slate-800 rounded-full"></div>
+              <div className="btn-surface bg-slate-700 border-t border-slate-500 rounded-full">
+                <HelpCircle size={22} className="text-white" />
+              </div>
+            </button>
+          </div>
           
-          <div className="flex flex-col gap-2 items-end">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-black/80 backdrop-blur-md border border-white/20 shadow-2xl tray-inset">
-                <TimerIcon size={14} className="text-green-500 animate-pulse" />
-                <span className="font-mono text-xs font-black text-green-500 tracking-widest">{formatTime(timer)}</span>
-            </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-black/80 backdrop-blur-md border border-white/20 shadow-2xl tray-inset">
+              <TimerIcon size={14} className="text-green-500 animate-pulse" />
+              <span className="font-mono text-xs font-black text-green-500 tracking-widest">{formatTime(timer)}</span>
           </div>
         </div>
       </header>
