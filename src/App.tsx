@@ -207,12 +207,13 @@ const App: React.FC = () => {
 
       {/* Header */}
       <header className="w-full flex justify-between items-start relative z-[100] shrink-0 pointer-events-none pt-2 px-1">
-        <div className="flex flex-col gap-1.5 pointer-events-auto items-start">
-           <button onClick={() => setShowThemeModal(true)} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500 shadow-xl border border-white/40 active:scale-95 transition-transform">
+        {/* Unified Frame for Theme & Layout Buttons */}
+        <div className="flex flex-col gap-1.5 p-1.5 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 shadow-2xl pointer-events-auto items-stretch">
+           <button onClick={() => setShowThemeModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-pink-500 shadow-md hover:bg-pink-400 active:scale-95 transition-all">
              <Palette size={12} className="text-white"/>
              <span className="text-[9px] font-black uppercase text-white whitespace-nowrap">{currentTheme.name}</span>
            </button>
-           <button onClick={() => setShowLayoutModal(true)} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500 shadow-xl border border-white/40 active:scale-95 transition-transform">
+           <button onClick={() => setShowLayoutModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-500 shadow-md hover:bg-blue-400 active:scale-95 transition-all">
              <LayoutGrid size={12} className="text-white"/>
              <span className="text-[9px] font-black uppercase text-white whitespace-nowrap">{currentLayout.name}</span>
            </button>
@@ -314,7 +315,7 @@ const App: React.FC = () => {
         <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
       </footer>
 
-      {/* Modals ... */}
+      {/* Modals remain the same ... */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 bg-black/95 backdrop-blur-2xl animate-in fade-in">
           <div className="relative max-w-2xl w-full p-6 rounded-[2rem] shadow-2xl overflow-hidden max-h-[85vh] flex flex-col border border-white/20 bg-slate-900 text-white">
