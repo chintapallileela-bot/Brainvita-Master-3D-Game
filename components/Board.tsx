@@ -23,15 +23,15 @@ export const Board: React.FC<BoardProps> = ({
   boardRef
 }) => {
   return (
-    <div className="board-container-3d flex justify-center pt-4 pb-32 relative pointer-events-none" style={{ touchAction: 'none' }}>
+    <div className="board-container-3d flex justify-center relative pointer-events-none" style={{ touchAction: 'none' }}>
       
       {/* Dynamic Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] bg-white/5 blur-[120px] rounded-full -z-10 transition-colors duration-1000 ${theme.isDark ? 'bg-indigo-500/10' : 'bg-blue-300/10'}`}></div>
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-white/5 blur-[100px] rounded-full -z-10 transition-colors duration-1000 ${theme.isDark ? 'bg-indigo-500/10' : 'bg-blue-300/10'}`}></div>
 
       <div 
         ref={boardRef}
         className={`
-          relative p-3 md:p-6 rounded-full inline-block
+          relative p-4 md:p-6 rounded-full inline-block
           board-base pointer-events-none
           bg-gradient-to-b from-slate-600 to-slate-900
         `}
