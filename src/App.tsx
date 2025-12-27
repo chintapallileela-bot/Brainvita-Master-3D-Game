@@ -189,7 +189,7 @@ const App: React.FC = () => {
   }, [soundEnabled, gameStatus]);
 
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-6`}>
+    <div className={`fixed inset-0 w-full flex flex-col items-center overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-6`}>
       {/* Background Layer */}
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-700 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
@@ -202,8 +202,8 @@ const App: React.FC = () => {
         ))}
       </div>
 
-      {/* Header */}
-      <header className="w-full flex justify-between items-start relative z-[100] shrink-0 pointer-events-none pt-4 px-3">
+      {/* Header - Fixed to top */}
+      <header className="w-full flex justify-between items-start absolute top-0 left-0 z-[100] pointer-events-none pt-4 px-3">
         {/* Left Section: Themes & Layouts */}
         <div className="flex flex-col gap-3 p-2 rounded-[2rem] bg-black/60 backdrop-blur-xl border border-white/20 shadow-3xl pointer-events-auto">
            <button onClick={() => setShowThemeModal(true)} className="btn-3d h-10 w-36">
@@ -247,8 +247,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Title Section - Moved down "one step" (increased mt) to avoid overlap with header buttons */}
-      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-44 md:mt-56">
+      {/* Title Section - Significantly moved down to avoid overlap with Circular Board button */}
+      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-64 md:mt-80">
         <h1 className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
         </h1>
@@ -258,14 +258,14 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Game Area - Optimized scaling to ensure space for the lowered title */}
+      {/* Main Game Area - Dynamic scaling for better fit */}
       <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible py-2">
-         <div className="scale-[0.45] xs:scale-[0.55] sm:scale-70 md:scale-80 lg:scale-95 origin-center transition-transform duration-500">
+         <div className="scale-[0.4] xs:scale-[0.5] sm:scale-65 md:scale-75 lg:scale-95 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
 
-      {/* Footer Area */}
+      {/* Footer Area - Fixed to bottom */}
       <footer className="w-full max-w-lg flex flex-col gap-4 relative z-50 shrink-0 px-4 mb-4 pointer-events-auto items-center">
         <div className="flex justify-center gap-4 w-full">
           <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-28 h-12 md:w-32 md:h-14 disabled:opacity-50">
@@ -290,7 +290,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Modals remain the same */}
+      {/* Modals */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl animate-in fade-in">
           <div className="relative max-w-2xl w-full p-8 rounded-[3rem] shadow-3xl overflow-hidden max-h-[85vh] flex flex-col border border-white/20 bg-slate-900 text-white">
