@@ -16,6 +16,7 @@ import {
   playThemeSound, 
   playSelectSound, 
   playInvalidSound,
+  playStopSound,
   startBackgroundMusic,
   stopBackgroundMusic,
   setMusicVolume
@@ -167,6 +168,9 @@ const App: React.FC = () => {
     setBoard(createInitialBoard(currentLayout.board));
     setSelectedPos(null);
     setMusicPaused(false);
+    if (soundEnabled) {
+      playStopSound();
+    }
     stopBackgroundMusic();
   };
 
@@ -323,7 +327,7 @@ const App: React.FC = () => {
         <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
       </footer>
 
-      {/* Modals remain the same ... */}
+      {/* Modals */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 bg-black/95 backdrop-blur-2xl animate-in fade-in">
           <div className="relative max-w-2xl w-full p-6 rounded-[2rem] shadow-2xl overflow-hidden max-h-[85vh] flex flex-col border border-white/20 bg-slate-900 text-white">
@@ -346,7 +350,8 @@ const App: React.FC = () => {
       {showRules && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl">
            <div className="relative max-w-sm w-full p-8 rounded-[2rem] bg-slate-900 border border-white/20 text-white">
-              <button onClick={() => setShowRules(false)} className="absolute top-6 right-6 p-2"><X size={28} /></button>
+              {/* Fix: use curly braces for dynamic className and remove stray closing brace that caused scope issues */}
+              <button onClick={() => setShowRules(false)} className={`absolute top-6 right-6 p-2 rounded-full ${currentTheme.isDark ? 'hover:bg-white/10 text-white' : 'hover:bg-black/10 text-slate-800'}`}><X size={28} /></button>
               <h2 className="text-2xl font-black mb-6">Game Rules</h2>
               <div className="space-y-4 text-sm font-medium text-slate-300">
                 <p>Jump over a neighbor marble into an empty hole to remove it. Win by clearing the board until only 1 remains in the center!</p>

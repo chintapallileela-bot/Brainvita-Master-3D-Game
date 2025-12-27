@@ -166,6 +166,16 @@ export const playThemeSound = () => {
   }
 };
 
+export const playStopSound = () => {
+    try {
+        const ctx = getContext();
+        if (ctx.state === 'suspended') ctx.resume();
+        playTone(400, 'triangle', 0.2, 0, 0.1);
+        playTone(300, 'triangle', 0.3, 0.1, 0.1);
+        triggerVibration([20, 10]);
+    } catch (e) {}
+}
+
 export const playSelectSound = () => {
     try {
         playTone(400, 'sine', 0.05, 0, 0.1);
