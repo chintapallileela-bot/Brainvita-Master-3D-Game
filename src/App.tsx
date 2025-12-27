@@ -86,7 +86,6 @@ const App: React.FC = () => {
   }, [currentLayout]);
   const marblesRemoved = totalLayoutMarbles - marblesRemaining;
 
-  // Optimized Particle Generation
   const particles = useMemo(() => Array.from({ length: 20 }).map((_, i) => ({
     id: i,
     left: `${Math.random() * 100}%`,
@@ -245,18 +244,17 @@ const App: React.FC = () => {
   }, [soundEnabled, gameStatus]);
 
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-2 pt-safe`}>
+    <div className={`fixed inset-0 w-full flex flex-col items-center overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pt-safe`}>
       {/* Background & Particles Layer */}
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-700 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
           <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/40' : 'bg-white/10'}`}></div>
       </div>
       
-      {/* Ambient Theme Particles */}
       {renderParticles()}
 
-      {/* Header - Compact Single Row */}
-      <header className="w-full flex justify-between items-center relative z-[100] shrink-0 pointer-events-none pt-2 sm:pt-4 px-3 gap-2">
+      {/* Header - Stays at top, fixed position relative to the root */}
+      <header className="fixed top-0 left-0 w-full flex justify-between items-center z-[100] p-3 sm:p-4 pointer-events-none">
         <div className="flex flex-row items-center gap-2 p-1 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 shadow-xl pointer-events-auto">
            <button onClick={() => setShowThemeModal(true)} className="btn-3d h-9 w-24 xs:w-28">
              <div className="btn-edge bg-pink-900 rounded-full"></div>
@@ -298,27 +296,36 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Title Section - Positioned clearly below header but above the main board area */}
-      <div ref={titleRef} className="text-center relative z-50 pointer-events-none shrink-0 mt-20 sm:mt-24">
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
-          Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
-        </h1>
-        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-black/70 backdrop-blur-md mt-6 sm:mt-8 border border-white/10 shadow-lg">
-          <span className="text-[9px] font-bold uppercase text-white/40 tracking-[0.3em]">Marbles Left</span>
-          <span className="text-lg sm:text-xl font-black text-white">{marblesRemaining}</span>
-        </div>
+      {/* Main Content Area - Scrollable to ensure no physical overlap on small screens */}
+      <div className="flex-1 w-full flex flex-col items-center overflow-y-auto overflow-x-hidden relative z-40 custom-scrollbar pb-32">
+          
+          {/* Title Section - Positioned with mt-20 to clear the header controls */}
+          <div ref={titleRef} className="text-center relative z-50 pointer-events-none shrink-0 mt-20 sm:mt-24 mb-4">
+            <h1 className="text-3xl sm:text-5xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
+              Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
+            </h1>
+            <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-black/70 backdrop-blur-md mt-4 border border-white/10 shadow-lg">
+              <span className="text-[9px] font-bold uppercase text-white/40 tracking-[0.3em]">Marbles Left</span>
+              <span className="text-lg sm:text-xl font-black text-white">{marblesRemaining}</span>
+            </div>
+          </div>
+
+          {/* Board Area - In its own block below the title */}
+          <div className="shrink-0 w-full flex justify-center items-center py-8 min-h-[400px]">
+             <div className="scale-[0.45] xs:scale-[0.55] sm:scale-75 md:scale-90 lg:scale-100 origin-center transition-transform duration-500">
+                 <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
+             </div>
+          </div>
+
+          {/* Collection Tray - Flows naturally below the board */}
+          <div className="w-full max-w-lg shrink-0 pt-2 pb-6 scale-[0.85] sm:scale-100 origin-center pointer-events-auto flex justify-center px-4">
+            <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
+          </div>
       </div>
 
-      {/* Main Game Area */}
-      <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible py-2">
-         <div className="scale-[0.42] min-[370px]:scale-[0.48] xs:scale-[0.55] sm:scale-75 md:scale-90 lg:scale-100 origin-center transition-transform duration-500">
-             <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
-         </div>
-      </main>
-
-      {/* Footer Area */}
-      <footer className="w-full max-w-lg flex flex-col gap-3 relative z-50 shrink-0 px-4 pointer-events-auto items-center pb-safe">
-        <div className="flex justify-center gap-4 w-full">
+      {/* Footer Controls - Positioned at absolute bottom */}
+      <footer className="fixed bottom-0 left-0 w-full flex flex-col items-center gap-3 z-[110] p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-auto">
+        <div className="flex justify-center gap-4 w-full mb-2">
           <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-28 xs:w-32 h-11 xs:h-12 disabled:opacity-50">
             <div className="btn-edge bg-red-900 rounded-2xl"></div>
             <div className="btn-surface bg-red-600 border-t border-red-400 rounded-2xl flex items-center justify-center gap-2">
@@ -334,10 +341,6 @@ const App: React.FC = () => {
               <span className="text-white text-xs font-black uppercase">Start</span>
             </div>
           </button>
-        </div>
-
-        <div className="scale-[0.85] sm:scale-100 origin-center">
-          <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
         </div>
       </footer>
 
