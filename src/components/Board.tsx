@@ -27,12 +27,14 @@ export const Board: React.FC<BoardProps> = ({
   // Detect when a move just finished to trigger landing animation
   useEffect(() => {
     if (animatingMove) {
+      // Store the destination of the current animation
       setLastLandedPos(animatingMove.to);
-    } else {
-      const timer = setTimeout(() => setLastLandedPos(null), 600);
+    } else if (lastLandedPos) {
+      // Keep the landing state active briefly after move ends to show animation
+      const timer = setTimeout(() => setLastLandedPos(null), 500);
       return () => clearTimeout(timer);
     }
-  }, [animatingMove]);
+  }, [animatingMove, lastLandedPos]);
 
   return (
     <div className="board-container-3d flex justify-center relative pointer-events-none" style={{ touchAction: 'none' }}>
@@ -84,7 +86,10 @@ export const Board: React.FC<BoardProps> = ({
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
                             style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                           >
-                            <div className={`absolute w-10 h-10 md:w-17 md:h-17 rounded-full hole-3d transition-all duration-300 ${isValidDestination ? 'bg-green-500/20 ring-2 ring-green-400 shadow-[0_0_25px_rgba(74,222,128,0.4)]' : ''}`}>
+                            <div className={`absolute w-10 h-10 md:w-17 md:h-17 rounded-full hole-3d transition-all duration-300 
+                              ${isValidDestination ? 'bg-green-500/20 ring-2 ring-green-400 shadow-[0_0_25px_rgba(74,222,128,0.4)]' : ''}
+                              ${(isJustLanded && !animatingMove) ? 'hole-impact' : ''}
+                            `}>
                                 <div className="hole-rim-highlight"></div>
                             </div>
 

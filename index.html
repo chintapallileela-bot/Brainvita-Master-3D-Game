@@ -100,6 +100,17 @@
           inset 5px 8px 16px rgba(0,0,0,1),
           inset -2px -2px 4px rgba(255,255,255,0.08),
           0 1px 2px rgba(255,255,255,0.1);
+        transition: box-shadow 0.3s ease;
+      }
+
+      .hole-impact {
+        animation: hole-impact-pulse 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
+      @keyframes hole-impact-pulse {
+        0% { box-shadow: inset 5px 8px 16px rgba(0,0,0,1), inset -2px -2px 4px rgba(255,255,255,0.08), 0 1px 2px rgba(255,255,255,0.1); }
+        30% { box-shadow: inset 0 0 25px rgba(255,255,255,0.4), 0 0 10px rgba(255,255,255,0.2); }
+        100% { box-shadow: inset 5px 8px 16px rgba(0,0,0,1), inset -2px -2px 4px rgba(255,255,255,0.08), 0 1px 2px rgba(255,255,255,0.1); }
       }
 
       .hole-rim-highlight {
@@ -141,9 +152,10 @@
       }
 
       @keyframes marble-land-impact {
-        0% { transform: scale(1.2) translateY(-40px); opacity: 0.8; }
-        60% { transform: scale(0.9) translateY(6px); opacity: 1; }
-        100% { transform: scale(1) translateY(0); opacity: 1; }
+        0% { transform: translateY(-20px) scaleY(1.2) scaleX(0.85); opacity: 0.8; }
+        40% { transform: translateY(4px) scaleY(0.8) scaleX(1.15); opacity: 1; }
+        70% { transform: translateY(-2px) scaleY(1.05) scaleX(0.95); }
+        100% { transform: translateY(0) scale(1); opacity: 1; }
       }
 
       .tray-inset {
