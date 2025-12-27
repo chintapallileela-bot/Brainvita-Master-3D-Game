@@ -202,10 +202,10 @@ const App: React.FC = () => {
         ))}
       </div>
 
-      {/* Header - Buttons now side-by-side in one frame */}
+      {/* FIXED Header - Horizontal placement to prevent overlap */}
       <header className="w-full flex justify-between items-start relative z-[100] shrink-0 pointer-events-none pt-4 px-3">
-        {/* Left Section: Themes & Layouts - Shared horizontal frame */}
-        <div className="flex flex-row items-center gap-2 p-2 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 shadow-3xl pointer-events-auto">
+        {/* Left Section: Themes & Layouts - Now explicitly row to avoid stacking */}
+        <div className="flex flex-row items-center gap-2 p-1.5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 shadow-3xl pointer-events-auto">
            <button onClick={() => setShowThemeModal(true)} className="btn-3d h-9 w-24 xs:w-32">
              <div className="btn-edge bg-pink-900 rounded-full"></div>
              <div className="btn-surface bg-pink-600 border-t border-pink-400 rounded-full flex items-center justify-center gap-1.5">
@@ -214,8 +214,8 @@ const App: React.FC = () => {
              </div>
            </button>
            
-           {/* Shifted towards center with margin left */}
-           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-9 w-24 xs:w-32 ml-1 xs:ml-4 sm:ml-8">
+           {/* Shifted towards center with margin and gap */}
+           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-9 w-24 xs:w-32 ml-1 xs:ml-3 sm:ml-6">
              <div className="btn-edge bg-cyan-900 rounded-full"></div>
              <div className="btn-surface bg-cyan-600 border-t border-cyan-400 rounded-full flex items-center justify-center gap-1.5">
                <LayoutGrid size={12} className="text-white"/>
@@ -227,30 +227,30 @@ const App: React.FC = () => {
         {/* Right Section: Sound, Help & Timer */}
         <div className="flex flex-col items-end gap-2 pointer-events-auto">
           <div className="flex gap-2">
-            <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-10 h-10 xs:w-11 xs:h-11">
+            <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-9 h-9 xs:w-11 xs:h-11">
               <div className={`btn-edge ${soundEnabled ? 'bg-amber-900' : 'bg-slate-900'} rounded-full`}></div>
               <div className={`btn-surface ${soundEnabled ? 'bg-amber-600 border-amber-400' : 'bg-slate-700 border-slate-500'} border-t rounded-full flex items-center justify-center`}>
-                {soundEnabled ? <Volume2 size={18} className="text-white"/> : <VolumeX size={18} className="text-white"/>}
+                {soundEnabled ? <Volume2 size={16} className="text-white"/> : <VolumeX size={16} className="text-white"/>}
               </div>
             </button>
 
-            <button onClick={() => setShowRules(true)} className="btn-3d w-10 h-10 xs:w-11 xs:h-11">
+            <button onClick={() => setShowRules(true)} className="btn-3d w-9 h-9 xs:w-11 xs:h-11">
               <div className="btn-edge bg-slate-800 rounded-full"></div>
               <div className="btn-surface bg-slate-700 border-t border-slate-500 rounded-full">
-                <HelpCircle size={18} className="text-white" />
+                <HelpCircle size={16} className="text-white" />
               </div>
             </button>
           </div>
           
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 shadow-xl tray-inset">
-              <TimerIcon size={12} className="text-green-500 animate-pulse" />
-              <span className="font-mono text-[10px] font-black text-green-500 tracking-widest">{formatTime(timer)}</span>
+          <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 shadow-xl tray-inset">
+              <TimerIcon size={10} className="text-green-500 animate-pulse" />
+              <span className="font-mono text-[9px] font-black text-green-500 tracking-widest">{formatTime(timer)}</span>
           </div>
         </div>
       </header>
 
-      {/* Title Section - Increased mt to push down below header */}
-      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-8 xs:mt-12">
+      {/* Title Section - INCREASED MARGIN TOP TO PREVENT OVERLAP */}
+      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-20 xs:mt-24 sm:mt-28">
         <h1 className="text-3xl xs:text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
         </h1>
@@ -270,29 +270,29 @@ const App: React.FC = () => {
       {/* Footer Area */}
       <footer className="w-full max-w-lg flex flex-col gap-4 relative z-50 shrink-0 px-4 pointer-events-auto items-center">
         <div className="flex justify-center gap-4 w-full">
-          <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-28 h-12 disabled:opacity-50">
+          <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-28 h-11 disabled:opacity-50">
             <div className="btn-edge bg-red-900 rounded-xl"></div>
             <div className="btn-surface bg-red-600 border-t border-red-400 rounded-xl flex items-center justify-center gap-2">
-              <Square size={14} fill="currentColor" className="text-white" />
-              <span className="text-white text-[11px] font-black uppercase">Stop</span>
+              <Square size={12} fill="currentColor" className="text-white" />
+              <span className="text-white text-[10px] font-black uppercase">Stop</span>
             </div>
           </button>
           
-          <button onClick={startGame} className="btn-3d w-32 h-12">
+          <button onClick={startGame} className="btn-3d w-32 h-11">
             <div className="btn-edge bg-blue-900 rounded-xl"></div>
             <div className="btn-surface bg-blue-600 border-t border-blue-400 rounded-xl flex items-center justify-center gap-2">
-              <Play size={16} fill="currentColor" className="text-white" />
-              <span className="text-white text-[11px] font-black uppercase">Start</span>
+              <Play size={14} fill="currentColor" className="text-white" />
+              <span className="text-white text-[10px] font-black uppercase">Start</span>
             </div>
           </button>
         </div>
 
-        <div className="scale-90 sm:scale-100 w-full flex justify-center">
+        <div className="scale-90 sm:scale-100 w-full flex justify-center pb-2">
             <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
         </div>
       </footer>
 
-      {/* Modals */}
+      {/* Modals remain the same */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl animate-in fade-in">
           <div className="relative max-w-2xl w-full p-8 rounded-[3rem] shadow-3xl overflow-hidden max-h-[85vh] flex flex-col border border-white/20 bg-slate-900 text-white">

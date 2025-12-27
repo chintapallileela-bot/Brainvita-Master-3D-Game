@@ -46,7 +46,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
   if (isGhost) {
      return (
         <div 
-          className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 transform scale-50 blur-[2px]"
+          className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-black/40 transform scale-50 blur-[2px]"
         />
      )
   }
@@ -55,11 +55,11 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     <div
       onClick={onClick}
       className={`
-        w-8 h-8 md:w-11 md:h-11 rounded-full cursor-pointer
+        w-9 h-9 md:w-14 md:h-14 rounded-full cursor-pointer
         relative transition-all duration-300
         ${isRemoving ? 'scale-0 opacity-0 rotate-180 pointer-events-none' : ''}
         ${isNew ? 'marble-landed' : ''}
-        ${isSelected ? `marble-selected ring-4 ring-white/70 ring-offset-2 ring-offset-transparent` : 'marble-3d hover:translate-y-[-6px] hover:brightness-110'}
+        ${isSelected ? `marble-selected ring-4 ring-white/70 ring-offset-2 ring-offset-transparent` : 'marble-3d hover:translate-y-[-8px] hover:brightness-110'}
       `}
       style={{
         // High fidelity material stack
