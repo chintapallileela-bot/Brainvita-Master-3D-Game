@@ -6,7 +6,8 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   HelpCircle, Trophy, AlertCircle, X, Square,
-  Timer as TimerIcon, Play, Palette, Check, LayoutGrid
+  Timer as TimerIcon, Play, Palette, Check, LayoutGrid,
+  Volume2, VolumeX
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { 
@@ -31,7 +32,7 @@ const App: React.FC = () => {
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showLayoutModal, setShowLayoutModal] = useState(false);
   
-  const [soundEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   const [timer, setTimer] = useState(0);
   const [animatingMove, setAnimatingMove] = useState<{from: Position, to: Position, mid: Position} | null>(null);
 
@@ -217,6 +218,14 @@ const App: React.FC = () => {
              <div className="btn-surface bg-cyan-600 border-t border-cyan-400 rounded-full flex items-center justify-center gap-2">
                <LayoutGrid size={14} className="text-white"/>
                <span className="text-[10px] font-black uppercase text-white tracking-widest">{currentLayout.name}</span>
+             </div>
+           </button>
+           {/* Sound Toggle Button */}
+           <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d h-10 w-36">
+             <div className={`btn-edge ${soundEnabled ? 'bg-amber-900' : 'bg-slate-900'} rounded-full`}></div>
+             <div className={`btn-surface ${soundEnabled ? 'bg-amber-600 border-amber-400' : 'bg-slate-700 border-slate-500'} border-t rounded-full flex items-center justify-center gap-2`}>
+               {soundEnabled ? <Volume2 size={14} className="text-white"/> : <VolumeX size={14} className="text-white"/>}
+               <span className="text-[10px] font-black uppercase text-white tracking-widest">{soundEnabled ? 'Sound On' : 'Sound Off'}</span>
              </div>
            </button>
         </div>
