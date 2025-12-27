@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/Board';
 import { RemovedMarbles } from './components/RemovedMarbles';
@@ -8,7 +9,16 @@ import {
   Timer as TimerIcon, Play, Palette, Check, LayoutGrid
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
-import { playMoveSound, playWinSound, playLoseSound, playThemeSound, playSelectSound, playInvalidSound } from './utils/sound';
+import { 
+  playMoveSound, 
+  playWinSound, 
+  playLoseSound, 
+  playThemeSound, 
+  playSelectSound, 
+  playInvalidSound,
+  startBackgroundMusic,
+  stopBackgroundMusic
+} from './utils/sound';
 
 const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
@@ -124,8 +134,14 @@ const App: React.FC = () => {
     setBoard(newBoard);
     const status = checkGameStatus(newBoard);
     setGameStatus(status);
-    if (status === GameStatus.WON && soundEnabled) playWinSound();
-    if (status === GameStatus.LOST && soundEnabled) playLoseSound();
+    if (status === GameStatus.WON) {
+      if (soundEnabled) playWinSound();
+      stopBackgroundMusic();
+    }
+    if (status === GameStatus.LOST) {
+      if (soundEnabled) playLoseSound();
+      stopBackgroundMusic();
+    }
   };
 
   const startGame = () => {
@@ -133,7 +149,10 @@ const App: React.FC = () => {
     setGameStatus(GameStatus.PLAYING);
     setSelectedPos(null);
     setTimer(0);
-    if (soundEnabled) playThemeSound();
+    if (soundEnabled) {
+      playThemeSound();
+      startBackgroundMusic();
+    }
   };
 
   const stopGame = () => {
@@ -141,13 +160,23 @@ const App: React.FC = () => {
     setTimer(0);
     setBoard(createInitialBoard(currentLayout.board));
     setSelectedPos(null);
+    stopBackgroundMusic();
   };
 
   const handleThemeChange = (theme: Theme) => { setCurrentTheme(theme); setShowThemeModal(false); if (soundEnabled) playSelectSound(); };
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
 
+  useEffect(() => {
+    // If user toggles sound off while music is playing
+    if (!soundEnabled) {
+      stopBackgroundMusic();
+    } else if (gameStatus === GameStatus.PLAYING) {
+      startBackgroundMusic();
+    }
+  }, [soundEnabled]);
+
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-2`}>
+    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-auto custom-scrollbar-prominent ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-2`}>
       {/* Background Layer */}
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-700 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
@@ -156,7 +185,6 @@ const App: React.FC = () => {
 
       {/* Re-positioned Header */}
       <header className="w-full flex justify-between items-start relative z-50 shrink-0 pointer-events-none pt-2 px-1">
-        {/* Top Left Buttons - Explicitly further left closer to edge */}
         <div className="flex flex-col gap-1.5 pointer-events-auto items-start">
            <button onClick={() => setShowThemeModal(true)} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500 shadow-xl border border-white/40">
              <Palette size={12} className="text-white"/>
@@ -168,7 +196,6 @@ const App: React.FC = () => {
            </button>
         </div>
         
-        {/* Top Right Buttons - Volume Stacked below Help icon */}
         <div className="flex items-start gap-1.5 pointer-events-auto pr-1">
           <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 shadow-xl">
               <TimerIcon size={12} className="text-green-500" />
@@ -184,7 +211,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Compressed Title Section to save space */}
+      {/* Compressed Title Section */}
       <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 -mt-6">
         <h1 className="text-xl font-black tracking-tighter text-white drop-shadow-2xl leading-none">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
@@ -195,16 +222,15 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Game Area - Increased Scale for Mobile */}
+      {/* Main Game Area */}
       <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible py-2">
          <div className="scale-[0.55] xs:scale-[0.6] sm:scale-75 md:scale-90 lg:scale-100 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
 
-      {/* Footer Area - Reordered for absolute bottom placement of Tray */}
+      {/* Footer Area */}
       <footer className="w-full max-w-lg flex flex-col gap-2 relative z-50 shrink-0 px-4 pointer-events-auto items-center">
-        {/* Buttons ABOVE the Tray */}
         <div className="flex justify-center gap-4 w-full">
           <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-28 h-12 disabled:opacity-50">
             <div className="btn-edge bg-red-900"></div>
@@ -223,11 +249,10 @@ const App: React.FC = () => {
           </button>
         </div>
 
-        {/* Collection Tray at the absolute bottom */}
         <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
       </footer>
 
-      {/* Modals */}
+      {/* Modals ... */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 bg-black/95 backdrop-blur-2xl animate-in fade-in">
           <div className="relative max-w-2xl w-full p-6 rounded-[2rem] shadow-2xl overflow-hidden max-h-[85vh] flex flex-col border border-white/20 bg-slate-900 text-white">

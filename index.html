@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -23,7 +24,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        touch-action: manipulation;
+        touch-action: pan-x pan-y;
         -webkit-user-select: none;
         user-select: none;
       }
@@ -123,6 +124,12 @@
         90% { opacity: 0.4; }
         100% { transform: translateY(-110vh); opacity: 0; }
       }
+
+      /* Prominent Styled Scrollbars */
+      .custom-scrollbar-prominent::-webkit-scrollbar { width: 10px; height: 10px; }
+      .custom-scrollbar-prominent::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); border-radius: 5px; }
+      .custom-scrollbar-prominent::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #ec4899, #3b82f6); border-radius: 5px; border: 2px solid rgba(0,0,0,0.2); }
+      .custom-scrollbar-prominent { scrollbar-width: auto; scrollbar-color: #3b82f6 rgba(0,0,0,0.3); }
 
       .custom-scrollbar::-webkit-scrollbar { width: 6px; }
       .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }

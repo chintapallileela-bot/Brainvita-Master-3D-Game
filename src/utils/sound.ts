@@ -1,5 +1,8 @@
+
 // Simple sound synthesis using Web Audio API to avoid external asset dependencies
 let audioCtx: AudioContext | null = null;
+let musicOscillators: OscillatorNode[] = [];
+let musicGainNodes: GainNode[] = [];
 
 const getContext = () => {
   if (!audioCtx) {
@@ -34,12 +37,53 @@ const playTone = (freq: number, type: OscillatorType, duration: number, startTim
   osc.stop(ctx.currentTime + startTime + duration);
 };
 
+export const startBackgroundMusic = () => {
+  const ctx = getContext();
+  if (ctx.state === 'suspended') ctx.resume();
+  
+  stopBackgroundMusic(); // Ensure we don't double up
+
+  const createLayer = (freq: number, vol: number, type: OscillatorType = 'sine') => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 2);
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    
+    musicOscillators.push(osc);
+    musicGainNodes.push(gain);
+  };
+
+  // Atmospheric ambient drone
+  createLayer(110, 0.05); // A2
+  createLayer(164.81, 0.03); // E3
+  createLayer(220, 0.02); // A3
+};
+
+export const stopBackgroundMusic = () => {
+  musicGainNodes.forEach(g => {
+    if (audioCtx) g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+  });
+  
+  setTimeout(() => {
+    musicOscillators.forEach(o => {
+      try { o.stop(); } catch(e) {}
+    });
+    musicOscillators = [];
+    musicGainNodes = [];
+  }, 600);
+};
+
 export const playMoveSound = () => {
   try {
     const ctx = getContext();
     if (ctx.state === 'suspended') ctx.resume();
 
-    // Woodblock/Pop sound
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
@@ -56,7 +100,6 @@ export const playMoveSound = () => {
     osc.start();
     osc.stop(ctx.currentTime + 0.1);
     
-    // Short sharp vibration for move
     triggerVibration(15);
   } catch (e) {
     console.error("Audio playback failed", e);
@@ -71,8 +114,8 @@ export const playWinSound = () => {
     playTone(783.99, 'sine', 0.4, now + 0.2, 0.2); // G5
     playTone(1046.50, 'sine', 0.8, now + 0.3, 0.2); // C6
     
-    // Celebratory vibration
     triggerVibration([100, 50, 100, 50, 200]);
+    stopBackgroundMusic();
   } catch (e) {
     console.error("Audio playback failed", e);
   }
@@ -84,8 +127,8 @@ export const playLoseSound = () => {
     playTone(300, 'triangle', 0.5, now, 0.2);
     playTone(200, 'triangle', 0.8, now + 0.3, 0.2);
     
-    // Thud vibration
     triggerVibration(50);
+    stopBackgroundMusic();
   } catch (e) {
     console.error("Audio playback failed", e);
   }
@@ -107,7 +150,6 @@ export const playThemeSound = () => {
 export const playSelectSound = () => {
     try {
         playTone(400, 'sine', 0.05, 0, 0.1);
-        // Very subtle tick for selection
         triggerVibration(8);
     } catch (e) {}
 }
@@ -115,7 +157,6 @@ export const playSelectSound = () => {
 export const playInvalidSound = () => {
     try {
         playTone(150, 'sawtooth', 0.1, 0, 0.1);
-        // Buzz for invalid
         triggerVibration([30, 30, 30]);
     } catch (e) {}
 }
