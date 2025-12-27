@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -148,21 +147,6 @@
         }
       }
 
-      @keyframes shine-sweep {
-        0% { transform: translateX(-200%) rotate(45deg); }
-        20% { transform: translateX(200%) rotate(45deg); }
-        100% { transform: translateX(200%) rotate(45deg); }
-      }
-
-      .marble-shine {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
-        pointer-events: none;
-        z-index: 30;
-        animation: shine-sweep 4s infinite ease-in-out;
-      }
-
       .tray-inset {
         box-shadow: 
           inset 0 12px 24px rgba(0,0,0,0.8),
@@ -170,33 +154,67 @@
           0 2px 4px rgba(0,0,0,0.4);
       }
 
-      .animate-in { animation-duration: 0.25s; animation-fill-mode: both; }
-      .fade-in { animation-name: fadeIn; }
-      .zoom-in { animation-name: zoomIn; }
-      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-      @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-      .bubble {
-        position: absolute;
-        bottom: -20px;
-        border-radius: 50%;
-        animation: bubble-up linear infinite;
+      /* Particles Styling & Animations */
+      .particle-container {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 5;
       }
-      @keyframes bubble-up {
-        0% { transform: translateY(0); opacity: 0; }
-        10% { opacity: 0.4; }
-        90% { opacity: 0.4; }
-        100% { transform: translateY(-110vh); opacity: 0; }
+
+      .particle {
+        position: absolute;
+        will-change: transform, opacity;
+      }
+
+      .particle-fall {
+        animation: particle-fall-anim linear infinite;
+      }
+
+      .particle-rise {
+        animation: particle-rise-anim linear infinite;
+      }
+
+      .particle-sway {
+        animation-name: particle-sway-anim;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+      }
+
+      @keyframes particle-fall-anim {
+        0% { transform: translateY(-10vh) translateX(var(--drift-start, 0)); opacity: 0; }
+        10% { opacity: var(--max-opacity, 0.4); }
+        90% { opacity: var(--max-opacity, 0.4); }
+        100% { transform: translateY(110vh) translateX(var(--drift-end, 20px)); opacity: 0; }
+      }
+
+      @keyframes particle-rise-anim {
+        0% { transform: translateY(110vh) translateX(var(--drift-start, 0)); opacity: 0; }
+        10% { opacity: var(--max-opacity, 0.4); }
+        90% { opacity: var(--max-opacity, 0.4); }
+        100% { transform: translateY(-10vh) translateX(var(--drift-end, -20px)); opacity: 0; }
+      }
+
+      @keyframes particle-sway-anim {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(30px); }
+      }
+
+      .glow-pulse {
+        animation: glow-pulse-anim 3s ease-in-out infinite;
+      }
+
+      @keyframes glow-pulse-anim {
+        0%, 100% { filter: brightness(1) blur(1px); }
+        50% { filter: brightness(2) blur(2px); }
       }
 
       /* Prominent Styled Scrollbars */
-      .custom-scrollbar-prominent::-webkit-scrollbar { width: 10px; height: 10px; }
-      .custom-scrollbar-prominent::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); border-radius: 5px; }
-      .custom-scrollbar-prominent::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #ec4899, #3b82f6); border-radius: 5px; border: 2px solid rgba(0,0,0,0.2); }
-      .custom-scrollbar-prominent { scrollbar-width: auto; scrollbar-color: #3b82f6 rgba(0,0,0,0.3); }
-
       .custom-scrollbar::-webkit-scrollbar { width: 6px; }
       .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+      .animate-in { animation: fadeIn 0.3s ease-out; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
     <script type="importmap">
     {

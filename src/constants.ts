@@ -1,3 +1,4 @@
+
 import { Theme, GameLayout } from './types';
 
 export const BOARD_SIZE = 7;
@@ -93,7 +94,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#0284c7',   // Sky 600 (Deep Ice)
     selectionRing: 'ring-white',
     accentColor: 'bg-sky-500 hover:bg-sky-400',
-    overlayClass: 'overlay-snow'
+    overlayClass: 'overlay-snowflakes'
   },
   {
     name: 'Nature',
@@ -109,7 +110,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#d97706',   // Deep Amber/Orange
     selectionRing: 'ring-amber-300', 
     accentColor: 'bg-amber-600 hover:bg-amber-500',
-    overlayClass: 'overlay-fog'
+    overlayClass: 'overlay-fireflies'
   },
   {
     name: 'Under Water',
@@ -125,7 +126,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#0099ff',
     selectionRing: 'ring-yellow-300',
     accentColor: 'bg-cyan-600 hover:bg-cyan-500',
-    overlayClass: 'overlay-ocean'
+    overlayClass: 'overlay-bubbles'
   },
   {
     name: 'Gem Stones',
@@ -141,23 +142,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#0ea5e9', 
     selectionRing: 'ring-white',
     accentColor: 'bg-indigo-600 hover:bg-indigo-500',
-    overlayClass: 'overlay-crystal'
-  },
-  {
-    name: 'Christmas',
-    isDark: true,
-    appBg: 'bg-red-950',
-    bgAnimClass: 'bg-anim-christmas',
-    bgImage: 'https://i.postimg.cc/30FPxKVK/Christmas.jpg', 
-    boardBg: 'bg-gradient-to-br from-red-900/50 to-green-900/50 backdrop-blur-xl',
-    boardBorder: 'border-yellow-400/50',
-    grooveBorder: 'border-yellow-200/30',
-    holeBg: 'bg-black/40',
-    marbleStart: '#fef3c7', // Gold
-    marbleEnd: '#ef4444',   // Red
-    selectionRing: 'ring-yellow-400',
-    accentColor: 'bg-red-600 hover:bg-red-500',
-    overlayClass: 'overlay-snow' 
+    overlayClass: 'overlay-crystals'
   },
   {
     name: 'Disney Magic',
@@ -173,39 +158,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#9333ea',   // Deep Purple
     selectionRing: 'ring-yellow-300',
     accentColor: 'bg-violet-600 hover:bg-violet-500',
-    overlayClass: 'overlay-fireworks'
-  },
-  {
-    name: 'Unicorn Rainbow',
-    isDark: false, 
-    appBg: 'bg-fuchsia-100',
-    bgAnimClass: 'bg-anim-unicorn',
-    bgImage: 'https://i.postimg.cc/JyKx0s4q/Unicorn.jpg', 
-    boardBg: 'bg-gradient-to-br from-white/40 to-fuchsia-200/40 backdrop-blur-md',
-    boardBorder: 'border-fuchsia-300/80',
-    grooveBorder: 'border-white/50',
-    holeBg: 'bg-fuchsia-900/20',
-    marbleStart: '#cffafe', // Cyan highlight 
-    marbleEnd: '#d946ef',   // Fuchsia core
-    selectionRing: 'ring-cyan-400',
-    accentColor: 'bg-fuchsia-500 hover:bg-fuchsia-400',
-    overlayClass: 'overlay-sparkle'
-  },
-  {
-    name: 'Fairy Castle',
-    isDark: false,
-    appBg: 'bg-pink-100',
-    bgAnimClass: 'bg-anim-barbie',
-    bgImage: 'https://i.postimg.cc/PpQjPzvw/Fairy-Castle.jpg', 
-    boardBg: 'bg-gradient-to-br from-pink-300/50 to-purple-400/50 backdrop-blur-xl',
-    boardBorder: 'border-yellow-100/60',
-    grooveBorder: 'border-pink-200/50',
-    holeBg: 'bg-purple-900/10',
-    marbleStart: '#fff7ed', // Orange 50
-    marbleEnd: '#db2777',   // Pink 600
-    selectionRing: 'ring-yellow-300',
-    accentColor: 'bg-pink-500 hover:bg-pink-400',
-    overlayClass: 'overlay-sparkle'
+    overlayClass: 'overlay-sparkles'
   },
   {
     name: 'Sky Kingdom',
@@ -221,6 +174,6 @@ export const THEMES: Theme[] = [
     marbleEnd: '#0ea5e9',   // Sky 500
     selectionRing: 'ring-yellow-400',
     accentColor: 'bg-sky-500 hover:bg-sky-400',
-    overlayClass: 'overlay-snow' // Reusing snow as cloud particles
+    overlayClass: 'overlay-clouds'
   }
 ];
