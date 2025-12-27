@@ -189,7 +189,7 @@ const App: React.FC = () => {
   }, [soundEnabled, gameStatus]);
 
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-4`}>
+    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-12`}>
       {/* Background Layer */}
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-700 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
@@ -225,7 +225,6 @@ const App: React.FC = () => {
         {/* Right Section: Sound, Help & Timer */}
         <div className="flex flex-col items-end gap-3 pointer-events-auto pr-1">
           <div className="flex gap-3">
-            {/* Sound Toggle Button moved to opposite side */}
             <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-12 h-12">
               <div className={`btn-edge ${soundEnabled ? 'bg-amber-900' : 'bg-slate-900'} rounded-full`}></div>
               <div className={`btn-surface ${soundEnabled ? 'bg-amber-600 border-amber-400' : 'bg-slate-700 border-slate-500'} border-t rounded-full flex items-center justify-center`}>
@@ -248,8 +247,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Title Section */}
-      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 -mt-6">
+      {/* Title Section - Shifted down by mt-12 */}
+      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mt-12">
         <h1 className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
         </h1>
@@ -266,8 +265,8 @@ const App: React.FC = () => {
          </div>
       </main>
 
-      {/* Footer Area */}
-      <footer className="w-full max-w-lg flex flex-col gap-6 relative z-50 shrink-0 px-4 pointer-events-auto items-center">
+      {/* Footer Area - Shifted slightly with mb-4 to ensure visibility */}
+      <footer className="w-full max-w-lg flex flex-col gap-6 relative z-50 shrink-0 px-4 mb-4 pointer-events-auto items-center">
         <div className="flex justify-center gap-6 w-full">
           <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-32 h-14 disabled:opacity-50">
             <div className="btn-edge bg-red-900 rounded-2xl"></div>
