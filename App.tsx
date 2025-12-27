@@ -216,15 +216,15 @@ const App: React.FC = () => {
         </p>
       </div>
 
-      {/* Main Game Area - Dynamic Scaling */}
+      {/* Main Game Area */}
       <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible">
-         <div className="scale-[0.65] sm:scale-75 md:scale-90 lg:scale-100 xl:scale-110 origin-center transition-transform duration-500">
+         <div className="scale-[0.6] sm:scale-75 md:scale-90 lg:scale-100 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
 
       {/* Footer Area: Collection Tray & Controls */}
-      <footer className="w-full max-w-lg flex flex-col gap-4 relative z-50 shrink-0 pb-6 pointer-events-auto">
+      <footer className="w-full max-w-lg flex flex-col gap-4 relative z-50 shrink-0 pb-8 pointer-events-auto">
         <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
         
         <div className="flex justify-center gap-6">
@@ -235,7 +235,7 @@ const App: React.FC = () => {
           >
             <div className="btn-edge bg-red-900 group-hover:bg-red-800"></div>
             <div className="btn-surface w-full h-full rounded-full bg-gradient-to-b from-red-500 to-red-600 flex items-center justify-center gap-2 text-white text-sm font-black border-t border-red-400">
-              <Square size={16} fill="currentColor" /> STOP
+              <Square size={16} fill="currentColor" /> Stop
             </div>
           </button>
           
@@ -245,7 +245,7 @@ const App: React.FC = () => {
           >
             <div className={`btn-edge ${currentTheme.isDark ? 'bg-cyan-900' : 'bg-blue-900'}`}></div>
             <div className={`btn-surface w-full h-full rounded-full bg-gradient-to-b ${currentTheme.isDark ? 'from-cyan-500 to-cyan-600 border-cyan-400' : 'from-blue-500 to-blue-600 border-blue-400'} flex items-center justify-center gap-2 text-white text-sm font-black border-t`}>
-              <Play size={18} fill="currentColor" /> START
+              <Play size={18} fill="currentColor" /> Start
             </div>
           </button>
         </div>
