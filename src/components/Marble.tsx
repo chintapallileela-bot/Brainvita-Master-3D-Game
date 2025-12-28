@@ -41,7 +41,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
   if (isGhost) {
      return (
         <div 
-          className="w-11 h-11 md:w-19 md:h-19 rounded-full bg-black/50 transform scale-50 blur-[2px]"
+          className="w-16 h-16 md:w-26 md:h-26 rounded-full bg-black/50 transform scale-50 blur-[2px]"
         />
      )
   }
@@ -50,11 +50,11 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     <div
       onClick={onClick}
       className={`
-        w-12 h-12 md:w-20 md:h-20 rounded-full cursor-pointer
+        w-16 h-16 md:w-28 md:h-28 rounded-full cursor-pointer
         relative transition-all duration-300
         ${isRemoving ? 'scale-0 opacity-0 rotate-180 pointer-events-none' : ''}
         ${isNew ? 'marble-landed' : ''}
-        ${isSelected ? `marble-selected ring-2 ring-white/50 ring-offset-4 ring-offset-transparent` : 'marble-3d hover:translate-y-[-8px]'}
+        ${isSelected ? `marble-selected ring-2 ring-white/50 ring-offset-4 ring-offset-transparent` : 'marble-3d hover:translate-y-[-10px]'}
       `}
       style={{
         background: `
@@ -87,8 +87,8 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
       {(!isRemoving) && (
         <div 
           className={`
-            absolute left-1/2 -translate-x-1/2 bg-black/70 blur-[5px] rounded-full pointer-events-none mix-blend-multiply transition-all duration-400
-            ${isSelected ? 'bottom-[-60px] w-[95%] h-[25%] opacity-40 blur-[10px]' : 'bottom-[-4px] w-[85%] h-[15%] opacity-80'}
+            absolute left-1/2 -translate-x-1/2 bg-black/70 blur-[8px] rounded-full pointer-events-none mix-blend-multiply transition-all duration-400
+            ${isSelected ? 'bottom-[-70px] w-[95%] h-[25%] opacity-40 blur-[15px]' : 'bottom-[-6px] w-[85%] h-[15%] opacity-80'}
           `}
         ></div>
       )}

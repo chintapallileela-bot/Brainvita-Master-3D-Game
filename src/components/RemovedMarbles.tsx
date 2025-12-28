@@ -11,22 +11,43 @@ export const RemovedMarbles: React.FC<RemovedMarblesProps> = ({ count, theme }) 
   const marbles = Array.from({ length: count });
 
   return (
-    <div className="py-1 px-1.5 rounded-xl w-full max-w-[80px] mx-auto bg-sky-400/90 backdrop-blur-md border border-sky-300 shadow-[0_8px_16px_rgba(0,0,0,0.3),inset_0_2px_4px_rgba(255,255,255,0.4)] ring-1 ring-sky-500/20">
-      <h3 className="font-black mb-0.5 text-center text-[5px] uppercase tracking-[0.1em] text-sky-950 leading-none">
-        TRAY ({count})
-      </h3>
-      <div className="flex flex-wrap justify-center gap-0 min-h-[12px] px-0.5 max-h-6 overflow-y-auto custom-scrollbar items-center">
-        {marbles.map((_, i) => (
-           <div key={i} className="transform scale-[0.12] origin-center -m-[14px] opacity-90 hover:opacity-100 transition-all">
-             <Marble theme={theme} id={2000 + i} />
-           </div>
-        ))}
-        {count === 0 && (
-          <span className="text-[5px] font-black uppercase tracking-widest opacity-40 italic py-0.5 text-sky-900">
-            0
-          </span>
-        )}
+    <div className="relative w-full max-w-[320px] mx-auto group perspective-[1000px]">
+      {/* 3D Box Main Body */}
+      <div className="relative h-20 rounded-xl bg-gradient-to-b from-slate-900/90 to-black/95 backdrop-blur-3xl border border-white/10 shadow-[0_15px_35px_rgba(0,0,0,0.8),inset_0_4px_15px_rgba(0,0,0,0.9)] overflow-hidden tray-inset transition-all duration-500 hover:border-white/20">
+        
+        {/* Subtle Side Wall Shading */}
+        <div className="absolute inset-y-0 left-0 w-2 bg-white/5 pointer-events-none"></div>
+        <div className="absolute inset-y-0 right-0 w-2 bg-black/40 pointer-events-none"></div>
+
+        {/* Box Top Label Bar */}
+        <div className="absolute top-0 left-0 right-0 h-5 bg-black/40 flex items-center justify-center border-b border-white/5">
+          <h3 className="font-black text-[8px] uppercase tracking-[0.3em] text-white/50 select-none">
+            COLLECTION BIN • {count} PIECES
+          </h3>
+        </div>
+
+        {/* Inset Marble Content Area */}
+        <div className="absolute inset-0 pt-7 pb-2 px-3 flex flex-wrap justify-center content-start gap-0.5 overflow-y-auto custom-scrollbar">
+          {marbles.map((_, i) => (
+             <div key={i} className="transform scale-[0.14] origin-center -m-[16px] opacity-90 hover:opacity-100 hover:scale-[0.18] transition-all cursor-default">
+               <Marble theme={theme} id={3000 + i} />
+             </div>
+          ))}
+          
+          {count === 0 && (
+            <div className="h-full w-full flex flex-col items-center justify-center gap-1 opacity-20 animate-pulse">
+               <div className="w-2 h-2 rounded-full bg-white/30"></div>
+               <span className="text-[7px] font-black uppercase tracking-[0.5em] text-white">Empty Bin</span>
+            </div>
+          )}
+        </div>
+
+        {/* Glossy Top Reflection */}
+        <div className="absolute top-0 inset-x-0 h-[30%] bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
       </div>
+      
+      {/* 3D Base Shadow Depth */}
+      <div className="absolute -bottom-1.5 inset-x-2 h-4 bg-black/60 rounded-b-xl -z-10 blur-[4px]"></div>
     </div>
   );
 };
