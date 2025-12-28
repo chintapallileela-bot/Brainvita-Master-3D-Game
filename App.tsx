@@ -230,7 +230,7 @@ const App: React.FC = () => {
 
       {/* Main Game Area */}
       <main className="flex-1 w-full flex justify-center items-center relative z-[3000] overflow-visible perspective-[1500px] min-h-0">
-         <div className="scale-[0.5] xs:scale-[0.6] sm:scale-75 md:scale-90 lg:scale-[1.0] xl:scale-[1.1] origin-center transition-transform duration-500">
+         <div className="scale-[0.5] xs:scale-[0.6] sm:scale-75 md:scale-90 lg:scale-[1.0] origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>

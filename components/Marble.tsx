@@ -41,7 +41,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
   if (isGhost) {
      return (
         <div 
-          className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-black/50 transform scale-50 blur-[2px]"
+          className="w-10 h-10 rounded-full bg-black/50 transform scale-50 blur-[2px]"
         />
      )
   }
@@ -50,7 +50,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     <div
       onClick={onClick}
       className={`
-        w-[80%] h-[80%] rounded-full cursor-pointer
+        w-[85%] h-[85%] rounded-full cursor-pointer
         relative transition-all duration-300
         ${isRemoving ? 'scale-0 opacity-0 rotate-180 pointer-events-none' : ''}
         ${isNew ? 'marble-landed' : ''}
