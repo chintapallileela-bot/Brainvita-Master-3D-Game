@@ -21,6 +21,13 @@
       "*": ["*"]
     }
   },
-  "include": ["index.tsx", "App.tsx", "types.ts", "constants.ts", "components/**/*.tsx", "utils/**/*.ts"],
+  "include": [
+    "index.tsx",
+    "App.tsx",
+    "types.ts",
+    "constants.ts",
+    "components/**/*.tsx",
+    "utils/**/*.ts"
+  ],
   "exclude": ["node_modules", "dist", "src"]
 }
