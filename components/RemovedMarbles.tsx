@@ -8,24 +8,18 @@ interface RemovedMarblesProps {
 }
 
 export const RemovedMarbles: React.FC<RemovedMarblesProps> = ({ count, theme }) => {
-  const marbles = Array.from({ length: count });
-
   return (
-    <div className={`p-2.5 rounded-[2rem] w-full max-w-[320px] mx-auto tray-inset bg-black/60 backdrop-blur-2xl border border-white/10 shadow-inner flex flex-col items-center`}>
-      <h3 className={`font-black mb-1.5 text-center text-[9px] uppercase tracking-[0.3em] opacity-40 ${theme.isDark ? 'text-white' : 'text-slate-200'}`}>
-        COLLECTION ({count})
+    <div className="py-2 px-4 rounded-3xl w-full max-w-[120px] mx-auto bg-black/40 backdrop-blur-xl border border-white/10 shadow-inner ring-1 ring-white/5">
+      <h3 className="font-black mb-1 text-center text-[8px] uppercase tracking-[0.4em] opacity-40 text-white">
+        Tray ({count})
       </h3>
-      <div className="flex flex-wrap justify-center gap-1 min-h-[40px] px-2 max-h-20 overflow-y-auto custom-scrollbar items-center">
-        {marbles.map((_, i) => (
-           <div key={i} className="transform scale-[0.4] origin-center -m-[10px] hover:scale-[0.5] transition-transform duration-200">
-             <Marble theme={theme} id={2000 + i} />
+      <div className="flex flex-wrap justify-center gap-0.5 min-h-[16px] max-h-8 overflow-y-auto custom-scrollbar items-center">
+        {Array.from({ length: count }).map((_, i) => (
+           <div key={i} className="transform scale-[0.2] origin-center -m-[12px]">
+             <Marble theme={theme} id={3000 + i} />
            </div>
         ))}
-        {count === 0 && (
-          <span className={`text-[8px] font-bold uppercase tracking-widest opacity-20 italic py-1 ${theme.isDark ? 'text-white' : 'text-slate-400'}`}>
-            Ready
-          </span>
-        )}
+        {count === 0 && <span className="text-[10px] opacity-20 font-black">Empty</span>}
       </div>
     </div>
   );
