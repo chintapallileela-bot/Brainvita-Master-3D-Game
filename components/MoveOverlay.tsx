@@ -38,14 +38,14 @@ export const MoveOverlay: React.FC<MoveOverlayProps> = ({ from, to, theme }) => 
         alignItems: 'center',
         justifyContent: 'center',
         transition: 'transform 200ms cubic-bezier(0.175, 0.885, 0.32, 1.275)', 
-        transform: 'translate(0, 0) translateZ(80px) scale(1.2)', 
+        transform: 'translate(0, 0) translateZ(80px) scale(1.1)', 
       });
 
       requestAnimationFrame(() => {
         setStyle(prev => ({
           ...prev,
           visibility: 'visible',
-          transform: `translate(${endLeft - startLeft}px, ${endTop - startTop}px) translateZ(80px) scale(1.2)`
+          transform: `translate(${endLeft - startLeft}px, ${endTop - startTop}px) translateZ(80px) scale(1.1)`
         }));
       });
     }
@@ -55,7 +55,7 @@ export const MoveOverlay: React.FC<MoveOverlayProps> = ({ from, to, theme }) => 
 
   return (
     <div style={style}>
-       <div className="transform shadow-[0_30px_50px_rgba(0,0,0,0.6)] rounded-full" style={{ transformStyle: 'preserve-3d' }}>
+       <div className="w-full h-full flex items-center justify-center transform shadow-[0_30px_50px_rgba(0,0,0,0.6)] rounded-full" style={{ transformStyle: 'preserve-3d' }}>
          <Marble theme={theme} isSelected={true} id={marbleId} /> 
        </div>
     </div>

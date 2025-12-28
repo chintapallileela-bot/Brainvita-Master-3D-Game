@@ -35,24 +35,25 @@ export const Board: React.FC<BoardProps> = ({
 
   return (
     <div className="board-container-3d flex justify-center items-center relative pointer-events-none" style={{ touchAction: 'none' }}>
-      {/* Dynamic floor glow */}
+      {/* Floor glow */}
       <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[160%] blur-[180px] rounded-full -z-10 opacity-40 ${theme.isDark ? 'bg-indigo-500/30' : 'bg-white/50'}`}></div>
 
       <div 
         ref={boardRef}
-        className="relative w-[450px] h-[450px] sm:w-[550px] sm:h-[550px] md:w-[650px] md:h-[650px] aspect-square rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-600 to-slate-900 p-6 sm:p-10"
+        className="relative w-[450px] h-[450px] sm:w-[550px] sm:h-[550px] md:w-[650px] md:h-[650px] lg:w-[750px] lg:h-[750px] aspect-square rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-600 to-slate-900 p-8 sm:p-12"
         style={{ transformStyle: 'preserve-3d' }}
       >
           {/* Main Bezel / Outer Rim */}
-          <div className="w-full h-full rounded-full p-4 sm:p-6 bg-gradient-to-br from-slate-300 via-slate-800 to-slate-950 shadow-[0_60px_120px_rgba(0,0,0,1)] border-b-[20px] border-black relative"
+          <div className="w-full h-full rounded-full p-6 sm:p-10 bg-gradient-to-br from-slate-300 via-slate-800 to-slate-950 shadow-[0_60px_120px_rgba(0,0,0,1)] border-b-[20px] border-black relative"
                style={{ transform: 'translateZ(10px)' }}>
             
             <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"></div>
             
             {/* Recessed Play Surface */}
-            <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/10 shadow-[inset_0_50px_120px_rgba(0,0,0,1)] overflow-hidden flex items-center justify-center p-4 sm:p-8`}
+            <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/10 shadow-[inset_0_50px_120px_rgba(0,0,0,1)] overflow-hidden flex items-center justify-center p-8 sm:p-14`}
                  style={{ transform: 'translateZ(10px)' }}>
                 
+                {/* Surface Perforated Texture */}
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
                     <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                     <div className="absolute inset-0 opacity-[0.1] mix-blend-overlay" style={{ backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.5) 1px, transparent 1px)`, backgroundSize: '12px 12px' }}></div>
@@ -62,8 +63,8 @@ export const Board: React.FC<BoardProps> = ({
                   <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
                 )}
 
-                {/* The Peg Grid - Fixed gaps to prevent vertical stretching */}
-                <div className="grid grid-cols-7 gap-3 sm:gap-5 md:gap-8 relative z-10 w-full aspect-square" style={{ transformStyle: 'preserve-3d' }}>
+                {/* The Peg Grid - Proportional spacing */}
+                <div className="grid grid-cols-7 gap-4 sm:gap-6 md:gap-10 relative z-10 w-full aspect-square" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
@@ -86,7 +87,7 @@ export const Board: React.FC<BoardProps> = ({
                             style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                           >
                             {/* Hole Styling */}
-                            <div className={`absolute w-[85%] h-[85%] rounded-full hole-3d transition-all duration-300 
+                            <div className={`absolute w-[90%] h-[90%] rounded-full hole-3d transition-all duration-300 
                               ${isValidDestination ? 'bg-green-500/30 ring-2 ring-green-400/50 shadow-[0_0_30px_rgba(74,222,128,0.7)]' : ''}
                               ${(isJustLanded && !animatingMove) ? 'hole-impact' : ''}
                             `}>
@@ -106,7 +107,7 @@ export const Board: React.FC<BoardProps> = ({
                             )}
 
                             {isValidDestination && (
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-4 h-4 rounded-full bg-green-400 shadow-[0_0_20px_#4ade80] animate-pulse"
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-5 h-5 rounded-full bg-green-400 shadow-[0_0_20px_#4ade80] animate-pulse"
                                      style={{ transform: 'translateZ(40px)' }}
                                 ></div>
                             )}
