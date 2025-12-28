@@ -38,15 +38,18 @@ const App: React.FC = () => {
 
   const boardRef = useRef<HTMLDivElement>(null);
   const bgLayerRef = useRef<HTMLDivElement>(null);
+  const floatLayerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
-    let interval: number;
+    let interval: number | undefined;
     if (gameStatus === GameStatus.PLAYING) {
       interval = window.setInterval(() => setTimer(t => t + 1), 1000);
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval !== undefined) window.clearInterval(interval);
+    };
   }, [gameStatus]);
 
   const formatTime = (seconds: number) => {
@@ -69,6 +72,14 @@ const App: React.FC = () => {
       
       if (boardRef.current) boardRef.current.style.transform = `rotateX(${15 + targetY * -6}deg) rotateY(${targetX * 6}deg)`;
       if (bgLayerRef.current) bgLayerRef.current.style.transform = `translate(${-targetX * 8}px, ${-targetY * 8}px) scale(1.05)`;
+      
+      if (floatLayerRef.current) {
+         Array.from(floatLayerRef.current.children).forEach((child, i) => {
+             const htmlChild = child as HTMLElement;
+             const depth = (i % 3) + 1;
+             htmlChild.style.transform = `translate(${targetX * 15 * depth}px, ${targetY * 15 * depth}px)`;
+         });
+      }
       
       if (titleRef.current) {
         titleRef.current.style.transform = `translate(${targetX * 5}px, ${targetY * 5}px) translateZ(200px)`;
@@ -217,13 +228,13 @@ const App: React.FC = () => {
       {/* Title Section */}
       <div 
         ref={titleRef} 
-        className="text-center relative z-[4000] pointer-events-none transition-transform duration-100 ease-out mt-4"
+        className="text-center relative z-[4000] pointer-events-none mt-4 transition-transform duration-100 ease-out"
         style={{ transformStyle: 'preserve-3d' }}
       >
-        <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-white drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)] italic uppercase select-none">
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-white drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)] leading-none italic uppercase select-none">
           Brainvita<span className={currentTheme.isDark ? "text-cyan-400" : "text-fuchsia-500"}>3D</span>
         </h1>
-        <div className="inline-flex items-center gap-3 px-6 py-1.5 rounded-full bg-black/70 backdrop-blur-xl mt-2 border border-white/10 shadow-xl pointer-events-auto">
+        <div className="inline-flex items-center gap-3 px-6 py-1.5 rounded-full bg-black/70 backdrop-blur-xl mt-3 border border-white/10 shadow-xl pointer-events-auto">
           <span className="text-[11px] font-black uppercase text-white/40 tracking-[0.2em]">Marbles Left</span>
           <span className="text-2xl font-black text-white">{marblesRemaining}</span>
         </div>
@@ -231,7 +242,7 @@ const App: React.FC = () => {
 
       {/* Main Game Area */}
       <main className="flex-1 w-full flex justify-center items-center relative z-[3000] overflow-visible perspective-[1500px] min-h-0">
-         <div className="scale-[0.5] xs:scale-[0.6] sm:scale-75 md:scale-90 lg:scale-[1.0] origin-center transition-transform duration-500">
+         <div className="scale-[0.55] xs:scale-[0.65] sm:scale-75 md:scale-90 lg:scale-[1.0] origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
@@ -283,60 +294,6 @@ const App: React.FC = () => {
                               {currentTheme.name === t.name && <Check size={16} className="text-green-400" strokeWidth={4} />}
                             </div>
                         </div>
-                   </button>
-                ))}
-             </div>
-          </div>
-        </div>
-      )}
-
-      {showRules && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-sm w-full p-10 rounded-[3rem] bg-slate-950 border border-white/10 text-white shadow-4xl">
-              <h2 className="text-3xl font-black mb-8 uppercase italic tracking-tighter">Rulebook</h2>
-              <div className="space-y-6 text-sm font-bold text-slate-400">
-                <div className="flex gap-4 items-start">
-                  <div className="w-10 h-10 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-sm font-black shadow-lg">1</div>
-                  <p className="pt-2 leading-relaxed">Select a marble and jump over its neighbor into an empty hole.</p>
-                </div>
-                <div className="flex gap-4 items-start">
-                  <div className="w-10 h-10 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-sm font-black shadow-lg">2</div>
-                  <p className="pt-2 leading-relaxed">The jumped marble is vaporized and added to your tray.</p>
-                </div>
-                <div className="flex gap-4 items-start">
-                  <div className="w-10 h-10 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-sm font-black shadow-lg">3</div>
-                  <p className="pt-2 leading-relaxed">Win by leaving exactly ONE marble on the board!</p>
-                </div>
-              </div>
-              <button onClick={() => setShowRules(false)} className="mt-10 w-full py-6 btn-3d h-16">
-                <div className="btn-edge bg-blue-950 rounded-[2rem]"></div>
-                <div className="btn-surface bg-blue-600 rounded-[2rem] text-white text-lg font-black uppercase tracking-[0.2em]">Understood</div>
-              </button>
-           </div>
-        </div>
-      )}
-
-      {showLayoutModal && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
-          <div className="relative max-w-md w-full p-10 rounded-[4rem] bg-slate-950 border border-white/10 text-white shadow-4xl">
-             <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-black uppercase italic tracking-tighter">Map Selection</h2>
-                <button onClick={() => setShowLayoutModal(false)} className="btn-3d w-10 h-10">
-                  <div className="btn-edge bg-slate-900 rounded-full"></div>
-                  <div className="btn-surface bg-slate-800 rounded-full flex items-center justify-center"><X size={24} /></div>
-                </button>
-             </div>
-             <div className="space-y-4 max-h-[50vh] overflow-y-auto custom-scrollbar p-1">
-                {LAYOUTS.map(layout => (
-                   <button key={layout.name} onClick={() => handleLayoutChange(layout)} className="btn-3d w-full h-24 block">
-                      <div className={`btn-edge rounded-[2rem] ${currentLayout.name === layout.name ? 'bg-green-800' : 'bg-black'}`}></div>
-                      <div className={`btn-surface flex items-center justify-between px-8 rounded-[2rem] border-2 ${currentLayout.name === layout.name ? 'border-green-400 bg-green-950/40' : 'border-white/5 bg-slate-900'}`}>
-                        <div className="text-left">
-                          <p className="font-black text-xl uppercase tracking-tight">{layout.name}</p>
-                          <p className="text-xs opacity-40 font-black tracking-widest mt-1 uppercase">{layout.description}</p>
-                        </div>
-                        {currentLayout.name === layout.name && <Check size={28} className="text-green-400" strokeWidth={4} />}
-                      </div>
                    </button>
                 ))}
              </div>
