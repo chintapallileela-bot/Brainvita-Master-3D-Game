@@ -13,8 +13,8 @@ export const RemovedMarbles: React.FC<RemovedMarblesProps> = ({ count, theme }) 
 
   return (
     <div className="relative w-full max-w-[340px] mx-auto group perspective-[1000px]">
-      {/* 3D Box Main Body */}
-      <div className="relative h-24 sm:h-28 rounded-2xl bg-gradient-to-b from-slate-900/90 to-black/95 backdrop-blur-3xl border border-white/10 shadow-[0_20px_45px_rgba(0,0,0,0.9),inset_0_4px_20px_rgba(0,0,0,1)] overflow-hidden tray-inset transition-all duration-500 hover:border-white/20">
+      {/* 3D Box Main Body - Slightly reduced height to fit smaller marbles */}
+      <div className="relative h-20 sm:h-24 rounded-2xl bg-gradient-to-b from-slate-900/90 to-black/95 backdrop-blur-3xl border border-white/10 shadow-[0_20px_45px_rgba(0,0,0,0.9),inset_0_4px_20px_rgba(0,0,0,1)] overflow-hidden tray-inset transition-all duration-500 hover:border-white/20">
         
         {/* Subtle Side Wall Shading */}
         <div className="absolute inset-y-0 left-0 w-3 bg-white/5 pointer-events-none"></div>
@@ -28,11 +28,11 @@ export const RemovedMarbles: React.FC<RemovedMarblesProps> = ({ count, theme }) 
         </div>
 
         {/* Inset Marble Content Area */}
-        <div className="absolute inset-0 pt-9 pb-3 px-4 flex flex-wrap justify-center content-start gap-2 overflow-y-auto custom-scrollbar">
+        <div className="absolute inset-0 pt-9 pb-3 px-4 flex flex-wrap justify-center content-start gap-1 overflow-y-auto custom-scrollbar">
           {marbles.map((_, i) => (
              <div 
                key={i} 
-               className="w-8 h-8 opacity-95 hover:opacity-100 transition-all cursor-default drop-shadow-lg"
+               className="w-5 h-5 sm:w-6 sm:h-6 opacity-95 hover:opacity-100 transition-all cursor-default drop-shadow-md"
              >
                <Marble theme={theme} id={3000 + i} />
              </div>
@@ -40,7 +40,7 @@ export const RemovedMarbles: React.FC<RemovedMarblesProps> = ({ count, theme }) 
           
           {count === 0 && (
             <div className="h-full w-full flex flex-col items-center justify-center gap-2 opacity-10 animate-pulse mt-2">
-               <div className="w-3 h-3 rounded-full bg-white/40"></div>
+               <div className="w-2 h-2 rounded-full bg-white/40"></div>
                <span className="text-[8px] font-black uppercase tracking-[0.6em] text-white">Empty Tray</span>
             </div>
           )}
