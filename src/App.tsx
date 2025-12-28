@@ -171,7 +171,7 @@ const App: React.FC = () => {
     setBoard(createInitialBoard(currentLayout.board));
     setSelectedPos(null);
     if (soundEnabled) playStopSound();
-    stopBackgroundMusic();
+    stopBackgroundMusic(); // Music strictly stops when game is stopped via "Quit"
   };
 
   const handleThemeChange = (theme: Theme) => { setCurrentTheme(theme); setShowThemeModal(false); if (soundEnabled) playSelectSound(); };
@@ -183,7 +183,7 @@ const App: React.FC = () => {
   }, [soundEnabled, gameStatus]);
 
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden perspective-[1500px] ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>
+    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden perspective-[1200px] ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'}`}>
       
       {/* Background Layers */}
       <div ref={bgLayerRef} className="fixed inset-[-5%] w-[110%] h-[110%] z-0 pointer-events-none">
@@ -238,7 +238,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Title Section - Reduced Size */}
+      {/* Title Section */}
       <div 
         ref={titleRef} 
         className="text-center relative z-[4000] pointer-events-none shrink-0 pt-1 transition-transform duration-100 ease-out"
@@ -253,14 +253,14 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Game Area - More aggressive scaling for small screens */}
+      {/* Main Game Area - Optimized Scaling for Larger Board */}
       <main className="flex-1 w-full flex justify-center items-center relative z-[3000] overflow-visible perspective-[1200px] min-h-0 py-2">
-         <div className="scale-[0.38] xs:scale-[0.42] sm:scale-50 md:scale-60 lg:scale-75 origin-center transition-transform duration-500">
+         <div className="scale-[0.32] xs:scale-[0.38] sm:scale-45 md:scale-55 lg:scale-65 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
 
-      {/* Footer Area - Height optimized */}
+      {/* Footer Area */}
       <footer className="w-full max-w-xl flex flex-col gap-3 relative z-[4500] shrink-0 px-4 pb-2 pointer-events-auto items-center">
         <div className="flex justify-center gap-3 w-full">
           <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-24 h-11 disabled:opacity-40">
@@ -275,7 +275,7 @@ const App: React.FC = () => {
             <div className="btn-edge bg-blue-950 rounded-xl"></div>
             <div className="btn-surface bg-blue-600 border-t border-blue-400 rounded-xl flex items-center justify-center gap-2">
               <Play size={14} fill="currentColor" className="text-white" />
-              <span className="text-white text-[11px] font-black uppercase tracking-widest">Restart</span>
+              <span className="text-white text-[11px] font-black uppercase tracking-widest">Start</span>
             </div>
           </button>
         </div>
@@ -285,7 +285,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Modals remain same high depth */}
+      {/* Modals */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/95 backdrop-blur-3xl animate-in">
           <div className="relative max-w-2xl w-full p-6 rounded-[2.5rem] shadow-4xl overflow-hidden max-h-[80vh] flex flex-col border border-white/10 bg-slate-950 text-white">

@@ -1,5 +1,3 @@
-
-// Restore truncated App.tsx content and add missing default export.
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/Board';
 import { RemovedMarbles } from './components/RemovedMarbles';
@@ -255,9 +253,9 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Game Area */}
+      {/* Main Game Area - Optimized Scaling */}
       <main className="flex-1 w-full flex justify-center items-center relative z-[3000] overflow-visible perspective-[1200px] min-h-0 py-2">
-         <div className="scale-[0.38] xs:scale-[0.42] sm:scale-50 md:scale-60 lg:scale-75 origin-center transition-transform duration-500">
+         <div className="scale-[0.35] xs:scale-[0.4] sm:scale-45 md:scale-55 lg:scale-70 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>

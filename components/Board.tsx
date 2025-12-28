@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BoardState, CellState, Position, Theme } from '../types';
 import { Marble } from './Marble';
 import { MoveOverlay } from './MoveOverlay';
@@ -10,7 +10,7 @@ interface BoardProps {
   onCellClick: (pos: Position) => void;
   theme: Theme;
   animatingMove: { from: Position; to: Position; mid: Position } | null;
-  boardRef: React.RefObject<HTMLDivElement>;
+  boardRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export const Board: React.FC<BoardProps> = ({ 
@@ -22,49 +22,47 @@ export const Board: React.FC<BoardProps> = ({
   animatingMove,
   boardRef
 }) => {
+  const [lastLandedPos, setLastLandedPos] = useState<Position | null>(null);
+
+  useEffect(() => {
+    if (animatingMove) {
+      setLastLandedPos(animatingMove.to);
+    } else if (lastLandedPos) {
+      const timer = setTimeout(() => setLastLandedPos(null), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [animatingMove, lastLandedPos]);
+
   return (
     <div className="board-container-3d flex justify-center relative pointer-events-none" style={{ touchAction: 'none' }}>
-      
-      {/* Dynamic Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-white/5 blur-[100px] rounded-full -z-10 transition-colors duration-1000 ${theme.isDark ? 'bg-indigo-500/10' : 'bg-blue-300/10'}`}></div>
+      {/* Floor reflection / Glow */}
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[130%] h-[130%] blur-[140px] rounded-full -z-10 opacity-30 ${theme.isDark ? 'bg-indigo-500/20' : 'bg-white/40'}`}></div>
 
       <div 
         ref={boardRef}
-        className={`
-          relative p-4 md:p-6 rounded-full inline-block
-          board-base pointer-events-none
-          bg-gradient-to-b from-slate-600 to-slate-900
-        `}
+        className="relative p-4 md:p-10 rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-700 to-slate-950"
       >
-          {/* Outer Bezel (Brushed Metal look) */}
-          <div className={`
-             rounded-full p-2 md:p-4
-             bg-gradient-to-br from-slate-300 via-slate-600 to-slate-900
-             shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),_inset_0_2px_6px_rgba(255,255,255,0.4),_0_0_0_1px_rgba(0,0,0,0.6)]
-             border-b-[6px] border-black/40
-          `}>
+          {/* Main Bezel */}
+          <div className="rounded-full p-4 md:p-8 bg-gradient-to-br from-slate-400 via-slate-700 to-slate-900 shadow-[0_35px_80px_rgba(0,0,0,1)] border-b-[8px] border-black/60 relative">
             
-            <div className={`
-              relative p-6 md:p-10 rounded-full
-              ${theme.boardBg} ${theme.boardBorder} border border-white/20
-              shadow-[inset_0_25px_60px_rgba(0,0,0,0.95)]
-            `}>
-                {/* Board Surface Refinements */}
+            {/* Outer Rim Highlight */}
+            <div className="absolute inset-0 rounded-full border border-white/10 pointer-events-none"></div>
+
+            <div className={`relative p-8 md:p-14 rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/20 shadow-[inset_0_30px_70px_rgba(0,0,0,1)]`}>
+                
+                {/* Surface Specular Map / Grain */}
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent mix-blend-soft-light"></div>
-                    <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')] mix-blend-multiply"></div>
-                    <div className={`absolute inset-5 md:inset-7 rounded-full border-2 opacity-20 ${theme.grooveBorder} shadow-[inset_0_4px_8px_rgba(0,0,0,0.6)]`}></div>
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1)_0%,transparent_60%)]"></div>
+                    <div className={`absolute inset-6 md:inset-12 rounded-full border border-white/5 shadow-[inset_0_2px_15px_rgba(0,0,0,0.6)]`}></div>
+                    <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                 </div>
                 
                 {animatingMove && (
-                  <MoveOverlay 
-                    from={animatingMove.from} 
-                    to={animatingMove.to} 
-                    theme={theme} 
-                  />
+                  <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
                 )}
 
-                <div className="grid grid-cols-7 gap-3 md:gap-5 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+                {/* Increased grid size and gaps */}
+                <div className="grid grid-cols-7 gap-5 md:gap-10 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
@@ -72,54 +70,43 @@ export const Board: React.FC<BoardProps> = ({
                         const isSelected = selectedPos?.row === rIndex && selectedPos?.col === cIndex;
                         const hasMarble = cell === CellState.MARBLE;
                         const isValidDestination = validMoves.some(m => m.row === rIndex && m.col === cIndex);
-
                         const isAnimatingSource = animatingMove?.from.row === rIndex && animatingMove?.from.col === cIndex;
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
+                        const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
 
-                        if (isInvalid) {
-                          return <div key={`${rIndex}-${cIndex}`} className="w-9 h-9 md:w-16 md:h-16" />;
-                        }
-
-                        const marbleId = rIndex * 7 + cIndex;
+                        // Increased cell sizes: w-12 -> w-14, w-20 -> w-24
+                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-14 h-14 md:w-24 md:h-24" />;
 
                         return (
                           <div
                             key={`${rIndex}-${cIndex}`}
                             id={`cell-${rIndex}-${cIndex}`}
-                            className={`
-                              w-9 h-9 md:w-16 md:h-16 rounded-full flex items-center justify-center relative pointer-events-auto
-                              ${(hasMarble || isValidDestination) ? 'cursor-pointer' : ''}
-                            `}
+                            className="w-14 h-14 md:w-24 md:h-24 rounded-full flex items-center justify-center relative pointer-events-auto"
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
-                            style={{ 
-                                transformStyle: 'preserve-3d',
-                                transform: 'translateZ(2px)' 
-                            }}
+                            style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                           >
-                            <div className={`
-                                absolute w-8 h-8 md:w-13 md:h-13 rounded-full hole-3d 
-                                transition-all duration-300
-                                ${isValidDestination ? 'bg-green-500/30 shadow-[inset_0_0_20px_rgba(74,222,128,0.7)] scale-110 ring-2 ring-green-400' : ''}
+                            <div className={`absolute w-13 h-13 md:w-23 md:h-23 rounded-full hole-3d transition-all duration-300 
+                              ${isValidDestination ? 'bg-green-500/20 ring-2 ring-green-400 shadow-[0_0_30px_rgba(74,222,128,0.5)]' : ''}
+                              ${(isJustLanded && !animatingMove) ? 'hole-impact' : ''}
                             `}>
-                                {isValidDestination && (
-                                  <div className="absolute inset-0 rounded-full animate-pulse bg-green-400/30 box-border border border-green-400"></div>
-                                )}
+                                <div className="hole-rim-highlight"></div>
                             </div>
 
                             {hasMarble && !isAnimatingSource && (
-                              <div className="relative z-10 transition-transform duration-200" style={{ transformStyle: 'preserve-3d' }}>
+                              <div className="relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                                 <Marble 
-                                  id={marbleId}
+                                  id={rIndex * 7 + cIndex} 
                                   isSelected={isSelected} 
                                   theme={theme} 
                                   isRemoving={isAnimatingMid}
+                                  isNew={isJustLanded && !animatingMove}
                                 />
                               </div>
                             )}
-                            
+
                             {isValidDestination && (
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-4 h-4 rounded-full bg-green-400 shadow-[0_0_20px_#4ade80] animate-bounce"
-                                     style={{ transform: 'translateZ(40px)' }}
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-4 h-4 rounded-full bg-green-400/80 shadow-[0_0_20px_#4ade80] animate-pulse"
+                                     style={{ transform: 'translateZ(35px)' }}
                                 ></div>
                             )}
                           </div>
