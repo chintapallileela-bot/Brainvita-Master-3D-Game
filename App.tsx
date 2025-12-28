@@ -92,7 +92,7 @@ const App: React.FC = () => {
      currentLayout.board.forEach(row => row.forEach(cell => { if(cell === CellState.MARBLE) count++ }));
      return count;
   }, [currentLayout]);
-  const marblesRemoved = Math.max(0, totalLayoutMarbles - marblesRemaining);
+  const marblesRemoved = totalLayoutMarbles - marblesRemaining;
 
   const validDestinations = useMemo(() => {
     if (!selectedPos || animatingMove) return [];
@@ -172,66 +172,62 @@ const App: React.FC = () => {
       {/* Background Layers */}
       <div ref={bgLayerRef} className="fixed inset-[-5%] w-[110%] h-[110%] z-0 pointer-events-none transition-transform duration-100 ease-out">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
-          <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/40' : 'bg-white/5'}`}></div>
+          <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/60' : 'bg-white/5'}`}></div>
       </div>
 
-      {/* Header Controls - Matches Screenshot Layout */}
-      <header className="w-full flex justify-between items-start relative z-[5000] shrink-0 pointer-events-none pt-4 px-5">
-        <div className="flex flex-col gap-2 pointer-events-auto">
-           {/* Theme Button - Large Rounded Rectangle */}
-           <button onClick={() => setShowThemeModal(true)} className="btn-3d h-12 w-44">
-             <div className="btn-edge bg-pink-950 rounded-2xl shadow-xl"></div>
-             <div className="btn-surface bg-pink-600 border-t border-pink-400 rounded-2xl flex items-center justify-start px-4 gap-3">
-               <Palette size={18} className="text-white"/>
-               <span className="text-[12px] font-black uppercase text-white tracking-widest truncate">{currentTheme.name}</span>
+      {/* Header Controls */}
+      <header className="w-full flex justify-between items-start relative z-[5000] shrink-0 pointer-events-none pt-4 px-4">
+        <div className="flex flex-col gap-2 p-1.5 rounded-3xl bg-black/60 backdrop-blur-xl border border-white/10 shadow-2xl pointer-events-auto">
+           <button onClick={() => setShowThemeModal(true)} className="btn-3d h-9 w-32">
+             <div className="btn-edge bg-pink-900 rounded-full"></div>
+             <div className="btn-surface bg-pink-600 border-t border-pink-400 rounded-full flex items-center justify-center gap-1.5">
+               <Palette size={14} className="text-white"/>
+               <span className="text-[9px] font-black uppercase text-white tracking-widest truncate">{currentTheme.name}</span>
              </div>
            </button>
-           {/* Layout Button - Large Rounded Rectangle */}
-           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-12 w-44">
-             <div className="btn-edge bg-cyan-950 rounded-2xl shadow-xl"></div>
-             <div className="btn-surface bg-cyan-600 border-t border-cyan-400 rounded-2xl flex items-center justify-start px-4 gap-3">
-               <LayoutGrid size={18} className="text-white"/>
-               <span className="text-[12px] font-black uppercase text-white tracking-widest truncate">{currentLayout.name}</span>
+           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-9 w-32">
+             <div className="btn-edge bg-cyan-900 rounded-full"></div>
+             <div className="btn-surface bg-cyan-600 border-t border-cyan-400 rounded-full flex items-center justify-center gap-1.5">
+               <LayoutGrid size={14} className="text-white"/>
+               <span className="text-[9px] font-black uppercase text-white tracking-widest truncate">{currentLayout.name}</span>
              </div>
            </button>
         </div>
         
-        <div className="flex flex-col items-end gap-3 pointer-events-auto">
+        <div className="flex flex-col items-end gap-2 pointer-events-auto">
           <div className="flex gap-2">
-            <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-12 h-12">
-              <div className={`btn-edge ${soundEnabled ? 'bg-amber-800' : 'bg-slate-900'} rounded-full`}></div>
-              <div className={`btn-surface ${soundEnabled ? 'bg-amber-500 border-amber-300' : 'bg-slate-700 border-slate-500'} border-t rounded-full flex items-center justify-center`}>
-                {soundEnabled ? <Volume2 size={24} className="text-white"/> : <VolumeX size={24} className="text-white"/>}
+            <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-10 h-10">
+              <div className={`btn-edge ${soundEnabled ? 'bg-amber-900' : 'bg-slate-900'} rounded-full`}></div>
+              <div className={`btn-surface ${soundEnabled ? 'bg-amber-600 border-amber-400' : 'bg-slate-700 border-slate-500'} border-t rounded-full flex items-center justify-center`}>
+                {soundEnabled ? <Volume2 size={18} className="text-white"/> : <VolumeX size={18} className="text-white"/>}
               </div>
             </button>
-            <button onClick={() => setShowRules(true)} className="btn-3d w-12 h-12">
+            <button onClick={() => setShowRules(true)} className="btn-3d w-10 h-10">
               <div className="btn-edge bg-slate-800 rounded-full"></div>
               <div className="btn-surface bg-slate-700 border-t border-slate-500 rounded-full flex items-center justify-center">
-                <HelpCircle size={24} className="text-white" />
+                <HelpCircle size={18} className="text-white" />
               </div>
             </button>
           </div>
-          {/* Timer - Matches Screenshot Shape */}
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/80 backdrop-blur-lg border border-white/20 shadow-lg tray-inset">
-              <TimerIcon size={14} className="text-green-400 animate-pulse" />
-              <span className="font-mono text-[13px] font-black text-green-400 tracking-wider">{formatTime(timer)}</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/80 backdrop-blur-lg border border-white/10 shadow-lg tray-inset">
+              <TimerIcon size={12} className="text-green-400 animate-pulse" />
+              <span className="font-mono text-[11px] font-black text-green-400 tracking-wider">{formatTime(timer)}</span>
           </div>
         </div>
       </header>
 
-      {/* Title Section - Styled exactly like the screenshot */}
+      {/* Title Section */}
       <div 
         ref={titleRef} 
         className="text-center relative z-[4000] pointer-events-none shrink-0 pt-2 transition-transform duration-100 ease-out"
         style={{ transformStyle: 'preserve-3d' }}
       >
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-white drop-shadow-[0_8px_16px_rgba(0,0,0,0.9)] leading-none italic uppercase select-none">
-          BRAINVITA<span className="text-fuchsia-500 ml-1">3D</span>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)] leading-none italic uppercase select-none">
+          Brainvita<span className={currentTheme.isDark ? "text-cyan-400" : "text-fuchsia-500"}>3D</span>
         </h1>
-        {/* Marbles Left Counter - Pill Shape from Screenshot */}
-        <div className="inline-flex items-center gap-4 px-8 py-3 rounded-full bg-stone-900/90 backdrop-blur-xl mt-4 border border-white/10 shadow-2xl pointer-events-auto">
-          <span className="text-[12px] font-black uppercase text-white/50 tracking-[0.3em]">MARBLES LEFT</span>
-          <span className="text-2xl font-black text-white">{marblesRemaining}</span>
+        <div className="inline-flex items-center gap-3 px-5 py-1.5 rounded-full bg-black/70 backdrop-blur-xl mt-3 border border-white/10 shadow-xl pointer-events-auto">
+          <span className="text-[10px] font-black uppercase text-white/40 tracking-[0.2em]">Marbles Left</span>
+          <span className="text-xl font-black text-white">{marblesRemaining}</span>
         </div>
       </div>
 
@@ -242,24 +238,22 @@ const App: React.FC = () => {
          </div>
       </main>
 
-      {/* Footer Area - Large Buttons from Screenshot */}
+      {/* Footer Area */}
       <footer className="w-full max-w-xl flex flex-col gap-4 relative z-[4500] shrink-0 px-6 pb-6 pointer-events-auto items-center">
         <div className="flex justify-center gap-4 w-full">
-          {/* Quit Button */}
-          <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-44 h-16 disabled:opacity-40">
-            <div className="btn-edge bg-red-950 rounded-2xl"></div>
-            <div className="btn-surface bg-rose-500/80 backdrop-blur-md border-t border-rose-300 rounded-2xl flex items-center justify-center gap-3">
-              <Square size={20} fill="currentColor" className="text-white" />
-              <span className="text-white text-[14px] font-black uppercase tracking-[0.2em]">QUIT</span>
+          <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-28 h-12 disabled:opacity-40">
+            <div className="btn-edge bg-red-950 rounded-xl"></div>
+            <div className="btn-surface bg-red-700 border-t border-red-400 rounded-xl flex items-center justify-center gap-2">
+              <Square size={14} fill="currentColor" className="text-white" />
+              <span className="text-white text-[11px] font-black uppercase tracking-widest">Quit</span>
             </div>
           </button>
           
-          {/* Start Button */}
-          <button onClick={startGame} className="btn-3d w-44 h-16">
-            <div className="btn-edge bg-blue-950 rounded-2xl"></div>
-            <div className="btn-surface bg-blue-600 border-t border-blue-400 rounded-2xl flex items-center justify-center gap-3">
-              <Play size={24} fill="currentColor" className="text-white" />
-              <span className="text-white text-[15px] font-black uppercase tracking-[0.2em]">START</span>
+          <button onClick={startGame} className="btn-3d w-36 h-12">
+            <div className="btn-edge bg-blue-950 rounded-xl"></div>
+            <div className="btn-surface bg-blue-600 border-t border-blue-400 rounded-xl flex items-center justify-center gap-2">
+              <Play size={16} fill="currentColor" className="text-white" />
+              <span className="text-white text-[12px] font-black uppercase tracking-widest">Start</span>
             </div>
           </button>
         </div>
@@ -269,7 +263,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Theme Selection Modal */}
+      {/* Modals */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/95 backdrop-blur-3xl animate-in">
           <div className="relative max-w-2xl w-full p-6 rounded-[2.5rem] shadow-4xl overflow-hidden max-h-[80vh] flex flex-col border border-white/10 bg-slate-950 text-white">
@@ -298,7 +292,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Layout Selection Modal */}
       {showLayoutModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
           <div className="relative max-w-md w-full p-8 rounded-[3rem] bg-slate-950 border border-white/10 text-white shadow-4xl">
@@ -324,6 +317,32 @@ const App: React.FC = () => {
                 ))}
              </div>
           </div>
+        </div>
+      )}
+
+      {showRules && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
+           <div className="relative max-w-sm w-full p-8 rounded-[3rem] bg-slate-950 border border-white/10 text-white shadow-4xl">
+              <h2 className="text-2xl font-black mb-6 uppercase italic tracking-tighter">Rulebook</h2>
+              <div className="space-y-4 text-sm font-bold text-slate-400">
+                <div className="flex gap-3 items-start">
+                  <div className="w-8 h-8 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-xs font-black shadow-lg">1</div>
+                  <p className="pt-1.5 leading-relaxed">Select a marble and jump over its neighbor into an empty hole.</p>
+                </div>
+                <div className="flex gap-3 items-start">
+                  <div className="w-8 h-8 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-xs font-black shadow-lg">2</div>
+                  <p className="pt-1.5 leading-relaxed">The jumped marble is vaporized and added to your tray.</p>
+                </div>
+                <div className="flex gap-3 items-start">
+                  <div className="w-8 h-8 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-xs font-black shadow-lg">3</div>
+                  <p className="pt-1.5 leading-relaxed">Win by leaving exactly ONE marble on the board!</p>
+                </div>
+              </div>
+              <button onClick={() => setShowRules(false)} className="mt-8 w-full btn-3d h-14">
+                <div className="btn-edge bg-blue-950 rounded-[1.5rem]"></div>
+                <div className="btn-surface bg-blue-600 rounded-[1.5rem] text-white text-md font-black uppercase tracking-[0.2em]">Understood</div>
+              </button>
+           </div>
         </div>
       )}
     </div>
