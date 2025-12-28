@@ -171,7 +171,7 @@ const App: React.FC = () => {
     setBoard(createInitialBoard(currentLayout.board));
     setSelectedPos(null);
     if (soundEnabled) playStopSound();
-    stopBackgroundMusic();
+    stopBackgroundMusic(); // Music strictly stops when game is stopped
   };
 
   const handleThemeChange = (theme: Theme) => { setCurrentTheme(theme); setShowThemeModal(false); if (soundEnabled) playSelectSound(); };
@@ -253,9 +253,9 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Game Area - Optimized Scaling */}
+      {/* Main Game Area */}
       <main className="flex-1 w-full flex justify-center items-center relative z-[3000] overflow-visible perspective-[1200px] min-h-0 py-2">
-         <div className="scale-[0.35] xs:scale-[0.4] sm:scale-45 md:scale-55 lg:scale-70 origin-center transition-transform duration-500">
+         <div className="scale-[0.32] xs:scale-[0.38] sm:scale-45 md:scale-55 lg:scale-65 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
@@ -275,12 +275,12 @@ const App: React.FC = () => {
             <div className="btn-edge bg-blue-950 rounded-xl"></div>
             <div className="btn-surface bg-blue-600 border-t border-blue-400 rounded-xl flex items-center justify-center gap-2">
               <Play size={14} fill="currentColor" className="text-white" />
-              <span className="text-white text-[11px] font-black uppercase tracking-widest">Restart</span>
+              <span className="text-white text-[11px] font-black uppercase tracking-widest">Start</span>
             </div>
           </button>
         </div>
 
-        <div className="w-full scale-75 sm:scale-90">
+        <div className="w-full">
             <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
         </div>
       </footer>
