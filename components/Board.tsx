@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BoardState, CellState, Position, Theme } from '../types';
 import { Marble } from './Marble';
 import { MoveOverlay } from './MoveOverlay';
@@ -10,7 +10,7 @@ interface BoardProps {
   onCellClick: (pos: Position) => void;
   theme: Theme;
   animatingMove: { from: Position; to: Position; mid: Position } | null;
-  boardRef: React.RefObject<HTMLDivElement>;
+  boardRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export const Board: React.FC<BoardProps> = ({ 
@@ -22,49 +22,48 @@ export const Board: React.FC<BoardProps> = ({
   animatingMove,
   boardRef
 }) => {
+  const [lastLandedPos, setLastLandedPos] = useState<Position | null>(null);
+
+  useEffect(() => {
+    if (animatingMove) {
+      setLastLandedPos(animatingMove.to);
+    } else if (lastLandedPos) {
+      const timer = setTimeout(() => setLastLandedPos(null), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [animatingMove, lastLandedPos]);
+
   return (
-    <div className="board-container-3d flex justify-center relative pointer-events-none" style={{ touchAction: 'none' }}>
-      
-      {/* Dynamic Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-white/5 blur-[100px] rounded-full -z-10 transition-colors duration-1000 ${theme.isDark ? 'bg-indigo-500/10' : 'bg-blue-300/10'}`}></div>
+    <div className="board-container-3d flex justify-center items-center relative pointer-events-none" style={{ touchAction: 'none' }}>
+      {/* Dynamic floor glow */}
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[160%] blur-[180px] rounded-full -z-10 opacity-40 ${theme.isDark ? 'bg-indigo-500/30' : 'bg-white/50'}`}></div>
 
       <div 
         ref={boardRef}
-        className={`
-          relative p-4 md:p-6 rounded-full inline-block
-          board-base pointer-events-none
-          bg-gradient-to-b from-slate-600 to-slate-900
-        `}
+        className="relative w-[450px] h-[450px] sm:w-[550px] sm:h-[550px] md:w-[650px] md:h-[650px] aspect-square rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-600 to-slate-900 p-6 sm:p-10"
+        style={{ transformStyle: 'preserve-3d' }}
       >
-          {/* Outer Bezel (Brushed Metal look) */}
-          <div className={`
-             rounded-full p-2 md:p-4
-             bg-gradient-to-br from-slate-300 via-slate-600 to-slate-900
-             shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),_inset_0_2px_6px_rgba(255,255,255,0.4),_0_0_0_1px_rgba(0,0,0,0.6)]
-             border-b-[6px] border-black/40
-          `}>
+          {/* Main Bezel / Outer Rim */}
+          <div className="w-full h-full rounded-full p-4 sm:p-6 bg-gradient-to-br from-slate-300 via-slate-800 to-slate-950 shadow-[0_60px_120px_rgba(0,0,0,1)] border-b-[20px] border-black relative"
+               style={{ transform: 'translateZ(10px)' }}>
             
-            <div className={`
-              relative p-6 md:p-10 rounded-full
-              ${theme.boardBg} ${theme.boardBorder} border border-white/20
-              shadow-[inset_0_25px_60px_rgba(0,0,0,0.95)]
-            `}>
-                {/* Board Surface Refinements */}
+            <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"></div>
+            
+            {/* Recessed Play Surface */}
+            <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/10 shadow-[inset_0_50px_120px_rgba(0,0,0,1)] overflow-hidden flex items-center justify-center p-4 sm:p-8`}
+                 style={{ transform: 'translateZ(10px)' }}>
+                
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent mix-blend-soft-light"></div>
-                    <div className="absolute inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')] mix-blend-multiply"></div>
-                    <div className={`absolute inset-5 md:inset-7 rounded-full border-2 opacity-20 ${theme.grooveBorder} shadow-[inset_0_4px_8px_rgba(0,0,0,0.6)]`}></div>
+                    <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+                    <div className="absolute inset-0 opacity-[0.1] mix-blend-overlay" style={{ backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.5) 1px, transparent 1px)`, backgroundSize: '12px 12px' }}></div>
                 </div>
                 
                 {animatingMove && (
-                  <MoveOverlay 
-                    from={animatingMove.from} 
-                    to={animatingMove.to} 
-                    theme={theme} 
-                  />
+                  <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
                 )}
 
-                <div className="grid grid-cols-7 gap-3 md:gap-5 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+                {/* The Peg Grid - Fixed gaps to prevent vertical stretching */}
+                <div className="grid grid-cols-7 gap-3 sm:gap-5 md:gap-8 relative z-10 w-full aspect-square" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
@@ -72,53 +71,42 @@ export const Board: React.FC<BoardProps> = ({
                         const isSelected = selectedPos?.row === rIndex && selectedPos?.col === cIndex;
                         const hasMarble = cell === CellState.MARBLE;
                         const isValidDestination = validMoves.some(m => m.row === rIndex && m.col === cIndex);
-
                         const isAnimatingSource = animatingMove?.from.row === rIndex && animatingMove?.from.col === cIndex;
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
+                        const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
 
-                        if (isInvalid) {
-                          return <div key={`${rIndex}-${cIndex}`} className="w-9 h-9 md:w-16 md:h-16" />;
-                        }
-
-                        const marbleId = rIndex * 7 + cIndex;
+                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-full h-full" />;
 
                         return (
                           <div
                             key={`${rIndex}-${cIndex}`}
                             id={`cell-${rIndex}-${cIndex}`}
-                            className={`
-                              w-9 h-9 md:w-16 md:h-16 rounded-full flex items-center justify-center relative pointer-events-auto
-                              ${(hasMarble || isValidDestination) ? 'cursor-pointer' : ''}
-                            `}
+                            className="w-full h-full aspect-square rounded-full flex items-center justify-center relative pointer-events-auto"
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
-                            style={{ 
-                                transformStyle: 'preserve-3d',
-                                transform: 'translateZ(2px)' 
-                            }}
+                            style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                           >
-                            <div className={`
-                                absolute w-8 h-8 md:w-13 md:h-13 rounded-full hole-3d 
-                                transition-all duration-300
-                                ${isValidDestination ? 'bg-green-500/30 shadow-[inset_0_0_20px_rgba(74,222,128,0.7)] scale-110 ring-2 ring-green-400' : ''}
+                            {/* Hole Styling */}
+                            <div className={`absolute w-[85%] h-[85%] rounded-full hole-3d transition-all duration-300 
+                              ${isValidDestination ? 'bg-green-500/30 ring-2 ring-green-400/50 shadow-[0_0_30px_rgba(74,222,128,0.7)]' : ''}
+                              ${(isJustLanded && !animatingMove) ? 'hole-impact' : ''}
                             `}>
-                                {isValidDestination && (
-                                  <div className="absolute inset-0 rounded-full animate-pulse bg-green-400/30 box-border border border-green-400"></div>
-                                )}
+                                <div className="hole-rim-highlight"></div>
                             </div>
 
                             {hasMarble && !isAnimatingSource && (
-                              <div className="relative z-10 transition-transform duration-200" style={{ transformStyle: 'preserve-3d' }}>
+                              <div className="relative z-10 w-full h-full flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
                                 <Marble 
-                                  id={marbleId}
+                                  id={rIndex * 7 + cIndex} 
                                   isSelected={isSelected} 
                                   theme={theme} 
                                   isRemoving={isAnimatingMid}
+                                  isNew={isJustLanded && !animatingMove}
                                 />
                               </div>
                             )}
-                            
+
                             {isValidDestination && (
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-4 h-4 rounded-full bg-green-400 shadow-[0_0_20px_#4ade80] animate-bounce"
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-4 h-4 rounded-full bg-green-400 shadow-[0_0_20px_#4ade80] animate-pulse"
                                      style={{ transform: 'translateZ(40px)' }}
                                 ></div>
                             )}

@@ -2,9 +2,9 @@ import { Theme, GameLayout } from './types';
 
 export const BOARD_SIZE = 7;
 
-const I = -1; // Invalid
-const O = 1;  // Marble
-const E = 0;  // Empty
+const I = -1;
+const O = 1;
+const E = 0;
 
 export const LAYOUTS: GameLayout[] = [
   {
@@ -72,8 +72,8 @@ export const THEMES: Theme[] = [
     boardBorder: 'border-white/70',
     grooveBorder: 'border-pink-200/50',
     holeBg: 'bg-rose-900/10',
-    marbleStart: '#fff7ed',
-    marbleEnd: '#db2777',
+    marbleStart: '#fff0f5',
+    marbleEnd: '#ec4899',
     selectionRing: 'ring-fuchsia-300',
     accentColor: 'bg-pink-500 hover:bg-pink-400',
     overlayClass: 'overlay-hearts'
@@ -92,7 +92,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#0284c7',
     selectionRing: 'ring-white',
     accentColor: 'bg-sky-500 hover:bg-sky-400',
-    overlayClass: 'overlay-snow'
+    overlayClass: 'overlay-snowflakes'
   },
   {
     name: 'Nature',
@@ -108,7 +108,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#d97706',
     selectionRing: 'ring-amber-300', 
     accentColor: 'bg-amber-600 hover:bg-amber-500',
-    overlayClass: 'overlay-fog'
+    overlayClass: 'overlay-fireflies'
   },
   {
     name: 'Under Water',
@@ -124,7 +124,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#0099ff',
     selectionRing: 'ring-yellow-300',
     accentColor: 'bg-cyan-600 hover:bg-cyan-500',
-    overlayClass: 'overlay-ocean'
+    overlayClass: 'overlay-bubbles'
   },
   {
     name: 'Gem Stones',
@@ -140,7 +140,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#0ea5e9', 
     selectionRing: 'ring-white',
     accentColor: 'bg-indigo-600 hover:bg-indigo-500',
-    overlayClass: 'overlay-crystal'
+    overlayClass: 'overlay-crystals'
   },
   {
     name: 'Disney Magic',
@@ -156,7 +156,7 @@ export const THEMES: Theme[] = [
     marbleEnd: '#9333ea',
     selectionRing: 'ring-yellow-300',
     accentColor: 'bg-violet-600 hover:bg-violet-500',
-    overlayClass: 'overlay-fireworks'
+    overlayClass: 'overlay-sparkles'
   },
   {
     name: 'Sky Kingdom',
@@ -172,6 +172,6 @@ export const THEMES: Theme[] = [
     marbleEnd: '#0ea5e9',
     selectionRing: 'ring-yellow-400',
     accentColor: 'bg-sky-500 hover:bg-sky-400',
-    overlayClass: 'overlay-snow'
+    overlayClass: 'overlay-clouds'
   }
 ];
