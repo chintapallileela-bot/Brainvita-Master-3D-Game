@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Marble } from './Marble';
 import { Theme } from '../types';
@@ -12,19 +11,19 @@ export const RemovedMarbles: React.FC<RemovedMarblesProps> = ({ count, theme }) 
   const marbles = Array.from({ length: count });
 
   return (
-    <div className="py-2 px-3 rounded-2xl w-full max-w-[220px] mx-auto tray-inset bg-black/70 backdrop-blur-2xl border border-white/10 shadow-2xl">
-      <h3 className="font-black mb-1 text-center text-[7px] uppercase tracking-[0.3em] opacity-80 text-white">
-        Collected ({count})
+    <div className="py-1 px-1.5 rounded-xl w-full max-w-[80px] mx-auto bg-sky-400/90 backdrop-blur-md border border-sky-300 shadow-[0_8px_16px_rgba(0,0,0,0.3),inset_0_2px_4px_rgba(255,255,255,0.4)] ring-1 ring-sky-500/20">
+      <h3 className="font-black mb-0.5 text-center text-[5px] uppercase tracking-[0.1em] text-sky-950 leading-none">
+        TRAY ({count})
       </h3>
-      <div className="flex flex-wrap justify-center gap-0.5 min-h-[22px] px-1 max-h-10 overflow-y-auto custom-scrollbar items-center">
+      <div className="flex flex-wrap justify-center gap-0 min-h-[12px] px-0.5 max-h-6 overflow-y-auto custom-scrollbar items-center">
         {marbles.map((_, i) => (
-           <div key={i} className="transform scale-[0.2] origin-center -m-[11px]">
+           <div key={i} className="transform scale-[0.12] origin-center -m-[14px] opacity-90 hover:opacity-100 transition-all">
              <Marble theme={theme} id={2000 + i} />
            </div>
         ))}
         {count === 0 && (
-          <span className="text-[7px] font-bold uppercase tracking-widest opacity-40 italic py-1 text-white">
-            Tray Empty
+          <span className="text-[5px] font-black uppercase tracking-widest opacity-40 italic py-0.5 text-sky-900">
+            0
           </span>
         )}
       </div>

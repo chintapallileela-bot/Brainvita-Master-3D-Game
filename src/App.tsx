@@ -4,7 +4,7 @@ import { RemovedMarbles } from './components/RemovedMarbles';
 import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types';
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
-  HelpCircle, Trophy, AlertCircle, X, Square,
+  HelpCircle, X, Square,
   Timer as TimerIcon, Play, Palette, Check, LayoutGrid,
   Volume2, VolumeX
 } from 'lucide-react';
@@ -21,6 +21,10 @@ import {
   stopBackgroundMusic
 } from './utils/sound';
 
+/**
+ * Main Application Component for Brainvita 3D.
+ * Handles game state, layout selection, theme management, and 3D parallax animations.
+ */
 const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
   const [currentLayout, setCurrentLayout] = useState<GameLayout>(() => LAYOUTS[0]);
@@ -41,6 +45,7 @@ const App: React.FC = () => {
   const titleRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
 
+  // Handle game timer
   useEffect(() => {
     let interval: number;
     if (gameStatus === GameStatus.PLAYING) {
@@ -55,6 +60,7 @@ const App: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Parallax and Mouse Tracking logic
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => { mouseRef.current = { x: e.clientX, y: e.clientY }; };
     const handleTouchMove = (e: TouchEvent) => { if(e.touches[0]) mouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
@@ -66,15 +72,21 @@ const App: React.FC = () => {
       const { x, y } = mouseRef.current;
       const targetX = x === 0 ? 0 : (x / window.innerWidth) * 2 - 1;
       const targetY = y === 0 ? 0 : (y / window.innerHeight) * 2 - 1;
-      if (boardRef.current) boardRef.current.style.transform = `rotateX(${15 + targetY * -8}deg) rotateY(${targetX * 8}deg)`;
-      if (bgLayerRef.current) bgLayerRef.current.style.transform = `translate(${-targetX * 10}px, ${-targetY * 10}px) scale(1.05)`;
+      
+      if (boardRef.current) boardRef.current.style.transform = `rotateX(${15 + targetY * -10}deg) rotateY(${targetX * 10}deg)`;
+      if (bgLayerRef.current) bgLayerRef.current.style.transform = `translate(${-targetX * 12}px, ${-targetY * 12}px) scale(1.08)`;
+      
       if (floatLayerRef.current) {
          Array.from(floatLayerRef.current.children).forEach((child: any, i) => {
              const depth = (i % 3) + 1;
-             child.style.transform = `translate(${targetX * 15 * depth}px, ${targetY * 15 * depth}px)`;
+             child.style.transform = `translate(${targetX * 20 * depth}px, ${targetY * 20 * depth}px)`;
          });
       }
-      if (titleRef.current) titleRef.current.style.transform = `translate(${targetX * 5}px, ${targetY * 5}px)`;
+      
+      if (titleRef.current) {
+        titleRef.current.style.transform = `translate(${targetX * 15}px, ${targetY * 15}px) translateZ(1000px)`;
+      }
+      
       animationFrameId = requestAnimationFrame(animate);
     };
     animate();
@@ -188,7 +200,7 @@ const App: React.FC = () => {
   }, [soundEnabled, gameStatus]);
 
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center overflow-hidden ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-safe`}>
+    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden perspective-[4000px] ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} pb-4`}>
       {/* Background Layer */}
       <div ref={bgLayerRef} className="fixed inset-[-10%] w-[120%] h-[120%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-700 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
@@ -201,73 +213,77 @@ const App: React.FC = () => {
         ))}
       </div>
 
-      {/* 1. Header (Controls) */}
-      <header className="w-full flex justify-between items-start relative z-[100] shrink-0 pointer-events-none pt-4 px-3 mb-2">
-        <div className="flex flex-col gap-2 p-2 rounded-[2rem] bg-black/60 backdrop-blur-xl border border-white/20 shadow-3xl pointer-events-auto">
-           <button onClick={() => setShowThemeModal(true)} className="btn-3d h-10 w-32 xs:w-36">
+      {/* Header */}
+      <header className="w-full flex justify-between items-start relative z-[100] shrink-0 pointer-events-none pt-4 px-3">
+        {/* Left Section: Themes & Layouts */}
+        <div className="flex flex-col gap-3 p-2 rounded-[2rem] bg-black/60 backdrop-blur-xl border border-white/20 shadow-3xl pointer-events-auto">
+           <button onClick={() => setShowThemeModal(true)} className="btn-3d h-10 w-36">
              <div className="btn-edge bg-pink-900 rounded-full"></div>
              <div className="btn-surface bg-pink-600 border-t border-pink-400 rounded-full flex items-center justify-center gap-2">
                <Palette size={14} className="text-white"/>
-               <span className="text-[10px] font-black uppercase text-white tracking-widest truncate">{currentTheme.name}</span>
+               <span className="text-[10px] font-black uppercase text-white tracking-widest">{currentTheme.name}</span>
              </div>
            </button>
-           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-10 w-32 xs:w-36">
+           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-10 w-36">
              <div className="btn-edge bg-cyan-900 rounded-full"></div>
              <div className="btn-surface bg-cyan-600 border-t border-cyan-400 rounded-full flex items-center justify-center gap-2">
                <LayoutGrid size={14} className="text-white"/>
-               <span className="text-[10px] font-black uppercase text-white tracking-widest truncate">{currentLayout.name}</span>
+               <span className="text-[10px] font-black uppercase text-white tracking-widest">{currentLayout.name}</span>
              </div>
            </button>
         </div>
         
-        <div className="flex flex-col items-end gap-2 pointer-events-auto pr-1">
-          <div className="flex gap-2">
-            <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-11 h-11">
+        {/* Right Section: Sound, Help & Timer */}
+        <div className="flex flex-col items-end gap-3 pointer-events-auto pr-1">
+          <div className="flex gap-3">
+            <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-12 h-12">
               <div className={`btn-edge ${soundEnabled ? 'bg-amber-900' : 'bg-slate-900'} rounded-full`}></div>
               <div className={`btn-surface ${soundEnabled ? 'bg-amber-600 border-amber-400' : 'bg-slate-700 border-slate-500'} border-t rounded-full flex items-center justify-center`}>
-                {soundEnabled ? <Volume2 size={20} className="text-white"/> : <VolumeX size={20} className="text-white"/>}
+                {soundEnabled ? <Volume2 size={22} className="text-white"/> : <VolumeX size={22} className="text-white"/>}
               </div>
             </button>
-            <button onClick={() => setShowRules(true)} className="btn-3d w-11 h-11">
+
+            <button onClick={() => setShowRules(true)} className="btn-3d w-12 h-12">
               <div className="btn-edge bg-slate-800 rounded-full"></div>
               <div className="btn-surface bg-slate-700 border-t border-slate-500 rounded-full">
-                <HelpCircle size={20} className="text-white" />
+                <HelpCircle size={22} className="text-white" />
               </div>
             </button>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/20 shadow-2xl tray-inset">
-              <TimerIcon size={12} className="text-green-500 animate-pulse" />
-              <span className="font-mono text-[10px] font-black text-green-500 tracking-widest">{formatTime(timer)}</span>
+          
+          <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-black/80 backdrop-blur-md border border-white/20 shadow-2xl tray-inset">
+              <TimerIcon size={14} className="text-green-500 animate-pulse" />
+              <span className="font-mono text-xs font-black text-green-500 tracking-widest">{formatTime(timer)}</span>
           </div>
         </div>
       </header>
 
-      {/* 2. Title Section (Now cleanly below controls) */}
-      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 mb-4">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
+      {/* Title Section */}
+      <div ref={titleRef} className="text-center relative z-10 pointer-events-none shrink-0 -mt-6">
+        <h1 className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-none italic">
           Brainvita<span className={currentTheme.isDark ? "text-blue-400" : "text-fuchsia-400"}>3D</span>
         </h1>
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/70 backdrop-blur-md mt-4 border border-white/10 shadow-lg pointer-events-auto">
+        <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-black/70 backdrop-blur-md mt-4 border border-white/10 shadow-lg">
           <span className="text-[10px] font-bold uppercase text-white/40 tracking-[0.3em]">Marbles Left</span>
           <span className="text-xl font-black text-white">{marblesRemaining}</span>
         </div>
       </div>
 
-      {/* 3. Main Game Area (Increased scale and added scroll for safety) */}
-      <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-auto py-8 custom-scrollbar">
-         <div className="scale-[0.7] xs:scale-[0.8] sm:scale-[0.95] md:scale-[1.1] lg:scale-[1.3] origin-center transition-transform duration-500 shrink-0">
+      {/* Main Game Area */}
+      <main className="flex-1 w-full flex justify-center items-center min-h-0 relative z-40 overflow-visible py-4">
+         <div className="scale-[0.55] xs:scale-[0.6] sm:scale-75 md:scale-90 lg:scale-100 origin-center transition-transform duration-500">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
 
-      {/* 4. Footer Area */}
-      <footer className="w-full flex flex-col gap-4 relative z-50 shrink-0 px-4 pointer-events-auto items-center pb-6 bg-gradient-to-t from-black/80 via-transparent to-transparent">
+      {/* Footer Area */}
+      <footer className="w-full max-w-lg flex flex-col gap-6 relative z-50 shrink-0 px-4 pointer-events-auto items-center">
         <div className="flex justify-center gap-6 w-full">
           <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-32 h-14 disabled:opacity-50">
             <div className="btn-edge bg-red-900 rounded-2xl"></div>
             <div className="btn-surface bg-red-600 border-t border-red-400 rounded-2xl flex items-center justify-center gap-2">
               <Square size={16} fill="currentColor" className="text-white" />
-              <span className="text-white text-xs font-black uppercase tracking-widest">Stop</span>
+              <span className="text-white text-sm font-black uppercase">Stop</span>
             </div>
           </button>
           
@@ -275,7 +291,7 @@ const App: React.FC = () => {
             <div className="btn-edge bg-blue-900 rounded-2xl"></div>
             <div className="btn-surface bg-blue-600 border-t border-blue-400 rounded-2xl flex items-center justify-center gap-2">
               <Play size={18} fill="currentColor" className="text-white" />
-              <span className="text-white text-xs font-black uppercase tracking-[0.2em]">Start</span>
+              <span className="text-white text-sm font-black uppercase">Start</span>
             </div>
           </button>
         </div>
@@ -285,13 +301,13 @@ const App: React.FC = () => {
 
       {/* Modals */}
       {showThemeModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl animate-in">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl animate-in fade-in">
           <div className="relative max-w-2xl w-full p-8 rounded-[3rem] shadow-3xl overflow-hidden max-h-[85vh] flex flex-col border border-white/20 bg-slate-900 text-white">
              <div className="flex justify-between items-center mb-8 shrink-0">
-                <h2 className="text-2xl font-black uppercase tracking-tight italic">Visual Themes</h2>
+                <h2 className="text-3xl font-black uppercase tracking-tight italic">Visual Themes</h2>
                 <button onClick={() => setShowThemeModal(false)} className="btn-3d w-12 h-12">
                   <div className="btn-edge bg-slate-950 rounded-full"></div>
-                  <div className="btn-surface bg-slate-800 rounded-full"><X size={28} /></div>
+                  <div className="btn-surface bg-slate-800 rounded-full hover:bg-slate-700 transition-colors"><X size={28} /></div>
                 </button>
              </div>
              <div className="grid grid-cols-2 xs:grid-cols-3 gap-6 overflow-y-auto p-2 custom-scrollbar">
@@ -313,7 +329,7 @@ const App: React.FC = () => {
       )}
 
       {showRules && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl animate-in">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl animate-in fade-in">
            <div className="relative max-w-sm w-full p-10 rounded-[3rem] bg-slate-900 border border-white/20 text-white shadow-3xl">
               <button onClick={() => setShowRules(false)} className="absolute -top-4 -right-4 btn-3d w-14 h-14">
                 <div className="btn-edge bg-red-950 rounded-full"></div>
@@ -323,38 +339,38 @@ const App: React.FC = () => {
               <div className="space-y-6 text-base font-bold text-slate-300">
                 <div className="flex gap-4 items-start">
                   <div className="w-8 h-8 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-xs font-black shadow-lg">1</div>
-                  <p className="pt-1">Jump a marble over an adjacent one into an empty hole.</p>
+                  <p className="pt-1">Pick a marble and jump over an adjacent one into an empty hole.</p>
                 </div>
                 <div className="flex gap-4 items-start">
                   <div className="w-8 h-8 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-xs font-black shadow-lg">2</div>
-                  <p className="pt-1">The jumped marble is removed.</p>
+                  <p className="pt-1">The jumped marble is removed and added to your collection tray.</p>
                 </div>
                 <div className="flex gap-4 items-start">
                   <div className="w-8 h-8 rounded-full bg-blue-600 flex-shrink-0 flex items-center justify-center text-xs font-black shadow-lg">3</div>
-                  <p className="pt-1">Win by leaving only 1 marble in the center hole!</p>
+                  <p className="pt-1">Win the game by leaving only 1 marble in the center hole!</p>
                 </div>
               </div>
               <button onClick={() => setShowRules(false)} className="mt-12 w-full py-4 btn-3d h-16">
                 <div className="btn-edge bg-blue-900 rounded-2xl"></div>
-                <div className="btn-surface bg-blue-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] shadow-inner">Got it!</div>
+                <div className="btn-surface bg-blue-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] shadow-inner">Mastered It!</div>
               </button>
            </div>
         </div>
       )}
 
       {showLayoutModal && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl animate-in">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/95 backdrop-blur-2xl animate-in fade-in">
           <div className="relative max-w-md w-full p-8 rounded-[3rem] bg-slate-900 border border-white/20 text-white shadow-3xl">
              <div className="flex justify-between items-center mb-8">
-                <h2 className="text-2xl font-black uppercase italic tracking-tighter">Layouts</h2>
+                <h2 className="text-3xl font-black uppercase italic tracking-tighter">Layouts</h2>
                 <button onClick={() => setShowLayoutModal(false)} className="btn-3d w-12 h-12">
                   <div className="btn-edge bg-slate-950 rounded-full"></div>
                   <div className="btn-surface bg-slate-800 rounded-full"><X size={28} /></div>
                 </button>
              </div>
-             <div className="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
+             <div className="space-y-6 max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
                 {LAYOUTS.map(layout => (
-                   <button key={layout.name} onClick={() => handleLayoutChange(layout)} className="btn-3d w-full h-20 block">
+                   <button key={layout.name} onClick={() => handleLayoutChange(layout)} className="btn-3d w-full h-24 block">
                       <div className={`btn-edge rounded-[1.5rem] ${currentLayout.name === layout.name ? 'bg-green-700' : 'bg-slate-950'}`}></div>
                       <div className={`btn-surface flex items-center justify-between px-8 rounded-[1.5rem] border-2 ${currentLayout.name === layout.name ? 'border-green-400 bg-green-950/40' : 'border-white/10 bg-slate-800'}`}>
                         <div className="text-left">
