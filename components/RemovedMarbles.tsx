@@ -13,8 +13,8 @@ export const RemovedMarbles: React.FC<RemovedMarblesProps> = ({ count, theme }) 
 
   return (
     <div className="relative w-full max-w-[340px] mx-auto group perspective-[1000px]">
-      {/* 3D Box Main Body - Increased height for larger marbles */}
-      <div className="relative h-32 rounded-2xl bg-gradient-to-b from-slate-900/90 to-black/95 backdrop-blur-3xl border border-white/10 shadow-[0_20px_45px_rgba(0,0,0,0.9),inset_0_4px_20px_rgba(0,0,0,1)] overflow-hidden tray-inset transition-all duration-500 hover:border-white/20">
+      {/* 3D Box Main Body */}
+      <div className="relative h-24 sm:h-28 rounded-2xl bg-gradient-to-b from-slate-900/90 to-black/95 backdrop-blur-3xl border border-white/10 shadow-[0_20px_45px_rgba(0,0,0,0.9),inset_0_4px_20px_rgba(0,0,0,1)] overflow-hidden tray-inset transition-all duration-500 hover:border-white/20">
         
         {/* Subtle Side Wall Shading */}
         <div className="absolute inset-y-0 left-0 w-3 bg-white/5 pointer-events-none"></div>
@@ -28,11 +28,11 @@ export const RemovedMarbles: React.FC<RemovedMarblesProps> = ({ count, theme }) 
         </div>
 
         {/* Inset Marble Content Area */}
-        <div className="absolute inset-0 pt-9 pb-3 px-4 flex flex-wrap justify-center content-start gap-1 overflow-y-auto custom-scrollbar">
+        <div className="absolute inset-0 pt-9 pb-3 px-4 flex flex-wrap justify-center content-start gap-2 overflow-y-auto custom-scrollbar">
           {marbles.map((_, i) => (
              <div 
                key={i} 
-               className="transform scale-[0.45] origin-center -m-[10px] opacity-95 hover:opacity-100 hover:scale-[0.52] transition-all cursor-default drop-shadow-2xl"
+               className="w-8 h-8 opacity-95 hover:opacity-100 transition-all cursor-default drop-shadow-lg"
              >
                <Marble theme={theme} id={3000 + i} />
              </div>

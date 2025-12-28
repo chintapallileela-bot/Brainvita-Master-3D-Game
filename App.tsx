@@ -92,7 +92,7 @@ const App: React.FC = () => {
      currentLayout.board.forEach(row => row.forEach(cell => { if(cell === CellState.MARBLE) count++ }));
      return count;
   }, [currentLayout]);
-  const marblesRemoved = totalLayoutMarbles - marblesRemaining;
+  const marblesRemoved = Math.max(0, totalLayoutMarbles - marblesRemaining);
 
   const validDestinations = useMemo(() => {
     if (!selectedPos || animatingMove) return [];
