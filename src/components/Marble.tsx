@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import { Theme } from '../types';
 
@@ -8,7 +9,7 @@ interface MarbleProps {
   isRemoving?: boolean;
   isNew?: boolean;
   theme: Theme;
-  id: number; // Unique ID for deterministic pattern generation
+  id: number;
 }
 
 export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, isRemoving, isNew, theme, id }) => {
@@ -20,10 +21,7 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     };
 
     const isGemTheme = theme.name === 'Gem Stones';
-    const hueShift = isGemTheme 
-        ? Math.floor(rnd(1) * 360) 
-        : Math.floor(rnd(1) * 60) - 30;
-    
+    const hueShift = isGemTheme ? Math.floor(rnd(1) * 360) : Math.floor(rnd(1) * 60) - 30;
     const rotation = Math.floor(rnd(2) * 360);
     
     const innerTexture = `
@@ -35,26 +33,21 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
       filter: `hue-rotate(${hueShift}deg) contrast(1.1) saturate(1.15)`,
       pattern: innerTexture,
     };
-
   }, [id, theme.name, theme.isDark]);
 
   if (isGhost) {
-     return (
-        <div 
-          className="w-16 h-16 md:w-26 md:h-26 rounded-full bg-black/50 transform scale-50 blur-[2px]"
-        />
-     )
+     return <div className="w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-black/50 transform scale-50 blur-[2px]" />;
   }
 
   return (
     <div
       onClick={onClick}
       className={`
-        w-16 h-16 md:w-28 md:h-28 rounded-full cursor-pointer
+        w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full cursor-pointer
         relative transition-all duration-300
         ${isRemoving ? 'scale-0 opacity-0 rotate-180 pointer-events-none' : ''}
         ${isNew ? 'marble-landed' : ''}
-        ${isSelected ? `marble-selected ring-2 ring-white/50 ring-offset-4 ring-offset-transparent` : 'marble-3d hover:translate-y-[-10px]'}
+        ${isSelected ? `marble-selected ring-2 ring-white/50 ring-offset-4 ring-offset-transparent` : 'marble-3d hover:translate-y-[-8px]'}
       `}
       style={{
         background: `
@@ -65,30 +58,14 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
         transformStyle: 'preserve-3d'
       }}
     >
-      {/* 1. Sharp Specular Highlight */}
       <div className="absolute top-[12%] left-[14%] w-[18%] h-[12%] rounded-[50%] bg-white blur-[0.3px] shadow-[0_0_8px_rgba(255,255,255,1)] z-20"></div>
-      
-      {/* 2. Soft Secondary Glint */}
       <div className="absolute top-[10%] left-[20%] w-[40%] h-[20%] rounded-[50%] bg-gradient-to-r from-white/50 to-transparent blur-[2px] z-10"></div>
-      
-      {/* 3. Subsurface Scattering / Internal Glow */}
-      <div className="absolute bottom-[10%] right-[15%] w-[50%] h-[40%] rounded-full bg-gradient-to-tl from-white/20 to-transparent blur-[4px] opacity-100 mix-blend-overlay"></div>
-
-      {/* 4. Bounce Light */}
-      <div 
-        className="absolute bottom-[2%] left-[20%] w-[60%] h-[20%] rounded-full opacity-60 blur-[3px] pointer-events-none"
-        style={{ background: `radial-gradient(ellipse at center, ${theme.marbleEnd} 0%, transparent 80%)` }}
-      ></div>
-
-      {/* 5. Fresnel Rim Light */}
-      <div className="absolute inset-0 rounded-full border border-white/25 pointer-events-none"></div>
-
-      {/* 6. Dynamic Ambient Occlusion / Soft Shadow */}
+      <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"></div>
       {(!isRemoving) && (
         <div 
           className={`
             absolute left-1/2 -translate-x-1/2 bg-black/70 blur-[8px] rounded-full pointer-events-none mix-blend-multiply transition-all duration-400
-            ${isSelected ? 'bottom-[-70px] w-[95%] h-[25%] opacity-40 blur-[15px]' : 'bottom-[-6px] w-[85%] h-[15%] opacity-80'}
+            ${isSelected ? 'bottom-[-40px] w-[95%] h-[25%] opacity-40 blur-[12px]' : 'bottom-[-5px] w-[85%] h-[15%] opacity-80'}
           `}
         ></div>
       )}
