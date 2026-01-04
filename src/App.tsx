@@ -157,16 +157,16 @@ const App: React.FC = () => {
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
 
   return (
-    /* Changed from fixed inset-0 to relative min-h-screen to allow for scrollbars when content overflows */
-    <div className={`relative min-h-screen w-full flex flex-col items-center justify-between overflow-x-auto overflow-y-auto lg:h-auto perspective-[1500px] ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins pb-8 lg:pb-0`}>
+    /* The App container is now fixed to the viewport with overflow-auto to enable scrolling */
+    <div className={`fixed inset-0 w-full flex flex-col items-center overflow-x-auto overflow-y-auto lg:overflow-auto perspective-[1500px] ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins gap-8`}>
       
-      {/* Background Layers - Stays fixed to the window even when UI scrolls */}
+      {/* Background Layers - Remains truly fixed while UI content scrolls */}
       <div ref={bgLayerRef} className="fixed inset-[-5%] w-[110%] h-[110%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
           <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/50' : 'bg-white/5'}`}></div>
       </div>
 
-      {/* Header */}
+      {/* Header - Stays relative to the scrollable flex container */}
       <header className="w-full flex justify-between items-start relative z-[5000] shrink-0 pointer-events-none p-4 sm:p-6 lg:p-4">
         <div className="flex flex-col gap-2 pointer-events-auto">
            <button onClick={() => setShowThemeModal(true)} className="btn-3d h-10 w-40">
@@ -208,7 +208,7 @@ const App: React.FC = () => {
       </header>
 
       {/* Title */}
-      <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none shrink-0 px-4 mt-2">
+      <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none shrink-0 px-4">
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,1)] italic uppercase leading-none">
           BRAINVITA<span className="text-fuchsia-500 ml-1">3D</span>
         </h1>
@@ -218,15 +218,15 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Board */}
-      <main className="flex-1 w-full flex justify-center items-center relative z-[3000] px-4 my-8 lg:my-4 min-h-0">
-         <div className="w-full h-full flex items-center justify-center">
+      {/* Board - Uses responsive sizing that prevents extreme overflow but allows scroll if needed */}
+      <main className="shrink-0 w-full flex justify-center items-center relative z-[3000] px-4">
+         <div className="w-full flex items-center justify-center">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
 
-      {/* Footer - Stays relative to the flow so it pushes below the board if needed */}
-      <footer className="w-full max-w-4xl flex flex-col gap-4 relative z-[4500] shrink-0 px-6 pb-6 lg:pb-12 pointer-events-auto items-center">
+      {/* Footer - Pushed to the bottom of the scrollable container */}
+      <footer className="w-full max-w-4xl flex flex-col gap-6 relative z-[4500] shrink-0 px-6 pb-12 lg:pb-16 pointer-events-auto items-center mt-auto">
         <div className="flex justify-center gap-6 w-full">
           <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-36 sm:w-44 h-14 disabled:opacity-40">
             <div className="btn-edge bg-red-950 rounded-2xl"></div>
@@ -248,7 +248,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Modals and Overlays ... */}
+      {/* Modals */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
           <div className="relative max-w-4xl w-full p-6 sm:p-10 rounded-[3rem] border border-white/10 bg-slate-950 text-white overflow-hidden flex flex-col max-h-[90vh] shadow-[0_0_100px_rgba(0,0,0,1)]">
@@ -278,7 +278,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Layout Selection Modal */}
       {showLayoutModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/95 backdrop-blur-3xl animate-in">
           <div className="relative max-w-sm sm:max-w-md w-full p-10 rounded-[3.5rem] bg-slate-950 border border-white/10 text-white shadow-4xl">

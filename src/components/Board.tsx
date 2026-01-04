@@ -41,17 +41,17 @@ export const Board: React.FC<BoardProps> = ({
 
       <div 
         ref={boardRef}
-        className="relative aspect-square rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-600 to-slate-900 p-8 sm:p-12 lg:p-16 lg:w-[65vmin] lg:max-w-[700px]"
+        className="relative aspect-square rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-600 to-slate-900 p-8 sm:p-12 lg:p-14 w-[85vmin] max-h-[60vh] lg:max-w-[650px]"
         style={{ transformStyle: 'preserve-3d' }}
       >
           {/* Main Bezel Rim */}
-          <div className="rounded-full p-6 sm:p-10 lg:p-12 bg-gradient-to-br from-slate-300 via-slate-800 to-slate-950 shadow-[0_40px_100px_rgba(0,0,0,1)] border-b-[10px] sm:border-b-[15px] lg:border-b-[20px] border-black relative"
+          <div className="rounded-full p-6 sm:p-10 lg:p-10 bg-gradient-to-br from-slate-300 via-slate-800 to-slate-950 shadow-[0_40px_100px_rgba(0,0,0,1)] border-b-[10px] sm:border-b-[15px] lg:border-b-[18px] border-black relative h-full w-full"
                style={{ transform: 'translateZ(10px)' }}>
             
             <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"></div>
 
             {/* Recessed Play Surface Bowl */}
-            <div className={`relative p-8 sm:p-12 lg:p-14 rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/10 shadow-[inset_0_30px_100px_rgba(0,0,0,1)] overflow-hidden`}
+            <div className={`relative p-8 sm:p-12 lg:p-12 rounded-full h-full w-full ${theme.boardBg} ${theme.boardBorder} border border-white/10 shadow-[inset_0_30px_100px_rgba(0,0,0,1)] overflow-hidden`}
                  style={{ transform: 'translateZ(10px)' }}>
                 
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
@@ -64,7 +64,7 @@ export const Board: React.FC<BoardProps> = ({
                 )}
 
                 {/* Grid - Scaled to fit vmin container */}
-                <div className="grid grid-cols-7 gap-6 sm:gap-10 lg:gap-12 relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+                <div className="grid grid-cols-7 gap-6 sm:gap-8 lg:gap-10 h-full w-full relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
@@ -76,13 +76,13 @@ export const Board: React.FC<BoardProps> = ({
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
                         const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
 
-                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-12 h-12 sm:w-16 sm:h-16 lg:w-18 lg:h-18" />;
+                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-full h-full" />;
 
                         return (
                           <div
                             key={`${rIndex}-${cIndex}`}
                             id={`cell-${rIndex}-${cIndex}`}
-                            className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center relative pointer-events-auto"
+                            className="aspect-square rounded-full flex items-center justify-center relative pointer-events-auto"
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
                             style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                           >
@@ -93,7 +93,7 @@ export const Board: React.FC<BoardProps> = ({
                             </div>
 
                             {hasMarble && !isAnimatingSource && (
-                              <div className="relative z-10 w-full h-full flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
+                              <div className="relative z-10 w-[85%] h-[85%] flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
                                 <Marble 
                                   id={rIndex * 7 + cIndex} 
                                   isSelected={isSelected} 
