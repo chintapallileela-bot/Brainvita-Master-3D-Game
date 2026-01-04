@@ -157,9 +157,10 @@ const App: React.FC = () => {
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
 
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between overflow-hidden perspective-[1500px] ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins`}>
+    /* Changed from fixed inset-0 to relative min-h-screen to allow for scrollbars when content overflows */
+    <div className={`relative min-h-screen w-full flex flex-col items-center justify-between overflow-x-auto overflow-y-auto lg:h-auto perspective-[1500px] ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins pb-8 lg:pb-0`}>
       
-      {/* Background Layers */}
+      {/* Background Layers - Stays fixed to the window even when UI scrolls */}
       <div ref={bgLayerRef} className="fixed inset-[-5%] w-[110%] h-[110%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
           <div className={`absolute inset-0 ${currentTheme.isDark ? 'bg-black/50' : 'bg-white/5'}`}></div>
@@ -207,7 +208,7 @@ const App: React.FC = () => {
       </header>
 
       {/* Title */}
-      <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none shrink-0 px-4">
+      <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none shrink-0 px-4 mt-2">
         <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,1)] italic uppercase leading-none">
           BRAINVITA<span className="text-fuchsia-500 ml-1">3D</span>
         </h1>
@@ -217,15 +218,15 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Board - Using flex-1 but with overflow-hidden to protect footer */}
-      <main className="flex-1 w-full flex justify-center items-center relative z-[3000] px-4 overflow-hidden min-h-0">
+      {/* Board */}
+      <main className="flex-1 w-full flex justify-center items-center relative z-[3000] px-4 my-8 lg:my-4 min-h-0">
          <div className="w-full h-full flex items-center justify-center">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
          </div>
       </main>
 
-      {/* Footer - shrink-0 ensures it stays visible */}
-      <footer className="w-full max-w-4xl flex flex-col gap-4 relative z-[4500] shrink-0 px-6 pb-6 lg:pb-8 pointer-events-auto items-center">
+      {/* Footer - Stays relative to the flow so it pushes below the board if needed */}
+      <footer className="w-full max-w-4xl flex flex-col gap-4 relative z-[4500] shrink-0 px-6 pb-6 lg:pb-12 pointer-events-auto items-center">
         <div className="flex justify-center gap-6 w-full">
           <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-36 sm:w-44 h-14 disabled:opacity-40">
             <div className="btn-edge bg-red-950 rounded-2xl"></div>
