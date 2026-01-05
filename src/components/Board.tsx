@@ -41,7 +41,7 @@ export const Board: React.FC<BoardProps> = ({
 
       <div 
         ref={boardRef}
-        className="relative aspect-square rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-600 to-slate-900 p-8 sm:p-12 lg:p-14 w-[85vmin] max-h-[60vh] lg:max-w-[650px]"
+        className="relative aspect-square rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-600 to-slate-900 p-8 sm:p-12 lg:p-14 w-[85vmin] max-h-[55vh] md:max-h-[60vh] md:max-w-[450px] lg:max-w-[600px]"
         style={{ transformStyle: 'preserve-3d' }}
       >
           {/* Main Bezel Rim */}
@@ -105,7 +105,7 @@ export const Board: React.FC<BoardProps> = ({
                             )}
 
                             {isValidDestination && (
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-green-400 shadow-[0_0_20px_#4ade80] animate-pulse"
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-green-400 shadow-[0_0_200px_rgba(74,222,128,1)] animate-pulse"
                                      style={{ transform: 'translateZ(40px)' }}
                                 ></div>
                             )}

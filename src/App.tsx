@@ -157,7 +157,7 @@ const App: React.FC = () => {
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
 
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center justify-start overflow-x-auto overflow-y-auto lg:overflow-hidden perspective-[1500px] ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins`}>
+    <div className={`fixed inset-0 w-full flex flex-col items-center justify-start overflow-hidden perspective-[1500px] ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins`}>
       
       {/* Background Layers */}
       <div ref={bgLayerRef} className="fixed inset-[-5%] w-[110%] h-[110%] z-0 pointer-events-none">
@@ -166,105 +166,107 @@ const App: React.FC = () => {
       </div>
 
       {/* Header */}
-      <header className="w-full flex justify-between items-start relative z-[5000] shrink-0 pointer-events-none p-4 sm:p-6 lg:p-4">
-        <div className="flex flex-col gap-2 pointer-events-auto">
-           <button onClick={() => setShowThemeModal(true)} className="btn-3d h-10 w-40">
-             <div className="btn-edge bg-pink-950 rounded-2xl"></div>
+      <header className="w-full flex justify-between items-start relative z-[5000] shrink-0 pointer-events-none p-4 sm:p-6 lg:p-6">
+        <div className="flex flex-col gap-3 pointer-events-auto">
+           <button onClick={() => setShowThemeModal(true)} className="btn-3d h-12 w-44">
+             <div className="btn-edge bg-pink-950 rounded-2xl shadow-xl"></div>
              <div className="btn-surface bg-pink-600 border-t border-pink-400 rounded-2xl flex items-center justify-start px-4 gap-3">
-               <Palette size={16} className="text-white"/>
-               <span className="text-[10px] font-black uppercase text-white tracking-[0.1em] truncate">{currentTheme.name}</span>
+               <Palette size={18} className="text-white"/>
+               <span className="text-[11px] font-black uppercase text-white tracking-[0.15em] truncate">{currentTheme.name}</span>
              </div>
            </button>
-           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-10 w-40">
-             <div className="btn-edge bg-cyan-950 rounded-2xl"></div>
+           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-12 w-44">
+             <div className="btn-edge bg-cyan-950 rounded-2xl shadow-xl"></div>
              <div className="btn-surface bg-cyan-600 border-t border-cyan-400 rounded-2xl flex items-center justify-start px-4 gap-3">
-               <LayoutGrid size={16} className="text-white"/>
-               <span className="text-[10px] font-black uppercase text-white tracking-[0.1em] truncate">{currentLayout.name}</span>
+               <LayoutGrid size={18} className="text-white"/>
+               <span className="text-[11px] font-black uppercase text-white tracking-[0.15em] truncate">{currentLayout.name}</span>
              </div>
            </button>
         </div>
         
-        <div className="flex flex-col items-end gap-2 pointer-events-auto">
+        <div className="flex flex-col items-end gap-3 pointer-events-auto">
           <div className="flex gap-2">
-            <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-10 h-10">
+            <button onClick={() => setSoundEnabled(!soundEnabled)} className="btn-3d w-12 h-12">
               <div className={`btn-edge ${soundEnabled ? 'bg-amber-800' : 'bg-slate-900'} rounded-full`}></div>
               <div className={`btn-surface ${soundEnabled ? 'bg-amber-500 border-amber-300' : 'bg-slate-700 border-slate-500'} border-t rounded-full flex items-center justify-center`}>
-                {soundEnabled ? <Volume2 size={20} className="text-white"/> : <VolumeX size={20} className="text-white"/>}
+                {soundEnabled ? <Volume2 size={22} className="text-white"/> : <VolumeX size={22} className="text-white"/>}
               </div>
             </button>
-            <button onClick={() => setShowRules(true)} className="btn-3d w-10 h-10">
+            <button onClick={() => setShowRules(true)} className="btn-3d w-12 h-12">
               <div className="btn-edge bg-slate-800 rounded-full"></div>
               <div className="btn-surface bg-slate-700 border-t border-slate-500 rounded-full flex items-center justify-center">
-                <HelpCircle size={20} className="text-white" />
+                <HelpCircle size={22} className="text-white" />
               </div>
             </button>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-black/80 backdrop-blur-lg border border-white/20 shadow-xl tray-inset">
-              <TimerIcon size={12} className="text-green-400 animate-pulse" />
-              <span className="font-mono text-[11px] font-black text-green-400 tracking-widest">{formatTime(timer)}</span>
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/80 backdrop-blur-lg border border-white/20 shadow-xl tray-inset">
+              <TimerIcon size={14} className="text-green-400 animate-pulse" />
+              <span className="font-mono text-[12px] font-black text-green-400 tracking-widest">{formatTime(timer)}</span>
           </div>
         </div>
       </header>
 
       {/* Title */}
-      <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none shrink-0 px-4 mt-2 lg:-mt-4">
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,1)] italic uppercase leading-none">
+      <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none shrink-0 px-4 mt-2 lg:-mt-6">
+        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black tracking-tighter text-white drop-shadow-[0_10px_20px_rgba(0,0,0,1)] italic uppercase leading-none">
           BRAINVITA<span className="text-fuchsia-500 ml-1">3D</span>
         </h1>
-        <div className="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-stone-950/80 backdrop-blur-2xl mt-3 border border-white/10 shadow-2xl pointer-events-auto">
-          <span className="text-[9px] font-black uppercase text-white/40 tracking-[0.2em]">REMAINING</span>
-          <span className="text-lg font-black text-white">{marblesRemaining}</span>
+        <div className="inline-flex items-center gap-5 px-8 py-2.5 rounded-full bg-stone-950/90 backdrop-blur-2xl mt-4 border border-white/10 shadow-2xl pointer-events-auto">
+          <span className="text-[10px] font-black uppercase text-white/40 tracking-[0.4em]">REMAINING</span>
+          <span className="text-xl sm:text-2xl font-black text-white">{marblesRemaining}</span>
         </div>
       </div>
 
-      {/* Game Content Wrapper - Desktop: Side-by-Side | Mobile: Stacked */}
-      <div className="w-full flex flex-col lg:flex-row items-center justify-center lg:gap-12 lg:flex-1 relative z-[3000] px-4 lg:px-8 overflow-visible">
+      {/* Game Content Wrapper - Side-by-Side on Medium+ Screens */}
+      <div className="w-full flex-1 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 lg:gap-24 relative z-[3000] px-4 md:px-12 lg:px-24 overflow-visible -mt-4 lg:-mt-10">
           
-          {/* Board Section */}
-          <main className="shrink-0 w-full lg:w-auto flex justify-center items-center my-8 lg:my-0">
-             <div className="w-full flex items-center justify-center scale-[0.9] lg:scale-100">
+          {/* Board Container */}
+          <main className="shrink-0 w-full md:w-auto flex justify-center items-center">
+             <div className="w-full flex items-center justify-center scale-[0.85] sm:scale-100 md:scale-90 lg:scale-100">
                  <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
              </div>
           </main>
 
-          {/* Controls Section (Formerly Footer) */}
-          <footer className="w-full lg:w-auto lg:max-w-xs flex flex-col gap-6 shrink-0 pb-12 lg:pb-0 pointer-events-auto items-center">
-            <div className="flex flex-row lg:flex-col justify-center gap-6 w-full">
-              <button onClick={startGame} className="btn-3d w-36 sm:w-44 lg:w-48 h-14 sm:h-16">
-                <div className="btn-edge bg-blue-950 rounded-2xl"></div>
-                <div className="btn-surface bg-blue-600 border-t border-blue-400 rounded-2xl flex items-center justify-center gap-3">
+          {/* Control Panel (Beside board on screens >= md) */}
+          <div className="flex flex-col gap-6 md:gap-8 lg:gap-10 shrink-0 pb-12 md:pb-0 pointer-events-auto items-center md:items-start md:w-56 lg:w-64">
+            <div className="flex flex-row md:flex-col justify-center gap-6 w-full">
+              <button onClick={startGame} className="btn-3d w-36 sm:w-44 md:w-full h-14 sm:h-18 lg:h-20">
+                <div className="btn-edge bg-blue-950 rounded-2xl lg:rounded-3xl shadow-2xl"></div>
+                <div className="btn-surface bg-blue-600 border-t border-blue-400 rounded-2xl lg:rounded-3xl flex items-center justify-center gap-3">
                   <Play size={20} fill="currentColor" className="text-white" />
-                  <span className="text-white text-[12px] lg:text-[14px] font-black uppercase tracking-widest">START</span>
+                  <span className="text-white text-[12px] lg:text-[16px] font-black uppercase tracking-widest">START</span>
                 </div>
               </button>
-              <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-36 sm:w-44 lg:w-48 h-14 sm:h-16 disabled:opacity-40">
-                <div className="btn-edge bg-red-950 rounded-2xl"></div>
-                <div className="btn-surface bg-rose-500/80 backdrop-blur-md border-t border-rose-300 rounded-2xl flex items-center justify-center gap-3">
+              <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="btn-3d w-36 sm:w-44 md:w-full h-14 sm:h-18 lg:h-20 disabled:opacity-40">
+                <div className="btn-edge bg-red-950 rounded-2xl lg:rounded-3xl shadow-2xl"></div>
+                <div className="btn-surface bg-rose-500/80 backdrop-blur-md border-t border-rose-300 rounded-2xl lg:rounded-3xl flex items-center justify-center gap-3">
                   <Square size={16} fill="currentColor" className="text-white" />
-                  <span className="text-white text-[12px] lg:text-[14px] font-black uppercase tracking-widest">QUIT</span>
+                  <span className="text-white text-[12px] lg:text-[16px] font-black uppercase tracking-widest">QUIT</span>
                 </div>
               </button>
             </div>
-            <div className="w-full flex justify-center lg:mt-4">
+            
+            <div className="w-full flex justify-center md:justify-start">
                 <RemovedMarbles count={marblesRemoved} theme={currentTheme} />
             </div>
-          </footer>
+          </div>
       </div>
 
-      {/* Modals and Overlays remain fixed regardless of layout */}
+      {/* Modals remain the same */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
-          <div className="relative max-w-4xl w-full p-6 sm:p-10 rounded-[3rem] border border-white/10 bg-slate-950 text-white overflow-hidden flex flex-col max-h-[90vh] shadow-[0_0_100px_rgba(0,0,0,1)]">
+          <div className="relative max-w-4xl w-full p-6 sm:p-10 rounded-[3rem] border border-white/10 bg-slate-950 text-white overflow-hidden flex flex-col max-h-[90vh]">
              <div className="flex justify-between items-center mb-8 shrink-0">
                 <div className="flex flex-col">
                   <h2 className="text-xl sm:text-2xl font-black uppercase italic tracking-widest leading-none">WORLD THEMES</h2>
-                  <span className="text-[10px] text-white/30 font-bold tracking-[0.2em] mt-1">CHOOSE YOUR ATMOSPHERE</span>
+                  <span className="text-[10px] text-white/30 font-bold tracking-[0.2em] mt-1">SELECT YOUR ENVIRONMENT</span>
                 </div>
                 <button onClick={() => setShowThemeModal(false)} className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all active:scale-90 shadow-lg"><X size={24}/></button>
              </div>
              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto custom-scrollbar p-2 pb-12">
                 {THEMES.map(t => (
-                   <button key={t.name} onClick={() => handleThemeChange(t)} className={`group relative flex flex-col rounded-[2.5rem] overflow-hidden border-4 transition-all duration-300 active:scale-95 shadow-2xl ${currentTheme.name === t.name ? 'border-green-400 bg-green-400/10' : 'border-white/5 bg-white/5 hover:border-white/20'}`}>
+                   <button key={t.name} onClick={() => handleThemeChange(t)} 
+                        className={`group relative flex flex-col rounded-[2.5rem] overflow-hidden border-4 transition-all duration-300 active:scale-95 shadow-2xl ${currentTheme.name === t.name ? 'border-green-400 bg-green-400/10' : 'border-white/5 bg-white/5 hover:border-white/20'}`}>
                       <div className="relative aspect-[16/10] w-full overflow-hidden">
                         <div className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-1000" style={{ backgroundImage: `url(${t.bgImage})` }}></div>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
@@ -305,10 +307,10 @@ const App: React.FC = () => {
 
       {showRules && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-xs sm:max-w-sm w-full p-10 sm:p-12 rounded-[3.5rem] bg-slate-950 border border-white/10 text-white shadow-4xl">
-              <h2 className="text-2xl font-black mb-10 uppercase italic tracking-tighter text-center">RULES</h2>
+           <div className="relative max-w-xs sm:max-w-sm w-full p-10 sm:p-12 rounded-[3.5rem] bg-slate-950 border border-white/10 text-white shadow-4xl text-center">
+              <h2 className="text-2xl font-black mb-10 uppercase italic tracking-tighter">RULES</h2>
               <div className="space-y-8 text-sm font-bold text-slate-400">
-                <p className="uppercase text-[12px] tracking-wide leading-relaxed text-center">Jump one marble over another into an empty hole to remove it. Win by leaving exactly <span className="text-white underline decoration-fuchsia-500 underline-offset-4">ONE</span> marble.</p>
+                <p className="uppercase text-[12px] tracking-wide leading-relaxed">Jump one marble over another into an empty hole to remove it. Win by leaving exactly <span className="text-white underline decoration-fuchsia-500 underline-offset-4">ONE</span> marble.</p>
               </div>
               <button onClick={() => setShowRules(false)} className="mt-12 w-full btn-3d h-16">
                 <div className="btn-edge bg-blue-950 rounded-3xl"></div>
