@@ -41,7 +41,7 @@ export const Board: React.FC<BoardProps> = ({
 
       <div 
         ref={boardRef}
-        className="relative aspect-square rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 to-black p-4 sm:p-6 lg:p-8 w-[80vmin] lg:w-[70vmin] max-w-[500px] lg:max-w-[550px] max-h-[50vh] lg:max-h-[65vh]"
+        className="relative aspect-square rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 to-black p-4 sm:p-6 lg:p-8 w-[85vw] md:w-[60vw] lg:w-[70vmin] max-w-[450px] lg:max-w-[550px] max-h-[45vh] md:max-h-[60vh]"
         style={{ transformStyle: 'preserve-3d' }}
       >
           {/* Bezel Rim */}
