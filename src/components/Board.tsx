@@ -35,36 +35,34 @@ export const Board: React.FC<BoardProps> = ({
   }, [animatingMove, lastLandedPos]);
 
   return (
-    <div className="board-container-3d flex justify-center relative pointer-events-none" style={{ touchAction: 'none' }}>
+    <div className="board-container-3d flex justify-center items-center relative pointer-events-none" style={{ touchAction: 'none' }}>
       {/* Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[160%] blur-[180px] rounded-full -z-10 opacity-40 ${theme.isDark ? 'bg-indigo-500/30' : 'bg-white/50'}`}></div>
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[160%] blur-[100px] lg:blur-[180px] rounded-full -z-10 opacity-30 ${theme.isDark ? 'bg-indigo-500/20' : 'bg-white/40'}`}></div>
 
       <div 
         ref={boardRef}
-        className="relative aspect-square rounded-full inline-block board-base pointer-events-none bg-gradient-to-b from-slate-600 to-slate-900 p-8 sm:p-12 lg:p-14 w-[85vmin] max-h-[55vh] md:max-h-[60vh] md:max-w-[450px] lg:max-w-[600px]"
+        className="relative aspect-square rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 to-black p-4 sm:p-6 lg:p-8 w-[80vmin] lg:w-[70vmin] max-w-[500px] lg:max-w-[550px] max-h-[50vh] lg:max-h-[65vh]"
         style={{ transformStyle: 'preserve-3d' }}
       >
-          {/* Main Bezel Rim */}
-          <div className="rounded-full p-6 sm:p-10 lg:p-10 bg-gradient-to-br from-slate-300 via-slate-800 to-slate-950 shadow-[0_40px_100px_rgba(0,0,0,1)] border-b-[10px] sm:border-b-[15px] lg:border-b-[18px] border-black relative h-full w-full"
+          {/* Bezel Rim */}
+          <div className="w-full h-full rounded-full p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-slate-400 via-slate-900 to-black shadow-[0_30px_80px_rgba(0,0,0,1)] border-b-[8px] sm:border-b-[15px] border-black/90 relative"
                style={{ transform: 'translateZ(10px)' }}>
             
-            <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"></div>
-
-            {/* Recessed Play Surface Bowl */}
-            <div className={`relative p-8 sm:p-12 lg:p-12 rounded-full h-full w-full ${theme.boardBg} ${theme.boardBorder} border border-white/10 shadow-[inset_0_30px_100px_rgba(0,0,0,1)] overflow-hidden`}
-                 style={{ transform: 'translateZ(10px)' }}>
+            {/* Play Surface Bowl */}
+            <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/5 shadow-[inset_0_20px_100px_rgba(0,0,0,1)] flex items-center justify-center p-[8%] overflow-hidden`}
+                 style={{ transform: 'translateZ(15px)' }}>
                 
+                {/* Surface Fine Texture */}
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
-                    <div className="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-                    <div className="absolute inset-0 opacity-[0.1] mix-blend-overlay" style={{ backgroundImage: `radial-gradient(circle, rgba(0,0,0,0.5) 1.5px, transparent 1.5px)`, backgroundSize: '16px 16px' }}></div>
+                    <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                 </div>
                 
                 {animatingMove && (
                   <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
                 )}
 
-                {/* Grid - Scaled to fit vmin container */}
-                <div className="grid grid-cols-7 gap-6 sm:gap-8 lg:gap-10 h-full w-full relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+                {/* Grid */}
+                <div className="grid grid-cols-7 gap-[2.5%] w-full h-full relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
@@ -76,18 +74,18 @@ export const Board: React.FC<BoardProps> = ({
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
                         const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
 
-                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-full h-full" />;
+                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-full aspect-square" />;
 
                         return (
                           <div
                             key={`${rIndex}-${cIndex}`}
                             id={`cell-${rIndex}-${cIndex}`}
-                            className="aspect-square rounded-full flex items-center justify-center relative pointer-events-auto"
+                            className="w-full aspect-square rounded-full flex items-center justify-center relative pointer-events-auto cursor-pointer"
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
                             style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                           >
                             <div className={`absolute w-[95%] h-[95%] rounded-full hole-3d transition-all duration-300 
-                              ${isValidDestination ? 'bg-green-500/30 ring-2 ring-green-400/50 shadow-[0_0_30px_rgba(74,222,128,0.7)]' : ''}
+                              ${isValidDestination ? 'bg-green-500/20 ring-1 ring-green-400/40 shadow-[0_0_15px_rgba(74,222,128,0.5)]' : ''}
                             `}>
                                 <div className="hole-rim-highlight"></div>
                             </div>
@@ -105,8 +103,8 @@ export const Board: React.FC<BoardProps> = ({
                             )}
 
                             {isValidDestination && (
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full bg-green-400 shadow-[0_0_200px_rgba(74,222,128,1)] animate-pulse"
-                                     style={{ transform: 'translateZ(40px)' }}
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[35%] h-[35%] rounded-full bg-green-400 shadow-[0_0_20px_#4ade80] animate-pulse"
+                                     style={{ transform: 'translateZ(30px)' }}
                                 ></div>
                             )}
                           </div>
