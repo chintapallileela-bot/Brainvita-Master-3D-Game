@@ -37,19 +37,19 @@ export const Board: React.FC<BoardProps> = ({
   return (
     <div className="board-container-3d flex justify-center items-center relative pointer-events-none" style={{ touchAction: 'none' }}>
       {/* Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[160%] blur-[100px] lg:blur-[180px] rounded-full -z-10 opacity-30 ${theme.isDark ? 'bg-indigo-500/20' : 'bg-white/40'}`}></div>
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[160%] blur-[100px] sm:blur-[180px] rounded-full -z-10 opacity-30 ${theme.isDark ? 'bg-indigo-500/20' : 'bg-white/40'}`}></div>
 
       <div 
         ref={boardRef}
-        className="relative aspect-square rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 to-black p-4 sm:p-6 lg:p-8 w-[85vw] md:w-[60vw] lg:w-[70vmin] max-w-[450px] lg:max-w-[550px] max-h-[45vh] md:max-h-[60vh]"
+        className="relative aspect-square rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 to-black p-3 sm:p-5 lg:p-8 w-[80vw] lg:w-[65vmin] max-w-[400px] lg:max-w-[500px] max-h-[45vh] lg:max-h-[65vh]"
         style={{ transformStyle: 'preserve-3d' }}
       >
           {/* Bezel Rim */}
-          <div className="w-full h-full rounded-full p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-slate-400 via-slate-900 to-black shadow-[0_30px_80px_rgba(0,0,0,1)] border-b-[8px] sm:border-b-[15px] border-black/90 relative"
+          <div className="w-full h-full rounded-full p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-slate-400 via-slate-900 to-black shadow-[0_30px_80px_rgba(0,0,0,1)] border-b-[6px] sm:border-b-[12px] border-black/90 relative"
                style={{ transform: 'translateZ(10px)' }}>
             
             {/* Play Surface Bowl */}
-            <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/5 shadow-[inset_0_20px_100px_rgba(0,0,0,1)] flex items-center justify-center p-[8%] overflow-hidden`}
+            <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/5 shadow-[inset_0_20px_100px_rgba(0,0,0,1)] flex items-center justify-center p-[6%] overflow-hidden`}
                  style={{ transform: 'translateZ(15px)' }}>
                 
                 {/* Surface Fine Texture */}
