@@ -35,19 +35,23 @@ export const Board: React.FC<BoardProps> = ({
   }, [animatingMove, lastLandedPos]);
 
   /**
-   * Enforced a strict 1:1 aspect ratio.
-   * Reduced vh to 25% to guarantee a perfectly round circle on shorter screens.
+   * Enforced a strict aspect-square by defining synchronized width and height.
+   * Increased min-height to ensure the board doesn't collapse on mobile.
    */
-  const boardSize = 'min(70vw, 25vh, 240px)';
+  const boardSize = 'clamp(300px, min(85vw, 45vh), 420px)';
+
+  const boardGlowClass = theme.isDark 
+    ? 'bg-indigo-500/20 shadow-[0_0_80px_rgba(99,102,241,0.25)]' 
+    : 'bg-white/40 shadow-[0_0_80px_rgba(255,255,255,0.3)]';
 
   return (
-    <div className="board-container-3d flex justify-center items-center relative pointer-events-none flex-shrink-0" style={{ touchAction: 'none' }}>
+    <div className="board-container-3d flex justify-center items-center relative pointer-events-none mb-4" style={{ touchAction: 'none' }}>
       {/* Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] blur-[40px] rounded-full -z-10 opacity-20 ${theme.isDark ? 'bg-indigo-500/20' : 'bg-white/30'}`}></div>
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] blur-[60px] rounded-full -z-10 transition-all duration-700 ${boardGlowClass}`}></div>
 
       <div 
         ref={boardRef}
-        className="relative rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 to-black p-1 flex-shrink-0 shadow-2xl aspect-square"
+        className="relative rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 via-slate-800 to-black p-2 shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
         style={{ 
           transformStyle: 'preserve-3d',
           width: boardSize,
@@ -55,16 +59,16 @@ export const Board: React.FC<BoardProps> = ({
         }}
       >
           {/* Bezel Rim */}
-          <div className="w-full h-full rounded-full p-1 bg-gradient-to-br from-slate-400 via-slate-900 to-black shadow-[0_10px_25px_rgba(0,0,0,1)] border-b-[2px] sm:border-b-[4px] border-black/95 relative"
-               style={{ transform: 'translateZ(5px)' }}>
+          <div className="w-full h-full rounded-full p-2 bg-gradient-to-br from-slate-400 via-slate-900 to-black border-b-[6px] sm:border-b-[10px] border-black/95 relative"
+               style={{ transform: 'translateZ(10px)' }}>
             
-            {/* Play Surface Bowl - Maximum padding to keep marbles centered and round */}
-            <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/5 shadow-[inset_0_5px_25px_rgba(0,0,0,1)] flex items-center justify-center p-[18%] overflow-hidden`}
-                 style={{ transform: 'translateZ(8px)' }}>
+            {/* Play Surface Bowl */}
+            <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/10 shadow-[inset_0_10px_40px_rgba(0,0,0,0.9)] flex items-center justify-center p-[15%] overflow-hidden`}
+                 style={{ transform: 'translateZ(15px)' }}>
                 
                 {/* Surface Fine Texture */}
                 <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
-                    <div className="absolute inset-0 opacity-[0.01] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+                    <div className="absolute inset-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
                 </div>
                 
                 {animatingMove && (
@@ -72,7 +76,7 @@ export const Board: React.FC<BoardProps> = ({
                 )}
 
                 {/* Grid */}
-                <div className="grid grid-cols-7 gap-[1%] w-full h-full relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+                <div className="grid grid-cols-7 gap-[2%] w-full h-full relative z-10" style={{ transformStyle: 'preserve-3d' }}>
                   {board.map((row, rIndex) => (
                     <React.Fragment key={rIndex}>
                       {row.map((cell, cIndex) => {
@@ -84,7 +88,7 @@ export const Board: React.FC<BoardProps> = ({
                         const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
                         const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
 
-                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-full aspect-square" />;
+                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-full h-full" />;
 
                         return (
                           <div
@@ -92,10 +96,10 @@ export const Board: React.FC<BoardProps> = ({
                             id={`cell-${rIndex}-${cIndex}`}
                             className="w-full aspect-square rounded-full flex items-center justify-center relative pointer-events-auto cursor-pointer"
                             onClick={() => onCellClick({ row: rIndex, col: cIndex })}
-                            style={{ transformStyle: 'preserve-3d', transform: 'translateZ(1px)' }}
+                            style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                           >
                             <div className={`absolute w-[95%] h-[95%] rounded-full hole-3d transition-all duration-300 
-                              ${isValidDestination ? 'bg-green-500/10 ring-1 ring-green-400/20 shadow-[0_0_3px_rgba(74,222,128,0.2)]' : ''}
+                              ${isValidDestination ? 'bg-green-500/20 ring-2 ring-green-400/40 shadow-[0_0_10px_rgba(74,222,128,0.4)]' : ''}
                             `}>
                                 <div className="hole-rim-highlight"></div>
                             </div>
@@ -113,8 +117,8 @@ export const Board: React.FC<BoardProps> = ({
                             )}
 
                             {isValidDestination && (
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[18%] h-[18%] rounded-full bg-green-400 shadow-[0_0_6px_#4ade80] animate-pulse"
-                                     style={{ transform: 'translateZ(12px)' }}
+                                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[20%] h-[20%] rounded-full animate-pulse bg-green-400 shadow-[0_0_12px_#4ade80]`}
+                                     style={{ transform: 'translateZ(20px)' }}
                                 ></div>
                             )}
                           </div>

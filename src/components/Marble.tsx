@@ -23,7 +23,6 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
     const isGemTheme = theme.name === 'Gem Stones';
     const hueShift = isGemTheme ? Math.floor(rnd(1) * 360) : Math.floor(rnd(1) * 60) - 30;
     const rotation = Math.floor(rnd(2) * 360);
-    
     const innerTexture = `
       radial-gradient(ellipse at 35% 65%, rgba(255,255,255,0.4) 0%, transparent 60%),
       linear-gradient(${rotation}deg, transparent 42%, rgba(255,255,255,0.15) 48%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.15) 52%, transparent 58%)
@@ -36,18 +35,18 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
   }, [id, theme.name, theme.isDark]);
 
   if (isGhost) {
-     return <div className="w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-black/50 transform scale-50 blur-[2px]" />;
+     return <div className="w-full h-full rounded-full bg-black/50 transform scale-50 blur-[2px]" />;
   }
 
   return (
     <div
       onClick={onClick}
       className={`
-        w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full cursor-pointer
+        w-full h-full rounded-full cursor-pointer
         relative transition-all duration-300
         ${isRemoving ? 'scale-0 opacity-0 rotate-180 pointer-events-none' : ''}
         ${isNew ? 'marble-landed' : ''}
-        ${isSelected ? `marble-selected ring-2 ring-white/50 ring-offset-4 ring-offset-transparent` : 'marble-3d hover:translate-y-[-8px]'}
+        ${isSelected ? `marble-selected ring-2 ring-white/50 ring-offset-4 ring-offset-transparent` : 'marble-3d hover:translate-y-[-12%]'}
       `}
       style={{
         background: `
@@ -58,14 +57,14 @@ export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, is
         transformStyle: 'preserve-3d'
       }}
     >
-      <div className="absolute top-[12%] left-[14%] w-[18%] h-[12%] rounded-[50%] bg-white blur-[0.3px] shadow-[0_0_8px_rgba(255,255,255,1)] z-20"></div>
-      <div className="absolute top-[10%] left-[20%] w-[40%] h-[20%] rounded-[50%] bg-gradient-to-r from-white/50 to-transparent blur-[2px] z-10"></div>
+      <div className="absolute top-[12%] left-[14%] w-[20%] h-[15%] rounded-[50%] bg-white blur-[0.3px] shadow-[0_0_8px_rgba(255,255,255,1)] z-20"></div>
+      <div className="absolute top-[8%] left-[25%] w-[35%] h-[25%] rounded-[50%] bg-gradient-to-r from-white/40 to-transparent blur-[2px] z-10"></div>
       <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"></div>
       {(!isRemoving) && (
         <div 
           className={`
-            absolute left-1/2 -translate-x-1/2 bg-black/70 blur-[8px] rounded-full pointer-events-none mix-blend-multiply transition-all duration-400
-            ${isSelected ? 'bottom-[-40px] w-[95%] h-[25%] opacity-40 blur-[12px]' : 'bottom-[-5px] w-[85%] h-[15%] opacity-80'}
+            absolute left-1/2 -translate-x-1/2 bg-black/60 blur-[8px] sm:blur-[12px] rounded-full pointer-events-none mix-blend-multiply transition-all duration-400
+            ${isSelected ? 'bottom-[-60%] w-[95%] h-[25%] opacity-30 blur-[15px] sm:blur-[25px]' : 'bottom-[-5%] w-[80%] h-[12%] opacity-70'}
           `}
         ></div>
       )}

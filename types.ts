@@ -1,3 +1,4 @@
+
 export enum CellState {
   INVALID = -1,
   EMPTY = 0,
@@ -15,7 +16,13 @@ export enum GameStatus {
   IDLE = 'IDLE',
   PLAYING = 'PLAYING',
   WON = 'WON',
-  LOST = 'LOST'
+  LOST = 'LOST',
+  DRAW = 'DRAW'
+}
+
+export enum GameMode {
+  SOLO = 'SOLO',
+  VERSUS = 'VERSUS'
 }
 
 export interface GameLayout {
