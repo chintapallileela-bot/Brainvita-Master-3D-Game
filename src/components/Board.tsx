@@ -34,24 +34,21 @@ export const Board: React.FC<BoardProps> = ({
     }
   }, [animatingMove, lastLandedPos]);
 
-  /**
-   * Enforced a strict aspect-square by defining synchronized width and height.
-   * Increased min-height to ensure the board doesn't collapse on mobile.
-   */
-  const boardSize = 'clamp(300px, min(85vw, 45vh), 420px)';
+  // Robust sizing using clamp to ensure it fits regardless of screen ratio and doesn't squash vertically
+  const boardSize = 'clamp(280px, min(80vw, 40vh), 420px)';
 
   const boardGlowClass = theme.isDark 
-    ? 'bg-indigo-500/20 shadow-[0_0_80px_rgba(99,102,241,0.25)]' 
-    : 'bg-white/40 shadow-[0_0_80px_rgba(255,255,255,0.3)]';
+    ? 'bg-indigo-500/20 shadow-[0_0_60px_rgba(99,102,241,0.2)]' 
+    : 'bg-white/40 shadow-[0_0_60px_rgba(255,255,255,0.2)]';
 
   return (
-    <div className="board-container-3d flex justify-center items-center relative pointer-events-none mb-4" style={{ touchAction: 'none' }}>
+    <div className="flex justify-center items-center relative pointer-events-none w-full h-full" style={{ touchAction: 'none' }}>
       {/* Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] blur-[60px] rounded-full -z-10 transition-all duration-700 ${boardGlowClass}`}></div>
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] blur-[50px] rounded-full -z-10 transition-all duration-700 ${boardGlowClass}`}></div>
 
       <div 
         ref={boardRef}
-        className="relative rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 via-slate-800 to-black p-2 shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
+        className="relative rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 via-slate-800 to-black p-2 shadow-[0_30px_60px_rgba(0,0,0,0.8)] flex-shrink-0"
         style={{ 
           transformStyle: 'preserve-3d',
           width: boardSize,
