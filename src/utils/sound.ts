@@ -120,9 +120,7 @@ export const playMoveSound = () => {
     osc.stop(ctx.currentTime + 0.1);
     
     triggerVibration(15);
-  } catch (e) {
-    console.error("Audio playback failed", e);
-  }
+  } catch (e) {}
 };
 
 export const playWinSound = () => {
@@ -135,22 +133,62 @@ export const playWinSound = () => {
     
     triggerVibration([100, 50, 100, 50, 200]);
     stopBackgroundMusic();
-  } catch (e) {
-    console.error("Audio playback failed", e);
-  }
+  } catch (e) {}
 };
 
+/**
+ * Enhanced "Bomb Blast" sound for Game Over
+ */
 export const playLoseSound = () => {
   try {
-    const now = 0;
-    playTone(300, 'triangle', 0.5, now, 0.2);
-    playTone(200, 'triangle', 0.8, now + 0.3, 0.2);
-    
-    triggerVibration(50);
+    const ctx = getContext();
+    if (ctx.state === 'suspended') ctx.resume();
+
+    // 1. Noise Blast (High-pass filtered white noise)
+    const duration = 2.0;
+    const bufferSize = ctx.sampleRate * duration;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(1500, ctx.currentTime);
+    noiseFilter.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + duration);
+
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.6, ctx.currentTime);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(ctx.destination);
+
+    // 2. Low Boom (Sub-frequency oscillator)
+    const boom = ctx.createOscillator();
+    const boomGain = ctx.createGain();
+    boom.type = 'sine';
+    boom.frequency.setValueAtTime(150, ctx.currentTime);
+    boom.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.8);
+
+    boomGain.gain.setValueAtTime(1.0, ctx.currentTime);
+    boomGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.2);
+
+    boom.connect(boomGain);
+    boomGain.connect(ctx.destination);
+
+    noise.start();
+    boom.start();
+    boom.stop(ctx.currentTime + 1.5);
+
+    triggerVibration([150, 100, 250]);
     stopBackgroundMusic();
-  } catch (e) {
-    console.error("Audio playback failed", e);
-  }
+  } catch (e) {}
 };
 
 export const playThemeSound = () => {
@@ -161,9 +199,7 @@ export const playThemeSound = () => {
     playTone(1200, 'sine', 0.5, 0, 0.05);
     playTone(1500, 'sine', 0.5, 0.05, 0.05);
     playTone(1800, 'sine', 0.8, 0.1, 0.05);
-  } catch (e) {
-    console.error("Audio playback failed", e);
-  }
+  } catch (e) {}
 };
 
 export const playStopSound = () => {
