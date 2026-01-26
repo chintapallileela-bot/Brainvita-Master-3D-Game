@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/Board';
 import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types';
@@ -6,7 +5,8 @@ import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from '
 import { 
   HelpCircle, X, 
   Timer as TimerIcon, Play, Palette, Check, LayoutGrid,
-  Volume2, VolumeX, Trophy, RefreshCw, Star, Info
+  Volume2, VolumeX, Trophy, RefreshCw, Star, Info, Settings,
+  Zap, ZapOff, Trash2
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { 
@@ -18,10 +18,11 @@ import {
   playInvalidSound,
   playStopSound,
   startBackgroundMusic,
-  stopBackgroundMusic
+  stopBackgroundMusic,
+  setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.1.0";
+const VERSION = "1.2.0";
 
 const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
@@ -34,6 +35,7 @@ const App: React.FC = () => {
   const [showLayoutModal, setShowLayoutModal] = useState(false);
   
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [vibrationOn, setVibrationOn] = useState(true);
   const [timer, setTimer] = useState(0);
   const [bestTimes, setBestTimes] = useState<Record<string, number>>({});
   const [isNewRecord, setIsNewRecord] = useState(false);
@@ -44,14 +46,17 @@ const App: React.FC = () => {
   const titleRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
 
+  // Load persistence settings
   useEffect(() => {
-    const saved = localStorage.getItem('brainvita_best_times');
-    if (saved) {
-      try {
-        setBestTimes(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to parse best times", e);
-      }
+    const savedTimes = localStorage.getItem('brainvita_best_times');
+    if (savedTimes) {
+      try { setBestTimes(JSON.parse(savedTimes)); } catch (e) {}
+    }
+    const savedVibe = localStorage.getItem('brainvita_vibration');
+    if (savedVibe !== null) {
+      const isOn = savedVibe === 'true';
+      setVibrationOn(isOn);
+      setVibrationEnabled(isOn);
     }
   }, []);
 
@@ -82,7 +87,16 @@ const App: React.FC = () => {
       const targetX = x === 0 ? 0 : (x / window.innerWidth) * 2 - 1;
       const targetY = y === 0 ? 0 : (y / window.innerHeight) * 2 - 1;
       
-      if (boardRef.current) boardRef.current.style.transform = `rotateX(${12 + targetY * -4}deg) rotateY(${targetX * 4}deg)`;
+      if (boardRef.current) {
+        if (gameStatus === GameStatus.WON) {
+          // Victory spin
+          const spin = (Date.now() / 20) % 360;
+          boardRef.current.style.transform = `rotateX(15deg) rotateY(${spin}deg)`;
+        } else {
+          boardRef.current.style.transform = `rotateX(${12 + targetY * -4}deg) rotateY(${targetX * 4}deg)`;
+        }
+      }
+      
       if (bgLayerRef.current) bgLayerRef.current.style.transform = `translate(${-targetX * 8}px, ${-targetY * 8}px) scale(1.03)`;
       if (titleRef.current) titleRef.current.style.transform = `translate(${targetX * 3}px, ${targetY * 3}px) translateZ(40px)`;
       
@@ -94,7 +108,7 @@ const App: React.FC = () => {
       window.removeEventListener('touchmove', handleTouchMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [gameStatus]);
 
   const marblesRemaining = useMemo(() => countMarbles(board), [board]);
   const totalLayoutMarbles = useMemo(() => {
@@ -155,7 +169,6 @@ const App: React.FC = () => {
         handleWin();
       }
       else if (status === GameStatus.LOST) { 
-        // Trigger Bomb Blast Sound on Game Over
         if (soundEnabled) playLoseSound(); 
       }
       stopBackgroundMusic();
@@ -193,12 +206,32 @@ const App: React.FC = () => {
     stopBackgroundMusic();
   };
 
+  const toggleVibration = () => {
+    const newValue = !vibrationOn;
+    setVibrationOn(newValue);
+    setVibrationEnabled(newValue);
+    localStorage.setItem('brainvita_vibration', String(newValue));
+    if (soundEnabled) playSelectSound();
+  };
+
+  const resetAllProgress = () => {
+    if (window.confirm("Are you sure you want to reset all records?")) {
+      setBestTimes({});
+      localStorage.removeItem('brainvita_best_times');
+      if (soundEnabled) playInvalidSound();
+    }
+  };
+
+  // Helper to get victory or defeat message
+  const getWinnerInfo = () => {
+    if (gameStatus === GameStatus.WON) {
+      return marblesRemaining === 1 ? "PERFECT SCORE!" : "VICTORY!";
+    }
+    return "GAME OVER";
+  };
+
   const handleThemeChange = (theme: Theme) => { setCurrentTheme(theme); setShowThemeModal(false); if (soundEnabled) playSelectSound(); };
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
-
-  const getWinnerInfo = () => {
-    return gameStatus === GameStatus.WON ? 'VICTORY!' : 'GAME OVER';
-  };
 
   return (
     <div className={`fixed inset-0 w-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-hidden`}>
@@ -293,40 +326,21 @@ const App: React.FC = () => {
           </button>
         </div>
 
-        <div className="flex items-center bg-stone-950/90 backdrop-blur-md rounded-full border border-white/10 shadow-xl overflow-hidden h-9">
-           <div className="flex items-center gap-2 px-4 h-full border-r border-white/10">
-              <div className="w-1.5 h-1.5 rounded-full bg-fuchsia-500 animate-pulse"></div>
-              <span className="text-[9px] font-black text-white/50 uppercase tracking-widest">CLEARED</span>
-           </div>
-           <div className="px-5 h-full flex items-center">
-              <span className="text-base font-black text-white">{marblesRemoved}</span>
-           </div>
+        <div className="w-full flex items-center justify-between">
+            <div className="flex items-center bg-stone-950/90 backdrop-blur-md rounded-full border border-white/10 shadow-xl overflow-hidden h-8">
+               <div className="flex items-center gap-2 px-3 h-full border-r border-white/10">
+                  <div className="w-1.5 h-1.5 rounded-full bg-fuchsia-500 animate-pulse"></div>
+                  <span className="text-[8px] font-black text-white/50 uppercase tracking-widest">CLEARED</span>
+               </div>
+               <div className="px-4 h-full flex items-center">
+                  <span className="text-xs font-black text-white">{marblesRemoved}</span>
+               </div>
+            </div>
+            <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.2em]">VER {VERSION}</span>
         </div>
       </footer>
 
-      {/* Rules Modal with Version Display */}
-      {showRules && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-sm w-full p-10 rounded-[3rem] bg-slate-950 border border-white/20 text-white shadow-4xl text-center">
-              <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                <Info size={10} className="text-blue-400" />
-                <span className="text-[8px] font-black tracking-[0.2em] text-white/40 uppercase">VERSION {VERSION}</span>
-              </div>
-
-              <h2 className="text-2xl font-black mb-6 mt-4 uppercase italic tracking-tighter">RULES</h2>
-              <div className="text-xs font-bold text-slate-400 text-center leading-relaxed uppercase tracking-widest">
-                <p className="mb-4">
-                   Jump one marble over another into an empty hole to remove it. Leave only one to win!
-                </p>
-                <div className="h-px w-1/2 mx-auto bg-white/10 mb-4"></div>
-                <p className="text-white italic tracking-normal italic">Concentrate and master the board.</p>
-              </div>
-              <button onClick={() => setShowRules(false)} className="mt-8 w-full h-14 bg-blue-600 rounded-3xl text-white text-xs font-black uppercase tracking-[0.2em] shadow-xl hover:scale-105 active:scale-95 transition-all">GOT IT</button>
-           </div>
-        </div>
-      )}
-
-      {/* Themes and Layouts Modals (Existing logic) */}
+      {/* Modals */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
           <div className="relative max-w-4xl w-full p-8 rounded-[3rem] border border-white/10 bg-slate-950 text-white overflow-hidden flex flex-col max-h-[85vh]">
@@ -377,7 +391,45 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Win/Loss Modal */}
+      {showRules && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
+           <div className="relative max-w-sm w-full p-8 rounded-[3rem] bg-slate-950 border border-white/20 text-white shadow-4xl flex flex-col max-h-[90vh]">
+              <div className="flex justify-between items-center mb-6 px-2">
+                <h2 className="text-xl font-black uppercase italic tracking-tighter">SETTINGS & RULES</h2>
+                <button onClick={() => setShowRules(false)} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center transition-all active:scale-90"><X size={20}/></button>
+              </div>
+
+              <div className="overflow-y-auto flex-1 pr-2 space-y-6">
+                <div className="bg-white/5 p-6 rounded-3xl border border-white/10">
+                   <h3 className="text-[10px] font-black uppercase text-blue-400 tracking-widest mb-4 flex items-center gap-2"><Settings size={12}/>PREFERENCES</h3>
+                   <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase tracking-widest">Haptics (Vibration)</span>
+                        <button onClick={toggleVibration} className={`w-12 h-6 rounded-full transition-all relative ${vibrationOn ? 'bg-green-500' : 'bg-slate-700'}`}>
+                          <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${vibrationOn ? 'left-7' : 'left-1'}`}></div>
+                        </button>
+                      </div>
+                      <div className="pt-2">
+                        <button onClick={resetAllProgress} className="w-full h-10 rounded-xl bg-red-500/10 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all">
+                          <Trash2 size={12}/> RESET ALL RECORDS
+                        </button>
+                      </div>
+                   </div>
+                </div>
+
+                <div className="bg-white/5 p-6 rounded-3xl border border-white/10">
+                   <h3 className="text-[10px] font-black uppercase text-fuchsia-400 tracking-widest mb-4 flex items-center gap-2"><Info size={12}/>HOW TO PLAY</h3>
+                   <p className="text-xs font-bold text-slate-400 text-center leading-relaxed uppercase tracking-widest">
+                      Jump one marble over another into an empty hole to remove it. Leave only one to win!
+                   </p>
+                </div>
+              </div>
+
+              <button onClick={() => setShowRules(false)} className="mt-6 w-full h-14 bg-blue-600 rounded-3xl text-white text-xs font-black uppercase tracking-[0.2em] shadow-xl hover:scale-105 active:scale-95 transition-all">CLOSE</button>
+           </div>
+        </div>
+      )}
+
       {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
            <div className="relative max-w-sm w-full p-10 rounded-[3.5rem] bg-slate-950 border border-white/20 text-white shadow-2xl text-center">

@@ -5,6 +5,7 @@ let musicOscillators: OscillatorNode[] = [];
 let musicGainNodes: GainNode[] = [];
 let masterMusicGain: GainNode | null = null;
 let currentMusicVolume = 0.5;
+let vibrationEnabled = true;
 
 const getContext = () => {
   if (!audioCtx) {
@@ -13,8 +14,12 @@ const getContext = () => {
   return audioCtx;
 };
 
+export const setVibrationEnabled = (enabled: boolean) => {
+  vibrationEnabled = enabled;
+};
+
 const triggerVibration = (pattern: number | number[]) => {
-  if (typeof navigator !== 'undefined' && navigator.vibrate) {
+  if (vibrationEnabled && typeof navigator !== 'undefined' && navigator.vibrate) {
     navigator.vibrate(pattern);
   }
 };
