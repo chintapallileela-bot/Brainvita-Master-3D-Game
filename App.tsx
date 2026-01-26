@@ -20,7 +20,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.2.5";
+const VERSION = "1.2.6";
 
 const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
@@ -73,7 +73,6 @@ const App: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Added getWinnerInfo helper to resolve "Cannot find name 'getWinnerInfo'" error
   const getWinnerInfo = () => {
     if (gameStatus === GameStatus.WON) return "SOLVED!";
     if (gameStatus === GameStatus.LOST) return "GAME OVER";
@@ -120,7 +119,6 @@ const App: React.FC = () => {
      currentLayout.board.forEach(row => row.forEach(cell => { if(cell === CellState.MARBLE) count++ }));
      return count;
   }, [currentLayout]);
-  const marblesRemoved = totalLayoutMarbles - marblesRemaining;
 
   const validDestinations = useMemo(() => {
     if (!selectedPos || animatingMove) return [];
@@ -228,19 +226,16 @@ const App: React.FC = () => {
 
   const forceAppReload = async () => {
     if (window.confirm("Force App Update & Clear Cache?")) {
-      // Clear service workers
       if ('serviceWorker' in navigator) {
-        const registrations = await navigator.worker.getRegistrations();
+        const registrations = await navigator.serviceWorker.getRegistrations();
         for (let registration of registrations) {
           registration.unregister();
         }
       }
-      // Clear caches
       if ('caches' in window) {
         const cacheNames = await caches.keys();
         await Promise.all(cacheNames.map(name => caches.delete(name)));
       }
-      // Fixed: location.reload() takes no arguments in modern browser APIs
       window.location.reload();
     }
   };
@@ -251,13 +246,11 @@ const App: React.FC = () => {
   return (
     <div className={`fixed inset-0 w-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-hidden`}>
       
-      {/* Background Layers */}
       <div ref={bgLayerRef} className="fixed inset-[-5%] w-[110%] h-[110%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
           <div className={`absolute inset-0 transition-opacity duration-1000 ${currentTheme.isDark ? 'bg-black/50' : 'bg-white/10'}`}></div>
       </div>
 
-      {/* Version 1.2.5 High-Visibility Header */}
       <header className="w-full flex justify-between items-start relative z-[5000] p-4 pointer-events-none">
         <div className="flex flex-col gap-2 pointer-events-auto">
            <button onClick={() => setShowThemeModal(true)} className="btn-3d h-12 w-36 sm:w-44">
@@ -277,10 +270,9 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex flex-col items-end gap-3 pointer-events-auto">
-          {/* MASTER MENU BUTTON - ELECTRIC VIOLET VERSION 1.2.5 */}
           <button 
             onClick={handleMenuOpen} 
-            className="flex items-center gap-2 px-6 h-14 rounded-2xl bg-violet-600 border-t-2 border-violet-400 text-white shadow-[0_8px_32px_rgba(139,92,246,0.6)] hover:bg-violet-500 transition-all active:scale-90 animate-pulse"
+            className="flex items-center gap-2 px-6 h-14 rounded-2xl bg-emerald-600 border-t-2 border-emerald-400 text-white shadow-[0_8px_32px_rgba(16,185,129,0.5)] hover:bg-emerald-500 transition-all active:scale-90 animate-pulse"
           >
              <Menu size={22} strokeWidth={4} className="drop-shadow-lg" />
              <span className="text-[12px] font-black uppercase tracking-[0.1em]">MASTER MENU</span>
@@ -295,7 +287,6 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Container */}
       <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 min-h-0">
           <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-4 shrink-0">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] uppercase italic leading-none">
@@ -311,7 +302,6 @@ const App: React.FC = () => {
           </main>
       </div>
 
-      {/* Primary Footer Controls */}
       <footer className="w-full max-w-lg flex flex-col gap-4 relative z-[4500] shrink-0 px-8 pb-8 pointer-events-auto items-center">
         <div className="flex justify-center gap-4 w-full">
           <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="flex-1 h-16 rounded-3xl bg-rose-500/20 backdrop-blur-md border border-rose-500/40 flex items-center justify-center gap-3 active:scale-95 transition-transform disabled:opacity-5">
@@ -332,20 +322,18 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* MASTER MENU MODAL (UNIFIED PANEL) */}
       {showMenu && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
            <div className="relative max-w-sm w-full p-8 rounded-[3.5rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl flex flex-col max-h-[90vh]">
               <div className="flex justify-between items-center mb-8">
                 <div className="flex flex-col">
                   <h2 className="text-2xl font-black uppercase italic tracking-tighter leading-none">MASTER</h2>
-                  <h2 className="text-2xl font-black uppercase italic tracking-tighter text-violet-500 leading-none">MENU</h2>
+                  <h2 className="text-2xl font-black uppercase italic tracking-tighter text-emerald-500 leading-none">MENU</h2>
                 </div>
                 <button onClick={() => setShowMenu(false)} className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center transition-all active:scale-90 border border-white/20"><X size={24}/></button>
               </div>
 
               <div className="overflow-y-auto flex-1 pr-2 space-y-6">
-                {/* PREFERENCES SECTION */}
                 <div className="bg-white/5 p-6 rounded-[2.5rem] border border-white/10">
                    <h3 className="text-[11px] font-black uppercase text-amber-400 tracking-widest mb-4 flex items-center gap-2"><Settings size={14}/>PREFERENCES</h3>
                    <div className="space-y-5">
@@ -364,7 +352,6 @@ const App: React.FC = () => {
                    </div>
                 </div>
 
-                {/* UPDATE SECTION (V1.2.5 UNIQUE) */}
                 <div className="bg-blue-500/5 p-6 rounded-[2.5rem] border border-blue-500/20">
                    <h3 className="text-[11px] font-black uppercase text-blue-400 tracking-widest mb-4 flex items-center gap-2"><RefreshCcw size={14}/>SYSTEM TOOLS</h3>
                    <button onClick={forceAppReload} className="w-full h-12 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
@@ -372,7 +359,6 @@ const App: React.FC = () => {
                    </button>
                 </div>
 
-                {/* RULES SECTION */}
                 <div className="bg-white/5 p-6 rounded-[2.5rem] border border-white/10">
                    <h3 className="text-[11px] font-black uppercase text-fuchsia-400 tracking-widest mb-4 flex items-center gap-2"><Info size={14}/>HOW TO PLAY</h3>
                    <p className="text-[12px] font-bold text-slate-400 leading-relaxed uppercase tracking-widest">
@@ -380,7 +366,6 @@ const App: React.FC = () => {
                    </p>
                 </div>
 
-                {/* DANGER SECTION */}
                 <div className="bg-red-500/5 p-6 rounded-[2.5rem] border border-red-500/20">
                    <h3 className="text-[11px] font-black uppercase text-red-400 tracking-widest mb-4 flex items-center gap-2"><Trash2 size={14}/>DANGER ZONE</h3>
                    <button onClick={resetAllProgress} className="w-full h-12 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
@@ -394,7 +379,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* THEME MODAL */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
           <div className="relative max-w-4xl w-full p-8 rounded-[3.5rem] border border-white/20 bg-slate-950 text-white overflow-hidden flex flex-col max-h-[85vh]">
@@ -418,7 +402,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* LAYOUT MODAL */}
       {showLayoutModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
           <div className="relative max-w-md w-full p-8 rounded-[3.5rem] bg-slate-950 border-2 border-white/20 text-white shadow-2xl">
@@ -442,7 +425,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* VICTORY OVERLAY */}
       {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
            <div className="relative max-w-sm w-full p-10 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center">

@@ -1,4 +1,3 @@
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -14,8 +13,8 @@ export default defineConfig({
         short_name: "Brainvita 3D",
         name: "Brainvita Master 3D: Peg Solitaire",
         description: "Classic puzzle with premium 3D graphics.",
-        id: "com.brainvita.master3d.v125",
-        start_url: "/?v=1.2.5",
+        id: "com.brainvita.master3d.v126",
+        start_url: "/?v=1.2.6",
         scope: "/",
         display: "standalone",
         orientation: "portrait",
