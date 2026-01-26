@@ -1,3 +1,4 @@
+
 [
   {
     "relation": ["delegate_permission/common.handle_all_urls"],
@@ -5,7 +6,7 @@
       "namespace": "android_app",
       "package_name": "com.brainvita.master3d",
       "sha256_cert_fingerprints": [
-        "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00"
+        "REPLACE_THIS_WITH_YOUR_SHA256_FROM_PLAY_CONSOLE_APP_INTEGRITY"
       ]
     }
   }

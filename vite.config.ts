@@ -1,3 +1,4 @@
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -8,14 +9,19 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      includeAssets: ['vite.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         short_name: "Brainvita 3D",
         name: "Brainvita Master 3D: Peg Solitaire",
         description: "A classic single-player board game with stunning 3D themes and multiple layouts.",
         id: "com.brainvita.master3d",
         start_url: "/?utm_source=pwa&utm_medium=homescreen",
-        categories: ["games", "puzzle", "strategy", "brain"],
+        scope: "/",
+        display: "standalone",
+        orientation: "portrait",
+        categories: ["games", "puzzle", "strategy"],
+        theme_color: "#020617",
+        background_color: "#020617",
         icons: [
           {
             src: "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
@@ -48,7 +54,7 @@ export default defineConfig({
         ],
         shortcuts: [
           {
-            name: "New Game",
+            name: "Start Game",
             short_name: "Play",
             description: "Start a new session of Brainvita",
             url: "/",
@@ -57,15 +63,7 @@ export default defineConfig({
               type: "image/png" 
             }]
           }
-        ],
-        prefer_related_applications: false,
-        launch_handler: {
-          client_mode: "navigate-existing"
-        },
-        theme_color: "#020617",
-        background_color: "#020617",
-        display: "standalone",
-        orientation: "any"
+        ]
       },
       workbox: {
         runtimeCaching: [
