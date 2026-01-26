@@ -6,7 +6,7 @@ import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from '
 import { 
   HelpCircle, X, 
   Timer as TimerIcon, Play, Palette, Check, LayoutGrid,
-  Volume2, VolumeX, Trophy, RefreshCw
+  Volume2, VolumeX, Trophy, RefreshCw, Star, Info
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { 
@@ -21,6 +21,8 @@ import {
   stopBackgroundMusic
 } from './utils/sound';
 
+const VERSION = "1.1.0";
+
 const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
   const [currentLayout, setCurrentLayout] = useState<GameLayout>(() => LAYOUTS[0]);
@@ -33,12 +35,25 @@ const App: React.FC = () => {
   
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [timer, setTimer] = useState(0);
+  const [bestTimes, setBestTimes] = useState<Record<string, number>>({});
+  const [isNewRecord, setIsNewRecord] = useState(false);
   const [animatingMove, setAnimatingMove] = useState<{from: Position, to: Position, mid: Position} | null>(null);
 
   const boardRef = useRef<HTMLDivElement>(null);
   const bgLayerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const saved = localStorage.getItem('brainvita_best_times');
+    if (saved) {
+      try {
+        setBestTimes(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse best times", e);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     let interval: number;
@@ -49,6 +64,7 @@ const App: React.FC = () => {
   }, [gameStatus]);
 
   const formatTime = (seconds: number) => {
+    if (seconds === Infinity || seconds === 0) return "--:--";
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
@@ -134,9 +150,27 @@ const App: React.FC = () => {
     setGameStatus(status);
 
     if (status !== GameStatus.PLAYING) {
-      if (status === GameStatus.WON) { if (soundEnabled) playWinSound(); }
-      else if (status === GameStatus.LOST) { if (soundEnabled) playLoseSound(); }
+      if (status === GameStatus.WON) { 
+        if (soundEnabled) playWinSound(); 
+        handleWin();
+      }
+      else if (status === GameStatus.LOST) { 
+        // Trigger Bomb Blast Sound on Game Over
+        if (soundEnabled) playLoseSound(); 
+      }
       stopBackgroundMusic();
+    }
+  };
+
+  const handleWin = () => {
+    const currentBest = bestTimes[currentLayout.name] || Infinity;
+    if (timer < currentBest) {
+      setIsNewRecord(true);
+      const updated = { ...bestTimes, [currentLayout.name]: timer };
+      setBestTimes(updated);
+      localStorage.setItem('brainvita_best_times', JSON.stringify(updated));
+    } else {
+      setIsNewRecord(false);
     }
   };
 
@@ -145,6 +179,7 @@ const App: React.FC = () => {
     setGameStatus(GameStatus.PLAYING);
     setSelectedPos(null);
     setTimer(0);
+    setIsNewRecord(false);
     if (soundEnabled) { playThemeSound(); startBackgroundMusic(); }
   };
 
@@ -153,6 +188,7 @@ const App: React.FC = () => {
     setTimer(0);
     setBoard(createInitialBoard(currentLayout.board));
     setSelectedPos(null);
+    setIsNewRecord(false);
     if (soundEnabled) playStopSound();
     stopBackgroundMusic();
   };
@@ -201,9 +237,17 @@ const App: React.FC = () => {
                 <HelpCircle size={18} className="text-white" />
             </button>
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 shadow-lg">
-              <TimerIcon size={12} className="text-green-400" />
-              <span className="font-mono text-xs font-bold text-green-400 tracking-wider">{formatTime(timer)}</span>
+          <div className="flex flex-col items-end gap-1.5">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 shadow-lg">
+                <TimerIcon size={12} className="text-green-400" />
+                <span className="font-mono text-xs font-bold text-green-400 tracking-wider">{formatTime(timer)}</span>
+            </div>
+            {bestTimes[currentLayout.name] && (
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-500/20 backdrop-blur-sm border border-yellow-500/30">
+                <Star size={8} className="text-yellow-400 fill-current" />
+                <span className="text-[8px] font-black text-yellow-400 uppercase tracking-tighter">BEST {formatTime(bestTimes[currentLayout.name])}</span>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -260,7 +304,29 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Modals */}
+      {/* Rules Modal with Version Display */}
+      {showRules && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
+           <div className="relative max-w-sm w-full p-10 rounded-[3rem] bg-slate-950 border border-white/20 text-white shadow-4xl text-center">
+              <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <Info size={10} className="text-blue-400" />
+                <span className="text-[8px] font-black tracking-[0.2em] text-white/40 uppercase">VERSION {VERSION}</span>
+              </div>
+
+              <h2 className="text-2xl font-black mb-6 mt-4 uppercase italic tracking-tighter">RULES</h2>
+              <div className="text-xs font-bold text-slate-400 text-center leading-relaxed uppercase tracking-widest">
+                <p className="mb-4">
+                   Jump one marble over another into an empty hole to remove it. Leave only one to win!
+                </p>
+                <div className="h-px w-1/2 mx-auto bg-white/10 mb-4"></div>
+                <p className="text-white italic tracking-normal italic">Concentrate and master the board.</p>
+              </div>
+              <button onClick={() => setShowRules(false)} className="mt-8 w-full h-14 bg-blue-600 rounded-3xl text-white text-xs font-black uppercase tracking-[0.2em] shadow-xl hover:scale-105 active:scale-95 transition-all">GOT IT</button>
+           </div>
+        </div>
+      )}
+
+      {/* Themes and Layouts Modals (Existing logic) */}
       {showThemeModal && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
           <div className="relative max-w-4xl w-full p-8 rounded-[3rem] border border-white/10 bg-slate-950 text-white overflow-hidden flex flex-col max-h-[85vh]">
@@ -297,7 +363,10 @@ const App: React.FC = () => {
                 {LAYOUTS.map(layout => (
                    <button key={layout.name} onClick={() => handleLayoutChange(layout)} className={`w-full p-5 rounded-2xl text-left border-2 transition-all active:scale-[0.98] ${currentLayout.name === layout.name ? 'border-green-400 bg-green-950/40' : 'border-white/10 bg-white/5 hover:bg-white/20'}`}>
                       <div className="flex justify-between items-center">
-                        <p className="font-black text-base uppercase tracking-tight">{layout.name}</p>
+                        <div>
+                          <p className="font-black text-base uppercase tracking-tight">{layout.name}</p>
+                          {bestTimes[layout.name] && <p className="text-[8px] text-yellow-400/70 font-black uppercase mt-0.5 tracking-widest">BEST: {formatTime(bestTimes[layout.name])}</p>}
+                        </div>
                         {currentLayout.name === layout.name && <Check size={18} className="text-green-400" strokeWidth={3}/>}
                       </div>
                       <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-wider">{layout.description}</p>
@@ -308,34 +377,24 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {showRules && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-sm w-full p-10 rounded-[3rem] bg-slate-950 border border-white/20 text-white shadow-4xl text-center">
-              <h2 className="text-2xl font-black mb-6 uppercase italic tracking-tighter">RULES</h2>
-              <div className="text-xs font-bold text-slate-400 text-center leading-relaxed uppercase tracking-widest">
-                <p className="mb-4">
-                   Jump one marble over another into an empty hole to remove it. Leave only one to win!
-                </p>
-                <div className="h-px w-1/2 mx-auto bg-white/10 mb-4"></div>
-                <p className="text-white italic tracking-normal italic">Concentrate and master the board.</p>
-              </div>
-              <button onClick={() => setShowRules(false)} className="mt-8 w-full h-14 bg-blue-600 rounded-3xl text-white text-xs font-black uppercase tracking-[0.2em] shadow-xl hover:scale-105 active:scale-95 transition-all">GOT IT</button>
-           </div>
-        </div>
-      )}
-
+      {/* Win/Loss Modal */}
       {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
            <div className="relative max-w-sm w-full p-10 rounded-[3.5rem] bg-slate-950 border border-white/20 text-white shadow-2xl text-center">
-              <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-6 ${gameStatus === GameStatus.WON ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'}`}>
+              {isNewRecord && (
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-yellow-500 text-black px-6 py-2 rounded-full font-black text-xs uppercase tracking-[0.3em] shadow-[0_10px_30px_rgba(234,179,8,0.5)] z-30 animate-bounce">
+                  NEW RECORD!
+                </div>
+              )}
+              <div className={`mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-6 ${gameStatus === GameStatus.WON ? 'bg-yellow-500/20 text-yellow-400 shadow-[0_0_20px_rgba(234,179,8,0.3)]' : 'bg-red-500/20 text-red-400 shadow-[0_0_20px_rgba(239,68,68,0.3)]'}`}>
                 {gameStatus === GameStatus.WON ? <Trophy size={32} /> : <X size={32} />}
               </div>
               <h2 className="text-2xl font-black mb-4 uppercase italic tracking-tighter drop-shadow-lg">{getWinnerInfo()}</h2>
               
               <div className="grid grid-cols-2 gap-3 mb-8">
-                <div className="bg-white/10 p-4 rounded-3xl border border-white/5">
+                <div className={`p-4 rounded-3xl border transition-colors ${isNewRecord ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-white/10 border-white/5'}`}>
                     <p className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">TIME</p>
-                    <p className="text-lg font-black">{formatTime(timer)}</p>
+                    <p className={`text-lg font-black ${isNewRecord ? 'text-yellow-400' : ''}`}>{formatTime(timer)}</p>
                 </div>
                 <div className="bg-white/10 p-4 rounded-3xl border border-white/5">
                     <p className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">REMAINING</p>
