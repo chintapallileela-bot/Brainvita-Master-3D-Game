@@ -8,11 +8,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
     <meta name="theme-color" content="#020617" />
-    <meta name="description" content="Play Brainvita Master 3D. A classic marble puzzle game with stunning 3D graphics and themes." />
-    
+    <meta name="description" content="Play Brainvita Master 3D. A premium classic marble puzzle experience with stunning 3D graphics and immersive themes." />
+    <meta name="keywords" content="Brainvita, Peg Solitaire, Marble Game, Puzzle, 3D Game, Board Game" />
+    <meta name="author" content="Brainvita Master 3D" />
+
+    <!-- PWA / Mobile Discovery -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Brainvita">
+    <meta name="apple-mobile-web-app-title" content="Brainvita 3D">
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Brainvita Master 3D" />
+    <meta property="og:description" content="The ultimate 3D Peg Solitaire experience. Challenge your brain today!" />
+    <meta property="og:image" content="https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png" />
 
     <title>Brainvita Master 3D</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,27 +33,25 @@
         margin: 0;
         padding: 0;
         background-color: #020617;
-        overflow: hidden; /* Prevent scrolling which breaks 3D layout on mobile */
+        overflow: hidden;
       }
       
       body {
         font-family: 'Poppins', sans-serif;
-        touch-action: none; /* Disable gestures for better game precision */
+        touch-action: none;
         -webkit-user-select: none;
         user-select: none;
       }
       
       .board-container-3d {
-        perspective: 1200px;
+        perspective: 1500px;
         transform-style: preserve-3d;
       }
 
       .board-base {
         transform-style: preserve-3d;
-        box-shadow: 
-          0 40px 80px -20px rgba(0,0,0,0.8),
-          0 20px 40px -20px rgba(0,0,0,0.9);
         will-change: transform;
+        transition: transform 0.1s ease-out;
       }
 
       .btn-3d {
@@ -82,100 +90,57 @@
         overflow: hidden;
       }
 
-      .btn-surface::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent 50%, rgba(0,0,0,0.1) 100%);
-        pointer-events: none;
-      }
-
-      .btn-surface::after {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; height: 50%;
-        background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent);
-        border-radius: inherit;
-        pointer-events: none;
-      }
-
       .hole-3d {
-        background: radial-gradient(circle at 50% 50%, #000 0%, #1a1e2e 100%);
-        box-shadow: 
-          inset 5px 8px 16px rgba(0,0,0,1),
-          inset -2px -2px 4px rgba(255,255,255,0.08),
-          0 1px 2px rgba(255,255,255,0.1);
+        background: radial-gradient(circle at 50% 50%, #000 0%, #0f172a 100%);
         transition: box-shadow 0.3s ease;
-      }
-
-      .hole-rim-highlight {
-        position: absolute;
-        inset: -1px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent 40%, rgba(0,0,0,0.3));
-        pointer-events: none;
       }
 
       .marble-3d {
         box-shadow: 
-          inset -10px -15px 25px rgba(0,0,0,0.7),
-          inset 8px 8px 18px rgba(255,255,255,0.5),
-          0 12px 20px -8px rgba(0,0,0,0.8);
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+          inset -12px -18px 30px rgba(0,0,0,0.8),
+          inset 10px 10px 20px rgba(255,255,255,0.4),
+          0 15px 25px -10px rgba(0,0,0,0.9);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
       
       .marble-selected {
         z-index: 100;
-        filter: brightness(1.15) saturate(1.1);
         animation: 
           marble-select-jump 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
           marble-hover-bob 2.5s ease-in-out infinite alternate 0.4s;
       }
 
-      .marble-landed {
-        animation: marble-land-impact 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      }
-
       @keyframes marble-select-jump {
         0% { transform: translateY(0) scale(1); }
-        100% { transform: translateY(-40px) scale(1.12); }
+        100% { transform: translateY(-45px) scale(1.15); }
       }
 
       @keyframes marble-hover-bob {
-        0% { transform: translateY(-40px) scale(1.12); }
-        100% { transform: translateY(-50px) scale(1.15); }
+        0% { transform: translateY(-45px) scale(1.15); }
+        100% { transform: translateY(-55px) scale(1.18); }
       }
-
-      @keyframes marble-land-impact {
-        0% { transform: translateY(-20px) scaleY(1.2) scaleX(0.85); opacity: 0.8; }
-        40% { transform: translateY(4px) scaleY(0.8) scaleX(1.15); opacity: 1; }
-        70% { transform: translateY(-2px) scaleY(1.05) scaleX(0.95); }
-        100% { transform: translateY(0) scale(1); opacity: 1; }
-      }
-
-      /* Custom Scrollbars */
-      ::-webkit-scrollbar { width: 10px; height: 10px; }
-      ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
-      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 5px; border: 2px solid rgba(0,0,0,0.5); }
-      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
 
       .animate-in { animation: fadeIn 0.4s ease-out; }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+      /* Hide scrollbars but keep functionality */
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@^19.2.3",
-        "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-        "react/": "https://esm.sh/react@^19.2.3/",
-        "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-        "vite": "https://esm.sh/vite@^7.3.0",
-        "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-        "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0"
-      }
-    }
-    </script>
-  </head>
+  <script type="importmap">
+{
+  "imports": {
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0"
+  }
+}
+</script>
+</head>
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>

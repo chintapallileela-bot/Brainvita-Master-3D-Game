@@ -1,8 +1,15 @@
+
 {
-  "short_name": "Brainvita",
-  "name": "Brainvita Master 3D",
-  "description": "A classic single-player board game involving movement of marbles. Jump marbles to remove them and try to leave just one!",
+  "short_name": "Brainvita 3D",
+  "name": "Brainvita Master 3D: Ultimate Peg Solitaire",
+  "description": "Experience the classic Brainvita (Peg Solitaire) with stunning 3D graphics, immersive themes, and satisfying haptic feedback. Master the board by leaving just one marble!",
   "icons": [
+    {
+      "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
     {
       "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
       "type": "image/png",
@@ -12,40 +19,52 @@
     {
       "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
       "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
+      "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
     }
   ],
-  "start_url": "/",
+  "start_url": "/?utm_source=pwa",
   "display": "standalone",
   "theme_color": "#020617",
   "background_color": "#020617",
   "orientation": "portrait",
   "prefer_related_applications": false,
+  "categories": ["games", "puzzle", "strategy"],
   "screenshots": [
     {
       "src": "https://i.postimg.cc/rzwb1LBd/Nature.jpg",
       "type": "image/jpeg",
+      "sizes": "1280x720",
       "form_factor": "wide",
-      "label": "Immersive 3D Themes"
+      "label": "Immersive 3D Environments"
     },
     {
       "src": "https://i.postimg.cc/GH3fjn62/Barbie.jpg",
       "type": "image/jpeg",
+      "sizes": "720x1280",
       "form_factor": "narrow",
-      "label": "Classic Gameplay"
+      "label": "Beautiful Marble Themes"
     }
   ],
   "shortcuts": [
     {
-      "name": "Play Now",
+      "name": "Quick Start",
       "short_name": "Play",
-      "description": "Start a new game of Brainvita",
+      "description": "Jump straight into a new Brainvita game",
       "url": "/",
       "icons": [{ 
-        "src": "https://i.postimg.cc/y6R5kVMY/Brainvita_Shortcut_Icon.png", 
-        "type": "image/png" 
+        "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png", 
+        "type": "image/png",
+        "sizes": "192x192"
       }]
     }
-  ]
+  ],
+  "lang": "en-US",
+  "dir": "ltr"
 }

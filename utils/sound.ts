@@ -3,8 +3,7 @@ let audioCtx: AudioContext | null = null;
 let musicOscillators: OscillatorNode[] = [];
 let musicGainNodes: GainNode[] = [];
 let masterMusicGain: GainNode | null = null;
-let currentMusicVolume = 0.5;
-// Added missing vibration state variable
+let currentMusicVolume = 0.3;
 let vibrationEnabled = true;
 
 const getContext = () => {
@@ -14,13 +13,11 @@ const getContext = () => {
   return audioCtx;
 };
 
-// Added missing setVibrationEnabled export
 export const setVibrationEnabled = (enabled: boolean) => {
   vibrationEnabled = enabled;
 };
 
 const triggerVibration = (pattern: number | number[]) => {
-  // Respect the vibrationEnabled flag
   if (vibrationEnabled && typeof navigator !== 'undefined' && navigator.vibrate) {
     navigator.vibrate(pattern);
   }
@@ -35,6 +32,7 @@ const playTone = (freq: number, type: OscillatorType, duration: number, startTim
 
   osc.type = type;
   osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
+  
   gain.gain.setValueAtTime(volume, ctx.currentTime + startTime);
   gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
 
@@ -48,6 +46,7 @@ const playTone = (freq: number, type: OscillatorType, duration: number, startTim
 export const startBackgroundMusic = () => {
   const ctx = getContext();
   if (ctx.state === 'suspended') ctx.resume();
+  
   stopBackgroundMusic(); 
 
   masterMusicGain = ctx.createGain();
