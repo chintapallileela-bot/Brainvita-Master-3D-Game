@@ -34,8 +34,9 @@ export const Board: React.FC<BoardProps> = ({
     }
   }, [animatingMove, lastLandedPos]);
 
-  // Clamp sizing to ensure it always fits the viewport nicely
-  const boardSize = 'clamp(280px, min(85vw, 65vh), 500px)';
+  // Adjusted clamp to ensure it fits better between header and footer
+  // Changed 65vh to 45vh to prevent vertical overlap on mobile
+  const boardSize = 'clamp(260px, min(82vw, 45vh), 480px)';
 
   return (
     <div className="board-container-3d flex justify-center items-center relative w-full h-full pointer-events-none" style={{ touchAction: 'none' }}>

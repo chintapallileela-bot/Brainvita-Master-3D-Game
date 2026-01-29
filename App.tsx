@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/Board';
 import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types';
@@ -287,38 +288,39 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 min-h-0">
-          <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-4 shrink-0">
+      {/* Simplified and more responsive central layout */}
+      <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 overflow-visible">
+          <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-2 shrink-0">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] uppercase italic leading-none">
               BRAINVITA <span className="text-fuchsia-500">3D</span>
             </h1>
-            <div className="inline-flex items-center bg-stone-950/90 backdrop-blur-md rounded-full border border-white/20 mt-6 shadow-2xl overflow-hidden pointer-events-auto">
-              <div className="px-6 py-2 border-r border-white/20"><span className="text-[10px] font-black uppercase text-white/50 tracking-[0.2em]">REMAINING</span></div>
-              <div className="px-6 py-2 min-w-[50px] text-center"><span className="text-xl font-black text-white">{marblesRemaining}</span></div>
+            <div className="inline-flex items-center bg-stone-950/90 backdrop-blur-md rounded-full border border-white/20 mt-4 shadow-2xl overflow-hidden pointer-events-auto">
+              <div className="px-4 py-1.5 border-r border-white/20"><span className="text-[9px] font-black uppercase text-white/50 tracking-[0.2em]">REMAINING</span></div>
+              <div className="px-5 py-1.5 min-w-[40px] text-center"><span className="text-lg font-black text-white">{marblesRemaining}</span></div>
             </div>
           </div>
-          <main className="w-full flex-1 flex justify-center items-center relative min-h-[300px] overflow-visible perspective-[1200px]">
+          <main className="w-full flex-1 flex justify-center items-center relative overflow-visible perspective-[1200px]">
              <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
           </main>
       </div>
 
-      <footer className="w-full max-w-lg flex flex-col gap-4 relative z-[4500] shrink-0 px-8 pb-8 pointer-events-auto items-center">
+      <footer className="w-full max-w-lg flex flex-col gap-3 relative z-[4500] shrink-0 px-8 pb-6 sm:pb-8 pointer-events-auto items-center">
         <div className="flex justify-center gap-4 w-full">
-          <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="flex-1 h-16 rounded-3xl bg-rose-500/20 backdrop-blur-md border border-rose-500/40 flex items-center justify-center gap-3 active:scale-95 transition-transform disabled:opacity-5">
+          <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="flex-1 h-14 sm:h-16 rounded-3xl bg-rose-500/20 backdrop-blur-md border border-rose-500/40 flex items-center justify-center gap-3 active:scale-95 transition-transform disabled:opacity-0 pointer-events-auto disabled:pointer-events-none">
             <div className="w-3 h-3 bg-white/80 rounded-sm"></div>
             <span className="text-white text-sm font-black uppercase tracking-widest">QUIT</span>
           </button>
-          <button onClick={startGame} className="flex-1 h-16 rounded-3xl bg-blue-600 border-t-2 border-blue-400 shadow-[0_10px_30px_rgba(37,99,235,0.4)] flex items-center justify-center gap-3 active:scale-95 transition-transform">
+          <button onClick={startGame} className="flex-1 h-14 sm:h-16 rounded-3xl bg-blue-600 border-t-2 border-blue-400 shadow-[0_10px_30px_rgba(37,99,235,0.4)] flex items-center justify-center gap-3 active:scale-95 transition-transform">
             <Play size={24} fill="currentColor" className="text-white" />
             <span className="text-white text-sm font-black uppercase tracking-widest">START</span>
           </button>
         </div>
         <div className="w-full flex items-center justify-between px-2">
-            <div className="flex items-center gap-2 bg-fuchsia-600/20 px-4 py-1.5 rounded-full border border-fuchsia-500/30">
-               <div className="w-2 h-2 rounded-full bg-fuchsia-500 animate-pulse"></div>
-               <span className="text-[10px] font-black uppercase tracking-widest text-fuchsia-300">BUILD {VERSION}</span>
+            <div className="flex items-center gap-2 bg-fuchsia-600/20 px-3 py-1 rounded-full border border-fuchsia-500/30">
+               <div className="w-1.5 h-1.5 rounded-full bg-fuchsia-500 animate-pulse"></div>
+               <span className="text-[9px] font-black uppercase tracking-widest text-fuchsia-300 truncate">BUILD {VERSION}</span>
             </div>
-            {bestTimes[currentLayout.name] && <span className="text-[10px] font-black uppercase tracking-widest text-white/40">BEST: {formatTime(bestTimes[currentLayout.name])}</span>}
+            {bestTimes[currentLayout.name] && <span className="text-[9px] font-black uppercase tracking-widest text-white/40 truncate">BEST: {formatTime(bestTimes[currentLayout.name])}</span>}
         </div>
       </footer>
 
