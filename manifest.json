@@ -1,7 +1,8 @@
+
 {
   "short_name": "Brainvita 3D",
-  "name": "Brainvita Master 3D: Ultimate Peg Solitaire",
-  "description": "Experience the classic Brainvita (Peg Solitaire) with stunning 3D graphics, immersive themes, and satisfying haptic feedback. Master the board by leaving just one marble!",
+  "name": "Brainvita Master 3D: Peg Solitaire Puzzle",
+  "description": "Master the classic Brainvita (Peg Solitaire) logic puzzle with stunning 3D graphics, immersive strategy themes, and satisfying haptic feedback. The ultimate brain training game for puzzle fans.",
   "icons": [
     {
       "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
@@ -34,7 +35,7 @@
   "background_color": "#020617",
   "orientation": "portrait",
   "prefer_related_applications": false,
-  "categories": ["games", "puzzle", "strategy"],
+  "categories": ["games", "puzzle", "strategy", "brain training"],
   "screenshots": [
     {
       "src": "https://i.postimg.cc/W1HTMk80/Screenshot-20260130-152329-Chrome.jpg",
@@ -60,9 +61,9 @@
   ],
   "shortcuts": [
     {
-      "name": "Quick Start",
+      "name": "Play Brainvita",
       "short_name": "Play",
-      "description": "Jump straight into a new Brainvita game",
+      "description": "Challenge your brain with a new Peg Solitaire game",
       "url": "/",
       "icons": [{ 
         "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png", 
