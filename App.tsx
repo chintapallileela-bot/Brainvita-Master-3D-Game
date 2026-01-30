@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { Tutorial } from './components/Tutorial';
+import { SelectionModal } from './components/SelectionModal';
 import { 
   playMoveSound, 
   playWinSound, 
@@ -236,22 +237,20 @@ const App: React.FC = () => {
     }
   };
 
-  const forceAppReload = async () => {
-    if (window.confirm("Force App Update & Clear Cache?")) {
-      if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (let registration of registrations) { registration.unregister(); }
-      }
-      if ('caches' in window) {
-        const cacheNames = await caches.keys();
-        await Promise.all(cacheNames.map(name => caches.delete(name)));
-      }
-      window.location.reload();
-    }
+  const handleThemeChange = (theme: Theme) => { 
+    setCurrentTheme(theme); 
+    setShowThemeModal(false); 
+    if (soundEnabled) playSelectSound(); 
   };
-
-  const handleThemeChange = (theme: Theme) => { setCurrentTheme(theme); setShowThemeModal(false); if (soundEnabled) playSelectSound(); };
-  const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
+  
+  const handleLayoutChange = (layout: GameLayout) => { 
+    setCurrentLayout(layout); 
+    setBoard(createInitialBoard(layout.board)); 
+    setGameStatus(GameStatus.IDLE); 
+    setTimer(0); 
+    setShowLayoutModal(false); 
+    if (soundEnabled) playSelectSound(); 
+  };
 
   return (
     <div className={`fixed inset-0 w-full h-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-hidden`}>
@@ -397,13 +396,6 @@ const App: React.FC = () => {
                    </button>
                 </div>
 
-                <div className="bg-white/5 p-6 rounded-[2.5rem] border border-white/10">
-                   <h3 className="text-[11px] font-black uppercase text-fuchsia-400 tracking-widest mb-4 flex items-center gap-2"><Info size={14}/>QUICK GUIDE</h3>
-                   <p className="text-[12px] font-bold text-slate-400 leading-relaxed uppercase tracking-widest">
-                      Jump over pegs into empty holes to remove them. Aim for <span className="text-white italic underline decoration-fuchsia-500 underline-offset-4">SOLITUDE</span> (one peg remaining) to win.
-                   </p>
-                </div>
-
                 <div className="bg-red-500/5 p-6 rounded-[2.5rem] border border-red-500/20">
                    <h3 className="text-[11px] font-black uppercase text-red-400 tracking-widest mb-4 flex items-center gap-2"><Trash2 size={14}/>DANGER ZONE</h3>
                    <button onClick={resetAllProgress} className="w-full h-12 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
@@ -417,7 +409,40 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Theme and Layout modals omitted for brevity, logic remains identical */}
+      {/* Theme Selection Modal */}
+      <SelectionModal
+        isOpen={showThemeModal}
+        onClose={() => setShowThemeModal(false)}
+        title="THEMES"
+        items={THEMES}
+        selectedItem={currentTheme}
+        onSelect={handleThemeChange}
+        renderItem={(theme) => (
+          <div className="p-4 flex items-center gap-4">
+            <div className={`w-16 h-16 rounded-full border-2 border-white/20 shadow-xl overflow-hidden`} style={{ background: `radial-gradient(circle at 35% 35%, ${theme.marbleStart} 0%, ${theme.marbleEnd} 85%)` }}></div>
+            <div className="flex flex-col">
+              <span className="text-sm font-black uppercase tracking-widest">{theme.name}</span>
+              <span className="text-[8px] font-bold uppercase text-white/40 tracking-widest mt-1">PREMIUM SKIN</span>
+            </div>
+          </div>
+        )}
+      />
+
+      {/* Layout Selection Modal */}
+      <SelectionModal
+        isOpen={showLayoutModal}
+        onClose={() => setShowLayoutModal(false)}
+        title="LAYOUTS"
+        items={LAYOUTS}
+        selectedItem={currentLayout}
+        onSelect={handleLayoutChange}
+        renderItem={(layout) => (
+          <div className="p-4 flex flex-col">
+            <span className="text-sm font-black uppercase tracking-widest mb-1">{layout.name}</span>
+            <span className="text-[9px] font-bold text-white/40 leading-relaxed uppercase tracking-widest">{layout.description}</span>
+          </div>
+        )}
+      />
 
       {showResultsModal && (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
