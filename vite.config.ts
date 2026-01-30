@@ -1,4 +1,3 @@
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -44,10 +43,16 @@ export default defineConfig({
         ],
         screenshots: [
            {
-            src: "https://i.postimg.cc/rzwb1LBd/Nature.jpg",
+            src: "https://i.postimg.cc/W1HTMk80/Screenshot-20260130-152329-Chrome.jpg",
             type: "image/jpeg",
-            sizes: "1280x720",
-            form_factor: "wide"
+            sizes: "1080x2400",
+            form_factor: "narrow"
+          },
+          {
+            src: "https://i.postimg.cc/yxVMq1jL/Screenshot-20260130-152448-Chrome.jpg",
+            type: "image/jpeg",
+            sizes: "1080x2400",
+            form_factor: "narrow"
           }
         ]
       },

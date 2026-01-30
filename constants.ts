@@ -1,4 +1,3 @@
-
 import { Theme, GameLayout } from './types';
 
 export const BOARD_SIZE = 7;
