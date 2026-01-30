@@ -286,7 +286,6 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Container - Space added here to push content away from header/footer */}
       <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 py-2 sm:py-6 overflow-hidden">
           <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-4 shrink-0">
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] uppercase italic leading-none">
@@ -339,7 +338,6 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Modals remain the same... */}
       {showMenu && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
            <div className="relative max-w-sm w-full p-8 rounded-[3.5rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl flex flex-col max-h-[90vh]">
@@ -461,7 +459,7 @@ const App: React.FC = () => {
                     <p className="text-xl font-black">{marblesRemaining}</p>
                 </div>
               </div>
-              <button onClick={startGame} className="w-full h-18 bg-blue-600 rounded-[2.5rem] text-white text-sm font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-transform hover:scale-105 active:scale-95 shadow-2xl py-4">
+              <button onClick={stopGame} className="w-full h-18 bg-blue-600 rounded-[2.5rem] text-white text-sm font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-transform hover:scale-105 active:scale-95 shadow-2xl py-4">
                 <RefreshCw size={24} /><span>TRY AGAIN</span>
               </button>
            </div>
