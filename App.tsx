@@ -245,85 +245,101 @@ const App: React.FC = () => {
   const handleLayoutChange = (layout: GameLayout) => { setCurrentLayout(layout); setBoard(createInitialBoard(layout.board)); setGameStatus(GameStatus.IDLE); setTimer(0); setShowLayoutModal(false); if (soundEnabled) playSelectSound(); };
 
   return (
-    <div className={`fixed inset-0 w-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-hidden`}>
+    <div className={`fixed inset-0 w-full h-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-hidden`}>
       
       <div ref={bgLayerRef} className="fixed inset-[-5%] w-[110%] h-[110%] z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
           <div className={`absolute inset-0 transition-opacity duration-1000 ${currentTheme.isDark ? 'bg-black/50' : 'bg-white/10'}`}></div>
       </div>
 
-      <header className="w-full flex justify-between items-start relative z-[5000] p-4 pointer-events-none">
+      <header className="w-full flex justify-between items-start relative z-[5000] p-4 pointer-events-none shrink-0">
         <div className="flex flex-col gap-2 pointer-events-auto">
-           <button onClick={() => setShowThemeModal(true)} className="btn-3d h-12 w-36 sm:w-44">
+           <button onClick={() => setShowThemeModal(true)} className="btn-3d h-10 w-32 sm:h-12 sm:w-44">
              <div className="btn-edge bg-pink-900 rounded-2xl shadow-lg"></div>
              <div className="btn-surface bg-pink-500 border-t border-pink-300 rounded-2xl flex items-center justify-start px-3 gap-2">
-               <Palette size={18} className="text-white"/>
-               <span className="text-[10px] sm:text-xs font-black uppercase text-white tracking-widest truncate">{currentTheme.name}</span>
+               <Palette size={16} className="text-white shrink-0"/>
+               <span className="text-[9px] sm:text-xs font-black uppercase text-white tracking-widest truncate">{currentTheme.name}</span>
              </div>
            </button>
-           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-12 w-36 sm:w-44">
+           <button onClick={() => setShowLayoutModal(true)} className="btn-3d h-10 w-32 sm:h-12 sm:w-44">
              <div className="btn-edge bg-cyan-900 rounded-2xl shadow-lg"></div>
              <div className="btn-surface bg-cyan-500 border-t border-cyan-300 rounded-2xl flex items-center justify-start px-3 gap-2">
-               <LayoutGrid size={18} className="text-white"/>
-               <span className="text-[10px] sm:text-xs font-black uppercase text-white tracking-widest truncate">{currentLayout.name}</span>
+               <LayoutGrid size={16} className="text-white shrink-0"/>
+               <span className="text-[9px] sm:text-xs font-black uppercase text-white tracking-widest truncate">{currentLayout.name}</span>
              </div>
            </button>
         </div>
 
-        <div className="flex flex-col items-end gap-3 pointer-events-auto">
+        <div className="flex flex-col items-end gap-2 pointer-events-auto">
           <button 
             onClick={handleMenuOpen} 
-            className="flex items-center gap-2 px-6 h-14 rounded-2xl bg-emerald-600 border-t-2 border-emerald-400 text-white shadow-[0_8px_32px_rgba(16,185,129,0.5)] hover:bg-emerald-500 transition-all active:scale-90 animate-pulse"
+            className="flex items-center gap-2 px-4 h-12 rounded-2xl bg-emerald-600 border-t-2 border-emerald-400 text-white shadow-[0_8px_32px_rgba(16,185,129,0.5)] hover:bg-emerald-500 transition-all active:scale-90"
           >
-             <Menu size={22} strokeWidth={4} className="drop-shadow-lg" />
-             <span className="text-[12px] font-black uppercase tracking-[0.1em]">MASTER MENU</span>
+             <Menu size={20} strokeWidth={4} className="drop-shadow-lg" />
+             <span className="text-[10px] font-black uppercase tracking-[0.1em]">MENU</span>
           </button>
           
-          <div className="flex flex-col items-end gap-1.5">
-            <div className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-black/80 backdrop-blur-md border border-white/20 shadow-xl">
-                <TimerIcon size={14} className="text-green-400" />
-                <span className="font-mono text-base font-bold text-green-400 tracking-wider leading-none">{formatTime(timer)}</span>
-            </div>
+          <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/20 shadow-xl">
+              <TimerIcon size={12} className="text-green-400" />
+              <span className="font-mono text-xs font-bold text-green-400 tracking-wider leading-none">{formatTime(timer)}</span>
           </div>
         </div>
       </header>
 
-      {/* Simplified and more responsive central layout */}
-      <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 overflow-visible">
-          <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-2 shrink-0">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] uppercase italic leading-none">
+      {/* Main Container - Space added here to push content away from header/footer */}
+      <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 py-2 sm:py-6 overflow-hidden">
+          <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-4 shrink-0">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] uppercase italic leading-none">
               BRAINVITA <span className="text-fuchsia-500">3D</span>
             </h1>
-            <div className="inline-flex items-center bg-stone-950/90 backdrop-blur-md rounded-full border border-white/20 mt-4 shadow-2xl overflow-hidden pointer-events-auto">
-              <div className="px-4 py-1.5 border-r border-white/20"><span className="text-[9px] font-black uppercase text-white/50 tracking-[0.2em]">REMAINING</span></div>
-              <div className="px-5 py-1.5 min-w-[40px] text-center"><span className="text-lg font-black text-white">{marblesRemaining}</span></div>
+            <div className="inline-flex items-center bg-stone-950/90 backdrop-blur-md rounded-full border border-white/20 mt-3 shadow-2xl overflow-hidden pointer-events-auto">
+              <div className="px-3 py-1 border-r border-white/20"><span className="text-[8px] font-black uppercase text-white/50 tracking-[0.2em]">REMAINING</span></div>
+              <div className="px-4 py-1 min-w-[30px] text-center"><span className="text-base font-black text-white">{marblesRemaining}</span></div>
             </div>
           </div>
-          <main className="w-full flex-1 flex justify-center items-center relative overflow-visible perspective-[1200px]">
-             <Board board={board} selectedPos={selectedPos} validMoves={validDestinations} onCellClick={handleCellClick} theme={currentTheme} animatingMove={animatingMove} boardRef={boardRef} />
+
+          <main className="w-full flex-1 flex justify-center items-center relative perspective-[1500px] overflow-visible">
+             <Board 
+               board={board} 
+               selectedPos={selectedPos} 
+               validMoves={validDestinations} 
+               onCellClick={handleCellClick} 
+               theme={currentTheme} 
+               animatingMove={animatingMove} 
+               boardRef={boardRef} 
+               disabled={gameStatus === GameStatus.IDLE}
+             />
           </main>
       </div>
 
-      <footer className="w-full max-w-lg flex flex-col gap-3 relative z-[4500] shrink-0 px-8 pb-6 sm:pb-8 pointer-events-auto items-center">
-        <div className="flex justify-center gap-4 w-full">
-          <button onClick={stopGame} disabled={gameStatus === GameStatus.IDLE} className="flex-1 h-14 sm:h-16 rounded-3xl bg-rose-500/20 backdrop-blur-md border border-rose-500/40 flex items-center justify-center gap-3 active:scale-95 transition-transform disabled:opacity-0 pointer-events-auto disabled:pointer-events-none">
-            <div className="w-3 h-3 bg-white/80 rounded-sm"></div>
-            <span className="text-white text-sm font-black uppercase tracking-widest">QUIT</span>
+      <footer className="w-full max-w-lg flex flex-col gap-2 relative z-[4500] shrink-0 px-6 pb-6 sm:pb-8 pointer-events-auto items-center">
+        <div className="flex justify-center gap-3 w-full">
+          <button 
+            onClick={stopGame} 
+            disabled={gameStatus === GameStatus.IDLE} 
+            className="flex-1 h-12 sm:h-16 rounded-3xl bg-rose-500/20 backdrop-blur-md border border-rose-500/40 flex items-center justify-center gap-3 active:scale-95 transition-all disabled:opacity-0 disabled:translate-y-4 pointer-events-auto disabled:pointer-events-none"
+          >
+            <div className="w-2.5 h-2.5 bg-white/80 rounded-sm"></div>
+            <span className="text-white text-xs font-black uppercase tracking-widest">QUIT</span>
           </button>
-          <button onClick={startGame} className="flex-1 h-14 sm:h-16 rounded-3xl bg-blue-600 border-t-2 border-blue-400 shadow-[0_10px_30px_rgba(37,99,235,0.4)] flex items-center justify-center gap-3 active:scale-95 transition-transform">
-            <Play size={24} fill="currentColor" className="text-white" />
-            <span className="text-white text-sm font-black uppercase tracking-widest">START</span>
+          <button 
+            onClick={startGame} 
+            className="flex-1 h-12 sm:h-16 rounded-3xl bg-blue-600 border-t-2 border-blue-400 shadow-[0_10px_30px_rgba(37,99,235,0.4)] flex items-center justify-center gap-3 active:scale-95 transition-all"
+          >
+            <Play size={20} fill="currentColor" className="text-white" />
+            <span className="text-white text-xs font-black uppercase tracking-widest">{gameStatus === GameStatus.IDLE ? 'START' : 'RESTART'}</span>
           </button>
         </div>
         <div className="w-full flex items-center justify-between px-2">
-            <div className="flex items-center gap-2 bg-fuchsia-600/20 px-3 py-1 rounded-full border border-fuchsia-500/30">
-               <div className="w-1.5 h-1.5 rounded-full bg-fuchsia-500 animate-pulse"></div>
-               <span className="text-[9px] font-black uppercase tracking-widest text-fuchsia-300 truncate">BUILD {VERSION}</span>
+            <div className="flex items-center gap-1.5 bg-fuchsia-600/20 px-2 py-0.5 rounded-full border border-fuchsia-500/30">
+               <div className="w-1 h-1 rounded-full bg-fuchsia-500 animate-pulse"></div>
+               <span className="text-[7px] font-black uppercase tracking-widest text-fuchsia-300 truncate">V{VERSION}</span>
             </div>
-            {bestTimes[currentLayout.name] && <span className="text-[9px] font-black uppercase tracking-widest text-white/40 truncate">BEST: {formatTime(bestTimes[currentLayout.name])}</span>}
+            {bestTimes[currentLayout.name] && <span className="text-[8px] font-black uppercase tracking-widest text-white/40 truncate">RECORD: {formatTime(bestTimes[currentLayout.name])}</span>}
         </div>
       </footer>
 
+      {/* Modals remain the same... */}
       {showMenu && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
            <div className="relative max-w-sm w-full p-8 rounded-[3.5rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl flex flex-col max-h-[90vh]">
