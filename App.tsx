@@ -33,6 +33,7 @@ const App: React.FC = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showLayoutModal, setShowLayoutModal] = useState(false);
+  const [showResultsModal, setShowResultsModal] = useState(false);
   
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationOn, setVibrationOn] = useState(true);
@@ -168,6 +169,11 @@ const App: React.FC = () => {
       if (status === GameStatus.WON) { if (soundEnabled) playWinSound(); handleWin(); }
       else if (status === GameStatus.LOST) { if (soundEnabled) playLoseSound(); }
       stopBackgroundMusic();
+      
+      // Delay results modal by 3 seconds
+      setTimeout(() => {
+        setShowResultsModal(true);
+      }, 3000);
     }
   };
 
@@ -189,6 +195,7 @@ const App: React.FC = () => {
     setSelectedPos(null);
     setTimer(0);
     setIsNewRecord(false);
+    setShowResultsModal(false);
     if (soundEnabled) { playThemeSound(); startBackgroundMusic(); }
   };
 
@@ -198,6 +205,7 @@ const App: React.FC = () => {
     setBoard(createInitialBoard(currentLayout.board));
     setSelectedPos(null);
     setIsNewRecord(false);
+    setShowResultsModal(false);
     if (soundEnabled) playStopSound();
     stopBackgroundMusic();
   };
@@ -441,7 +449,7 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {(gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
+      {showResultsModal && (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
            <div className="relative max-w-sm w-full p-10 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center">
               {isNewRecord && <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-yellow-500 text-black px-8 py-3 rounded-full font-black text-sm uppercase tracking-[0.4em] shadow-[0_15px_40px_rgba(234,179,8,0.5)] z-30 animate-bounce">RECORD!</div>}
