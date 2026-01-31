@@ -23,7 +23,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.2.7";
+const VERSION = "1.2.8";
 
 const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
@@ -253,7 +253,6 @@ const App: React.FC = () => {
   };
 
   return (
-    /* Changed fixed inset-0 and overflow-hidden to allow scrolling when content exceeds viewport */
     <div className={`relative min-h-screen w-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-auto`}>
       
       {showTutorial && <Tutorial onComplete={completeTutorial} />}
@@ -410,7 +409,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Theme Selection Modal */}
       <SelectionModal
         isOpen={showThemeModal}
         onClose={() => setShowThemeModal(false)}
@@ -429,7 +427,6 @@ const App: React.FC = () => {
         )}
       />
 
-      {/* Layout Selection Modal */}
       <SelectionModal
         isOpen={showLayoutModal}
         onClose={() => setShowLayoutModal(false)}
