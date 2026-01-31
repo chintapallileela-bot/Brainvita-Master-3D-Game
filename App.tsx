@@ -253,16 +253,17 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`fixed inset-0 w-full h-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-hidden`}>
+    /* Changed fixed inset-0 and overflow-hidden to allow scrolling when content exceeds viewport */
+    <div className={`relative min-h-screen w-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-auto`}>
       
       {showTutorial && <Tutorial onComplete={completeTutorial} />}
 
-      <div ref={bgLayerRef} className="fixed inset-[-5%] w-[110%] h-[110%] z-0 pointer-events-none">
+      <div ref={bgLayerRef} className="fixed inset-0 w-full h-full z-0 pointer-events-none">
           <div className="absolute inset-0 bg-cover bg-center transition-all duration-1000 bg-slate-900" style={{ backgroundImage: `url(${currentTheme.bgImage})` }}></div>
           <div className={`absolute inset-0 transition-opacity duration-1000 ${currentTheme.isDark ? 'bg-black/50' : 'bg-white/10'}`}></div>
       </div>
 
-      <header className="w-full flex justify-between items-start relative z-[5000] p-4 pointer-events-none shrink-0">
+      <header className="w-full flex justify-between items-start relative z-[5000] p-4 pointer-events-none shrink-0 min-w-[320px]">
         <div id="theme-layout-controls" className="flex flex-col gap-2 pointer-events-auto">
            <button onClick={() => setShowThemeModal(true)} className="btn-3d h-10 w-32 sm:h-12 sm:w-44" aria-label="Open themes">
              <div className="btn-edge bg-pink-900 rounded-2xl shadow-lg"></div>
@@ -297,8 +298,8 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 py-2 sm:py-6 overflow-hidden">
-          <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-4 shrink-0">
+      <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 py-8 overflow-visible min-h-[400px] min-w-[320px]">
+          <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-8 shrink-0">
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] uppercase italic leading-none">
               BRAINVITA <span className="text-fuchsia-500">MASTER 3D</span>
             </h1>
@@ -308,7 +309,7 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <main className="w-full flex-1 flex justify-center items-center relative perspective-[1500px] overflow-visible">
+          <main className="w-full flex justify-center items-center relative perspective-[1500px] overflow-visible mb-12">
              <Board 
                board={board} 
                selectedPos={selectedPos} 
@@ -322,7 +323,7 @@ const App: React.FC = () => {
           </main>
       </div>
 
-      <footer className="w-full max-w-lg flex flex-col gap-2 relative z-[4500] shrink-0 px-6 pb-6 sm:pb-8 pointer-events-auto items-center">
+      <footer className="w-full max-w-lg flex flex-col gap-4 relative z-[4500] shrink-0 px-6 pb-12 sm:pb-16 pointer-events-auto items-center min-w-[320px]">
         <div className="flex justify-center gap-3 w-full">
           <button 
             onClick={stopGame} 

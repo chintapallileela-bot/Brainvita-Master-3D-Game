@@ -33,16 +33,34 @@
         margin: 0;
         padding: 0;
         background-color: #020617;
-        overflow: hidden;
+        /* Enabled scrollbars as requested */
+        overflow: auto;
       }
       
       body {
         font-family: 'Poppins', sans-serif;
-        touch-action: none;
+        /* Removed touch-action: none to allow scrolling, game input handled via specific nodes */
         -webkit-user-select: none;
         user-select: none;
       }
       
+      /* Custom Scrollbar Styling for a premium feel */
+      ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #020617;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border-radius: 5px;
+        border: 2px solid #020617;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #334155;
+      }
+
       .board-container-3d {
         perspective: 1500px;
         transform-style: preserve-3d;
