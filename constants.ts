@@ -51,13 +51,13 @@ export const LAYOUTS: GameLayout[] = [
     name: "Hourglass",
     description: "Wide edges meeting at a single point.",
     board: [
-      [O, O, O, O, O, O, O],
+      [I, I, O, O, O, I, I],
       [I, O, O, O, O, O, I],
       [I, I, O, O, O, I, I],
       [I, I, I, E, I, I, I],
       [I, I, O, O, O, I, I],
       [I, O, O, O, O, O, I],
-      [O, O, O, O, O, O, O],
+      [I, I, O, O, O, I, I],
     ]
   },
   {
