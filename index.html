@@ -16,7 +16,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Brainvita 3D">
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="./manifest.json" />
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website" />
@@ -33,18 +33,15 @@
         margin: 0;
         padding: 0;
         background-color: #020617;
-        /* Enabled scrollbars as requested */
         overflow: auto;
       }
       
       body {
         font-family: 'Poppins', sans-serif;
-        /* Removed touch-action: none to allow scrolling, game input handled via specific nodes */
         -webkit-user-select: none;
         user-select: none;
       }
       
-      /* Custom Scrollbar Styling for a premium feel */
       ::-webkit-scrollbar {
         width: 10px;
         height: 10px;
@@ -160,6 +157,6 @@
 </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>

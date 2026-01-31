@@ -29,7 +29,8 @@
       "purpose": "maskable"
     }
   ],
-  "start_url": "/?utm_source=pwa",
+  "start_url": "./?utm_source=pwa",
+  "scope": "./",
   "display": "standalone",
   "theme_color": "#020617",
   "background_color": "#020617",
@@ -64,7 +65,7 @@
       "name": "Play Brainvita",
       "short_name": "Play",
       "description": "Challenge your brain with a new Peg Solitaire game",
-      "url": "/",
+      "url": "./",
       "icons": [{ 
         "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png", 
         "type": "image/png",

@@ -1,16 +1,23 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-// The service worker is now handled automatically by vite-plugin-pwa (configured in vite.config.ts)
+import App from '../App';
 
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Relative to the location of the served HTML file
+    navigator.serviceWorker.register('sw.js')
+      .then((reg) => console.log('SW: Registered (src)', reg.scope))
+      .catch((err) => console.warn('SW: Register failed (src)', err));
+  });
 }
 
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}
