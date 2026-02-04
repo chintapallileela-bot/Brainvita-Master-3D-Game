@@ -4,24 +4,19 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  // Setting base to './' ensures that all script and asset references 
-  // in the generated HTML are relative to the current directory.
   base: './',
   plugins: [
     react(),
     VitePWA({
-      // We set injectRegister to null to prevent the plugin from 
-      // injecting its own (often absolute-pathed) registration script.
-      // We will handle registration manually in index.tsx.
       injectRegister: null,
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg', '.well-known/assetlinks.json'],
       manifest: {
         short_name: "Brainvita 3D",
         name: "Brainvita Master 3D: Peg Solitaire",
         description: "Classic puzzle with premium 3D graphics and immersive themes.",
-        id: "com.brainvita.master3d.v128",
-        start_url: "./index.html?v=1.2.8",
+        id: "com.brainvita.master3d.v129",
+        start_url: "./index.html?v=1.2.9",
         scope: "./",
         display: "standalone",
         orientation: "portrait",

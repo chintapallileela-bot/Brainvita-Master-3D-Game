@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'brainvita-v1.2.8';
+const CACHE_NAME = 'brainvita-v1.2.9';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -8,6 +8,7 @@ const ASSETS_TO_CACHE = [
   './types.ts',
   './constants.ts',
   './manifest.json',
+  './.well-known/assetlinks.json',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap'
 ];

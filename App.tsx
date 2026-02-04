@@ -23,7 +23,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.2.8";
+const VERSION = "1.2.9";
 
 const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
