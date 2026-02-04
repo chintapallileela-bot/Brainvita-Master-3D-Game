@@ -23,7 +23,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.5.0";
+const VERSION = "1.5.1";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
 
 const App: React.FC = () => {
@@ -257,8 +257,7 @@ const App: React.FC = () => {
         }
         // 3. Clear Local Storage
         localStorage.clear();
-        // 4. Reload
-        // Fix: Removed deprecated 'true' argument from reload() which caused TypeScript error.
+        // 4. Reload the page to fetch fresh assets
         window.location.reload();
       } catch (e) {
         console.error("Cache wipe failed", e);

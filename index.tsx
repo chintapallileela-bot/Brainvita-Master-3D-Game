@@ -5,21 +5,20 @@ import App from './App';
 
 /**
  * Service Worker Registration
- * We use a root-relative path and check for origin consistency.
+ * Using a simple relative path is the most robust way to ensure the origin
+ * matches correctly in various sandbox and proxy environments.
  */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Determine the correct path relative to the current location to avoid origin mismatches
-    const swPath = new URL('./sw.js', window.location.href).pathname;
-    
-    navigator.serviceWorker.register(swPath)
+    // Standard relative registration
+    navigator.serviceWorker.register('./sw.js')
       .then((reg) => {
         console.log('SW: Registered successfully. Scope:', reg.scope);
       })
       .catch((err) => {
-        // If the registration fails due to origin, we log a specific warning
-        if (err.message.includes('origin')) {
-          console.warn('SW: Origin mismatch detected. This is common in development previews. Offline features may be limited.');
+        // Log warnings for origin mismatches (common in dev environments)
+        if (err.message && err.message.includes('origin')) {
+          console.warn('SW: Registration origin issue detected. This is expected in some development previews.');
         } else {
           console.error('SW: Registration failed:', err);
         }
