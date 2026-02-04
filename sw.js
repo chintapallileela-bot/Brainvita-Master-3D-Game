@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'brainvita-v1.2.9';
+const CACHE_NAME = 'brainvita-v1.3.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

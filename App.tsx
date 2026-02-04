@@ -23,7 +23,8 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.2.9";
+const VERSION = "1.3.0";
+const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
 
 const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
@@ -37,12 +38,12 @@ const App: React.FC = () => {
   const [showLayoutModal, setShowLayoutModal] = useState(false);
   const [showResultsModal, setShowResultsModal] = useState(false);
   
-  // Use lazy initializer to check localStorage immediately on first render
+  // Use lazy initializer to check localStorage immediately on first render with versioned key
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('brainvita_seen_tutorial') !== 'true';
+      return localStorage.getItem(TUTORIAL_KEY) !== 'true';
     } catch (e) {
-      return true; // Fallback if localStorage is inaccessible
+      return true; 
     }
   });
   
@@ -74,7 +75,7 @@ const App: React.FC = () => {
   const completeTutorial = () => {
     setShowTutorial(false);
     try {
-      localStorage.setItem('brainvita_seen_tutorial', 'true');
+      localStorage.setItem(TUTORIAL_KEY, 'true');
     } catch (e) {}
   };
 
