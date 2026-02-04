@@ -36,7 +36,15 @@ const App: React.FC = () => {
   const [showThemeModal, setShowThemeModal] = useState(false);
   const [showLayoutModal, setShowLayoutModal] = useState(false);
   const [showResultsModal, setShowResultsModal] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
+  
+  // Use lazy initializer to check localStorage immediately on first render
+  const [showTutorial, setShowTutorial] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('brainvita_seen_tutorial') !== 'true';
+    } catch (e) {
+      return true; // Fallback if localStorage is inaccessible
+    }
+  });
   
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [vibrationOn, setVibrationOn] = useState(true);
@@ -61,16 +69,13 @@ const App: React.FC = () => {
       setVibrationOn(isOn);
       setVibrationEnabled(isOn);
     }
-
-    const hasSeenTutorial = localStorage.getItem('brainvita_seen_tutorial');
-    if (!hasSeenTutorial) {
-      setShowTutorial(true);
-    }
   }, []);
 
   const completeTutorial = () => {
     setShowTutorial(false);
-    localStorage.setItem('brainvita_seen_tutorial', 'true');
+    try {
+      localStorage.setItem('brainvita_seen_tutorial', 'true');
+    } catch (e) {}
   };
 
   useEffect(() => {
