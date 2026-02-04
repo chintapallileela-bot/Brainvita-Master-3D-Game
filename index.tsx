@@ -4,21 +4,16 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 
 /**
- * Robust Service Worker Registration
- * 
- * Using a simple relative path 'sw.js' is the most reliable way to register
- * a service worker in environments with complex proxying or sub-paths.
- * The browser resolves this against the current page's URL and origin automatically.
+ * Service Worker Registration
  */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js')
-      .then((registration) => {
-        console.log('SW: Registered successfully with scope:', registration.scope);
+    navigator.serviceWorker.register('./sw.js')
+      .then((reg) => {
+        console.log('SW: Registered successfully. Scope:', reg.scope);
       })
-      .catch((error) => {
-        // Log the error for debugging but don't break the app
-        console.warn('SW: Registration failed:', error);
+      .catch((err) => {
+        console.error('SW: Registration failed:', err);
       });
   });
 }

@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'brainvita-v1.3.0';
+const CACHE_NAME = 'brainvita-3d-v1.4.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -8,30 +8,30 @@ const ASSETS_TO_CACHE = [
   './types.ts',
   './constants.ts',
   './manifest.json',
-  './.well-known/assetlinks.json',
   'https://cdn.tailwindcss.com',
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap'
+  'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap',
+  'https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png'
 ];
 
-// Install Event - Caching basic assets
+// Install Event: Cache app shell
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('SW: Pre-caching essential assets');
+      console.log('SW: Pre-caching app shell');
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
   self.skipWaiting();
 });
 
-// Activate Event - Cleaning up old caches
+// Activate Event: Clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
-            console.log('SW: Clearing old cache', cache);
+            console.log('SW: Purging old cache', cache);
             return caches.delete(cache);
           }
         })
@@ -41,30 +41,44 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Event - Network first with Cache fallback for game assets
+// Fetch Event: Network-first with offline fallback
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests unless they are fonts/CDN
-  if (!event.request.url.startsWith(self.location.origin) && 
-      !event.request.url.includes('fonts.googleapis.com') && 
-      !event.request.url.includes('cdn.tailwindcss.com')) {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+
+  // Handle navigation requests (e.g., clicking refresh or entering URL)
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match('./index.html');
+      })
+    );
     return;
   }
 
+  // Handle asset requests
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Clone the response to store in cache
-        const resClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, resClone);
-        });
-        return response;
-      })
-      .catch(() => {
-        // If network fails, try to serve from cache
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-        });
-      })
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      return fetch(event.request).then((networkResponse) => {
+        // Cache external assets dynamically (like Tailwind or Fonts)
+        if (
+          url.origin !== self.location.origin ||
+          url.pathname.endsWith('.ts') ||
+          url.pathname.endsWith('.tsx')
+        ) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return networkResponse;
+      });
+    })
   );
 });
