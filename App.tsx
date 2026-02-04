@@ -5,7 +5,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   Menu, X, Timer as TimerIcon, Play, Palette, Check, LayoutGrid,
-  Trophy, RefreshCw, Settings, Info, Trash2, RefreshCcw, MessageSquare
+  Trophy, RefreshCw, Settings, Info, Trash2, RefreshCcw, MessageSquare, ShieldAlert
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { Tutorial } from './components/Tutorial';
@@ -23,7 +23,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.3.0";
+const VERSION = "1.5.0";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
 
 const App: React.FC = () => {
@@ -38,7 +38,6 @@ const App: React.FC = () => {
   const [showLayoutModal, setShowLayoutModal] = useState(false);
   const [showResultsModal, setShowResultsModal] = useState(false);
   
-  // Use lazy initializer to check localStorage immediately on first render with versioned key
   const [showTutorial, setShowTutorial] = useState<boolean>(() => {
     try {
       return localStorage.getItem(TUTORIAL_KEY) !== 'true';
@@ -236,10 +235,35 @@ const App: React.FC = () => {
   };
 
   const resetAllProgress = () => {
-    if (window.confirm("Delete all records?")) {
+    if (window.confirm("Delete all records? This cannot be undone.")) {
       setBestTimes({});
       localStorage.removeItem('brainvita_best_times');
       if (soundEnabled) playInvalidSound();
+    }
+  };
+
+  const clearAppCache = async () => {
+    if (window.confirm("Clear all game data and refresh? This will wipe the cache and re-download the latest version.")) {
+      try {
+        // 1. Clear all Caches
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(key => caches.delete(key)));
+        }
+        // 2. Unregister Service Workers
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(reg => reg.unregister()));
+        }
+        // 3. Clear Local Storage
+        localStorage.clear();
+        // 4. Reload
+        // Fix: Removed deprecated 'true' argument from reload() which caused TypeScript error.
+        window.location.reload();
+      } catch (e) {
+        console.error("Cache wipe failed", e);
+        window.location.reload();
+      }
     }
   };
 
@@ -404,9 +428,14 @@ const App: React.FC = () => {
 
                 <div className="bg-red-500/5 p-6 rounded-[2.5rem] border border-red-500/20">
                    <h3 className="text-[11px] font-black uppercase text-red-400 tracking-widest mb-4 flex items-center gap-2"><Trash2 size={14}/>DANGER ZONE</h3>
-                   <button onClick={resetAllProgress} className="w-full h-12 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
-                      RESET RECORDS
-                   </button>
+                   <div className="space-y-3">
+                    <button onClick={resetAllProgress} className="w-full h-12 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
+                        RESET RECORDS
+                    </button>
+                    <button onClick={clearAppCache} className="w-full h-12 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-orange-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
+                        <ShieldAlert size={14}/> WIPE & REFRESH
+                    </button>
+                   </div>
                 </div>
               </div>
 
