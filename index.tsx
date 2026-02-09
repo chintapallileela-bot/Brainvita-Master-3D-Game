@@ -2,23 +2,18 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 
-// Robust Service Worker registration to prevent origin mismatches in sandbox environments
+// Register service worker with more resilience
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Determine the correct path for the service worker relative to the current script
-    const swPath = './sw.js';
-    
-    // Check if we're on a valid origin for SW registration to avoid the 'ai.studio' error
-    // Some sandbox environments block cross-origin service workers
-    const currentOrigin = window.location.origin;
-    
-    navigator.serviceWorker.register(swPath, { scope: './' })
+    // Standard registration. We use a simple relative string to avoid URL construction issues
+    // in various proxy/sandbox environments.
+    navigator.serviceWorker.register('sw.js', { scope: './' })
       .then((reg) => {
-        console.log('SW Registered successfully:', reg.scope);
+        console.log('SW Registered:', reg.scope);
       })
       .catch((err) => {
-        // Log the error but don't crash the app (prevents blank screen)
-        console.warn('Service Worker registration skipped or failed:', err.message);
+        // We log it but do not let it stop the app from running
+        console.warn('Service Worker registration skipped:', err.message);
       });
   });
 }
@@ -33,11 +28,14 @@ if (rootElement) {
       </React.StrictMode>
     );
   } catch (err) {
-    console.error('React Mounting Error:', err);
-    rootElement.innerHTML = `<div style="color: white; padding: 20px; text-align: center; font-family: sans-serif;">
-      <h2>Application Error</h2>
-      <p>Failed to load the game. Please try refreshing.</p>
-      <button onclick="window.location.reload()" style="padding: 10px 20px; border-radius: 8px; border: none; background: #2563eb; color: white; cursor: pointer;">Refresh</button>
-    </div>`;
+    console.error('React mounting failed:', err);
+    // Fallback UI for extreme cases
+    rootElement.innerHTML = `
+      <div style="color: white; padding: 40px; text-align: center; background: #020617; height: 100vh;">
+        <h1 style="font-size: 24px; margin-bottom: 16px;">Brainvita Master 3D</h1>
+        <p style="color: #94a3b8; margin-bottom: 24px;">Something went wrong while starting the game.</p>
+        <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 12px 24px; border: none; border-radius: 12px; font-weight: bold;">Retry</button>
+      </div>
+    `;
   }
 }
