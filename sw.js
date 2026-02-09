@@ -1,7 +1,8 @@
-const CACHE_NAME = 'brainvita-3d-v1.6.2';
+const CACHE_NAME = 'brainvita-3d-v1.6.3';
 const ASSETS_TO_CACHE = [
-  'index.html',
-  'manifest.json',
+  './',
+  './index.html',
+  './manifest.json',
   'https://cdn.tailwindcss.com',
   'https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png'
 ];
@@ -9,7 +10,7 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // We use addAll but wrap it so one failing asset doesn't kill the whole SW
+      // Non-blocking asset caching
       return Promise.allSettled(
         ASSETS_TO_CACHE.map(url => cache.add(url))
       );
@@ -30,26 +31,24 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
   const url = new URL(event.request.url);
 
-  // Network-first for the main page to ensure updates
+  // For the main entry point, always try network first
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match('index.html'))
+      fetch(event.request).catch(() => caches.match('./index.html'))
     );
     return;
   }
 
-  // Cache-first for images and fonts
+  // Cache-first for predictable assets
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) return cachedResponse;
 
       return fetch(event.request).then((networkResponse) => {
-        // Check if we should cache this response
         const canCache = networkResponse && 
                         networkResponse.status === 200 && 
                         (url.origin === self.location.origin || 
@@ -64,8 +63,8 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(() => {
-        // Silently fail for non-critical assets
-        return new Response('', { status: 408, statusText: 'Network Timeout' });
+        // Safe empty response for failed optional assets
+        return new Response('', { status: 408 });
       });
     })
   );
