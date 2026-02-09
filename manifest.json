@@ -1,9 +1,8 @@
-
 {
   "short_name": "Brainvita 3D",
   "name": "Brainvita Master 3D: Peg Solitaire Puzzle",
   "description": "Master the classic Brainvita logic puzzle with stunning 3D graphics.",
-  "id": "com.brainvita.master3d.v1",
+  "id": "com.brainvita.master3d.v1.6.1",
   "icons": [
     {
       "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",

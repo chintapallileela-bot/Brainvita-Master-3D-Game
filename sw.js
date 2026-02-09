@@ -1,17 +1,15 @@
-
-const CACHE_NAME = 'brainvita-3d-v1.5.3';
+const CACHE_NAME = 'brainvita-3d-v1.6.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './index.tsx',
-  './App.tsx',
-  './types.ts',
-  './constants.ts',
   './manifest.json',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap',
   'https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png'
 ];
+
+// In production, index.tsx and other source files are bundled. 
+// We should only cache files that actually exist in the final build.
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -34,17 +32,16 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  // Fix: Wrap URL construction in try-catch to prevent "Invalid URL" crash on mobile
   let url;
   try {
     url = new URL(event.request.url);
   } catch (e) {
-    // If URL is invalid (e.g. non-standard protocol), just fetch normally without caching logic
     event.respondWith(fetch(event.request));
     return;
   }
 
-  if (event.request.mode === 'navigate') {
+  // Network-first for navigation and primary scripts to avoid blank screens
+  if (event.request.mode === 'navigate' || url.pathname.includes('index.tsx') || url.pathname.includes('index.js')) {
     event.respondWith(
       fetch(event.request).catch(() => caches.match('./index.html'))
     );
@@ -56,18 +53,24 @@ self.addEventListener('fetch', (event) => {
       if (cachedResponse) return cachedResponse;
 
       return fetch(event.request).then((networkResponse) => {
-        // Cache external assets dynamically
-        if (
-          url.origin !== self.location.origin ||
-          url.pathname.endsWith('.ts') ||
-          url.pathname.endsWith('.tsx')
-        ) {
+        // Only cache valid responses from the same origin or specific external CDNs
+        if (networkResponse && networkResponse.status === 200 && (
+            url.origin === self.location.origin || 
+            url.origin.includes('esm.sh') || 
+            url.origin.includes('postimg.cc') ||
+            url.origin.includes('googleapis.com')
+        )) {
           const responseClone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
           });
         }
         return networkResponse;
+      }).catch(() => {
+        // Fallback for failed fetches
+        if (event.request.destination === 'image') {
+          return caches.match('https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png');
+        }
       });
     })
   );
