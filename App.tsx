@@ -23,7 +23,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.5.1";
+const VERSION = "1.5.2";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
 
 const App: React.FC = () => {
@@ -245,19 +245,15 @@ const App: React.FC = () => {
   const clearAppCache = async () => {
     if (window.confirm("Clear all game data and refresh? This will wipe the cache and re-download the latest version.")) {
       try {
-        // 1. Clear all Caches
         if ('caches' in window) {
           const keys = await caches.keys();
           await Promise.all(keys.map(key => caches.delete(key)));
         }
-        // 2. Unregister Service Workers
         if ('serviceWorker' in navigator) {
           const registrations = await navigator.serviceWorker.getRegistrations();
           await Promise.all(registrations.map(reg => reg.unregister()));
         }
-        // 3. Clear Local Storage
         localStorage.clear();
-        // 4. Reload the page to fetch fresh assets
         window.location.reload();
       } catch (e) {
         console.error("Cache wipe failed", e);
@@ -282,7 +278,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`relative min-h-screen w-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-auto`}>
+    <div className={`relative min-h-screen w-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-hidden`}>
       
       {showTutorial && <Tutorial onComplete={completeTutorial} />}
 
@@ -291,7 +287,7 @@ const App: React.FC = () => {
           <div className={`absolute inset-0 transition-opacity duration-1000 ${currentTheme.isDark ? 'bg-black/50' : 'bg-white/10'}`}></div>
       </div>
 
-      <header className="w-full flex justify-between items-start relative z-[5000] p-4 pointer-events-none shrink-0 min-w-[320px]">
+      <header className="w-full flex justify-between items-start relative z-[5000] p-4 lg:px-8 pt-[max(1rem,var(--safe-top))] pointer-events-none shrink-0 min-w-[320px]">
         <div id="theme-layout-controls" className="flex flex-col gap-2 pointer-events-auto">
            <button onClick={() => setShowThemeModal(true)} className="btn-3d h-10 w-32 sm:h-12 sm:w-44" aria-label="Open themes">
              <div className="btn-edge bg-pink-900 rounded-2xl shadow-lg"></div>
@@ -316,28 +312,28 @@ const App: React.FC = () => {
             aria-label="Open main menu"
           >
              <Menu size={20} strokeWidth={4} className="drop-shadow-lg" />
-             <span className="text-[10px] font-black uppercase tracking-[0.1em]">MENU</span>
+             <span className="text-[10px] font-black uppercase tracking-[0.1em] hidden xs:inline">MENU</span>
           </button>
           
-          <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/20 shadow-xl" aria-label="Game timer">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/20 shadow-xl" aria-label="Game timer">
               <TimerIcon size={12} className="text-green-400" />
               <span className="font-mono text-xs font-bold text-green-400 tracking-wider leading-none">{formatTime(timer)}</span>
           </div>
         </div>
       </header>
 
-      <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 py-8 overflow-visible min-h-[400px] min-w-[320px]">
-          <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-8 shrink-0">
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] uppercase italic leading-none">
+      <div className="flex-1 w-full flex flex-col items-center justify-center relative z-[3000] px-4 py-4 lg:py-8 overflow-visible min-h-0 min-w-[320px]">
+          <div ref={titleRef} className="text-center relative z-[4000] pointer-events-none mb-4 lg:mb-8 shrink-0">
+            <h1 className="text-xl sm:text-3xl lg:text-5xl font-black tracking-tighter text-white drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] uppercase italic leading-none">
               BRAINVITA <span className="text-fuchsia-500">MASTER 3D</span>
             </h1>
-            <div className="inline-flex items-center bg-stone-950/90 backdrop-blur-md rounded-full border border-white/20 mt-3 shadow-2xl overflow-hidden pointer-events-auto">
-              <div className="px-3 py-1 border-r border-white/20"><span className="text-[8px] font-black uppercase text-white/50 tracking-[0.2em]">REMAINING PEGS</span></div>
-              <div className="px-4 py-1 min-w-[30px] text-center"><span className="text-base font-black text-white">{marblesRemaining}</span></div>
+            <div className="inline-flex items-center bg-stone-950/90 backdrop-blur-md rounded-full border border-white/20 mt-2 lg:mt-3 shadow-2xl overflow-hidden pointer-events-auto scale-90 sm:scale-100">
+              <div className="px-3 py-1 border-r border-white/20"><span className="text-[8px] font-black uppercase text-white/50 tracking-[0.2em]">PEGS</span></div>
+              <div className="px-4 py-1 min-w-[30px] text-center"><span className="text-sm lg:text-base font-black text-white">{marblesRemaining}</span></div>
             </div>
           </div>
 
-          <main className="w-full flex justify-center items-center relative perspective-[1500px] overflow-visible mb-12">
+          <main className="w-full flex-1 flex justify-center items-center relative perspective-[1500px] overflow-visible mb-4 lg:mb-12">
              <Board 
                board={board} 
                selectedPos={selectedPos} 
@@ -351,94 +347,87 @@ const App: React.FC = () => {
           </main>
       </div>
 
-      <footer className="w-full max-w-lg flex flex-col gap-4 relative z-[4500] shrink-0 px-6 pb-12 sm:pb-16 pointer-events-auto items-center min-w-[320px]">
+      <footer className="w-full max-w-lg flex flex-col gap-3 relative z-[4500] shrink-0 px-6 pb-[max(1rem,var(--safe-bottom))] sm:pb-[max(2rem,var(--safe-bottom))] pointer-events-auto items-center min-w-[320px]">
         <div className="flex justify-center gap-3 w-full">
           <button 
             onClick={stopGame} 
             disabled={gameStatus === GameStatus.IDLE} 
-            className="flex-1 h-12 sm:h-16 rounded-3xl bg-rose-500/20 backdrop-blur-md border border-rose-500/40 flex items-center justify-center gap-3 active:scale-95 transition-all disabled:opacity-0 disabled:translate-y-4 pointer-events-auto disabled:pointer-events-none"
+            className="flex-1 h-12 lg:h-16 rounded-3xl bg-rose-500/20 backdrop-blur-md border border-rose-500/40 flex items-center justify-center gap-3 active:scale-95 transition-all disabled:opacity-0 disabled:translate-y-4 pointer-events-auto disabled:pointer-events-none"
             aria-label="Quit current game"
           >
             <div className="w-2.5 h-2.5 bg-white/80 rounded-sm"></div>
-            <span className="text-white text-xs font-black uppercase tracking-widest">QUIT GAME</span>
+            <span className="text-white text-[10px] lg:text-xs font-black uppercase tracking-widest">QUIT</span>
           </button>
           <button 
             id="start-button"
             onClick={startGame} 
-            className="flex-1 h-12 sm:h-16 rounded-3xl bg-blue-600 border-t-2 border-blue-400 shadow-[0_10px_30px_rgba(37,99,235,0.4)] flex items-center justify-center gap-3 active:scale-95 transition-all"
+            className="flex-1 h-12 lg:h-16 rounded-3xl bg-blue-600 border-t-2 border-blue-400 shadow-[0_10px_30px_rgba(37,99,235,0.4)] flex items-center justify-center gap-3 active:scale-95 transition-all"
             aria-label={gameStatus === GameStatus.IDLE ? "Start new game" : "Restart game"}
           >
-            <Play size={20} fill="currentColor" className="text-white" />
-            <span className="text-white text-xs font-black uppercase tracking-widest">{gameStatus === GameStatus.IDLE ? 'START' : 'RESTART'}</span>
+            <Play size={16} fill="currentColor" className="text-white" />
+            <span className="text-white text-[10px] lg:text-xs font-black uppercase tracking-widest">{gameStatus === GameStatus.IDLE ? 'START' : 'RESTART'}</span>
           </button>
         </div>
-        <div className="w-full flex items-center justify-between px-2">
+        <div className="w-full flex items-center justify-between px-2 opacity-50">
             <div className="flex items-center gap-1.5 bg-fuchsia-600/20 px-2 py-0.5 rounded-full border border-fuchsia-500/30">
                <div className="w-1 h-1 rounded-full bg-fuchsia-500 animate-pulse"></div>
-               <span className="text-[7px] font-black uppercase tracking-widest text-fuchsia-300 truncate">V{VERSION}</span>
+               <span className="text-[7px] font-black uppercase tracking-widest text-fuchsia-300">V{VERSION}</span>
             </div>
-            {bestTimes[currentLayout.name] && <span className="text-[8px] font-black uppercase tracking-widest text-white/40 truncate">BEST TIME: {formatTime(bestTimes[currentLayout.name])}</span>}
+            {bestTimes[currentLayout.name] && <span className="text-[7px] font-black uppercase tracking-widest text-white/40">BEST: {formatTime(bestTimes[currentLayout.name])}</span>}
         </div>
       </footer>
 
       {showMenu && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-6 bg-black/98 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-sm w-full p-8 rounded-[3.5rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl flex flex-col max-h-[90vh]">
-              <div className="flex justify-between items-center mb-8">
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 lg:p-6 bg-black/98 backdrop-blur-3xl animate-in">
+           <div className="relative max-w-sm w-full p-6 lg:p-8 rounded-[3.5rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl flex flex-col max-h-[95vh] lg:max-h-[90vh]">
+              <div className="flex justify-between items-center mb-6 lg:mb-8">
                 <div className="flex flex-col">
-                  <h2 className="text-2xl font-black uppercase italic tracking-tighter leading-none">MASTER</h2>
-                  <h2 className="text-2xl font-black uppercase italic tracking-tighter text-emerald-500 leading-none">MENU</h2>
+                  <h2 className="text-xl lg:text-2xl font-black uppercase italic tracking-tighter leading-none">MASTER</h2>
+                  <h2 className="text-xl lg:text-2xl font-black uppercase italic tracking-tighter text-emerald-500 leading-none">MENU</h2>
                 </div>
-                <button onClick={() => setShowMenu(false)} className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center transition-all active:scale-90 border border-white/20" aria-label="Close menu"><X size={24}/></button>
+                <button onClick={() => setShowMenu(false)} className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-white/10 flex items-center justify-center transition-all active:scale-90 border border-white/20" aria-label="Close menu"><X size={20}/></button>
               </div>
 
-              <div className="overflow-y-auto flex-1 pr-2 space-y-6 no-scrollbar">
-                <div className="bg-white/5 p-6 rounded-[2.5rem] border border-white/10">
-                   <h3 className="text-[11px] font-black uppercase text-amber-400 tracking-widest mb-4 flex items-center gap-2"><Settings size={14}/>PREFERENCES</h3>
-                   <div className="space-y-5">
+              <div className="overflow-y-auto flex-1 pr-2 space-y-4 lg:space-y-6 no-scrollbar">
+                <div className="bg-white/5 p-4 lg:p-6 rounded-[2rem] lg:rounded-[2.5rem] border border-white/10">
+                   <h3 className="text-[10px] lg:text-[11px] font-black uppercase text-amber-400 tracking-widest mb-4 flex items-center gap-2"><Settings size={14}/>PREFERENCES</h3>
+                   <div className="space-y-4 lg:space-y-5">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold uppercase tracking-widest">Sound FX</span>
-                        <button onClick={() => setSoundEnabled(!soundEnabled)} className={`w-14 h-7 rounded-full transition-all relative ${soundEnabled ? 'bg-blue-500' : 'bg-slate-700'}`} aria-label="Toggle sound">
-                          <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${soundEnabled ? 'left-8' : 'left-1'}`}></div>
+                        <span className="text-[10px] lg:text-xs font-bold uppercase tracking-widest">Sound FX</span>
+                        <button onClick={() => setSoundEnabled(!soundEnabled)} className={`w-12 lg:w-14 h-6 lg:h-7 rounded-full transition-all relative ${soundEnabled ? 'bg-blue-500' : 'bg-slate-700'}`} aria-label="Toggle sound">
+                          <div className={`absolute top-1 w-4 lg:w-5 h-4 lg:h-5 rounded-full bg-white transition-all ${soundEnabled ? 'left-7 lg:left-8' : 'left-1'}`}></div>
                         </button>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold uppercase tracking-widest">Haptics</span>
-                        <button onClick={toggleVibration} className={`w-14 h-7 rounded-full transition-all relative ${vibrationOn ? 'bg-green-500' : 'bg-slate-700'}`} aria-label="Toggle haptics">
-                          <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${vibrationOn ? 'left-8' : 'left-1'}`}></div>
+                        <span className="text-[10px] lg:text-xs font-bold uppercase tracking-widest">Haptics</span>
+                        <button onClick={toggleVibration} className={`w-12 lg:w-14 h-6 lg:h-7 rounded-full transition-all relative ${vibrationOn ? 'bg-green-500' : 'bg-slate-700'}`} aria-label="Toggle haptics">
+                          <div className={`absolute top-1 w-4 lg:w-5 h-4 lg:h-5 rounded-full bg-white transition-all ${vibrationOn ? 'left-7 lg:left-8' : 'left-1'}`}></div>
                         </button>
                       </div>
                    </div>
                 </div>
 
-                <div className="bg-blue-500/5 p-6 rounded-[2.5rem] border border-blue-500/20">
-                   <h3 className="text-[11px] font-black uppercase text-blue-400 tracking-widest mb-4 flex items-center gap-2"><MessageSquare size={14}/>FEEDBACK</h3>
-                   <button onClick={() => { window.open('https://play.google.com/store/apps/details?id=app.vercel.brainvita_master_3_d_game.twa', '_blank'); setShowMenu(false); }} className="w-full h-12 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <div className="bg-blue-500/5 p-4 lg:p-6 rounded-[2rem] lg:rounded-[2.5rem] border border-blue-500/20">
+                   <h3 className="text-[10px] lg:text-[11px] font-black uppercase text-blue-400 tracking-widest mb-4 flex items-center gap-2"><MessageSquare size={14}/>FEEDBACK</h3>
+                   <button onClick={() => { window.open('https://play.google.com/store/apps/details?id=app.vercel.brainvita_master_3_d_game.twa', '_blank'); setShowMenu(false); }} className="w-full h-10 lg:h-12 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 text-[9px] lg:text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
                       SUBMIT FEEDBACK
                    </button>
                 </div>
 
-                <div className="bg-white/5 p-6 rounded-[2.5rem] border border-white/10">
-                   <h3 className="text-[11px] font-black uppercase text-emerald-400 tracking-widest mb-4 flex items-center gap-2"><Info size={14}/>TRAINING</h3>
-                   <button onClick={() => { setShowTutorial(true); setShowMenu(false); }} className="w-full h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
-                      REPLAY TUTORIAL
-                   </button>
-                </div>
-
-                <div className="bg-red-500/5 p-6 rounded-[2.5rem] border border-red-500/20">
-                   <h3 className="text-[11px] font-black uppercase text-red-400 tracking-widest mb-4 flex items-center gap-2"><Trash2 size={14}/>DANGER ZONE</h3>
-                   <div className="space-y-3">
-                    <button onClick={resetAllProgress} className="w-full h-12 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
+                <div className="bg-red-500/5 p-4 lg:p-6 rounded-[2rem] lg:rounded-[2.5rem] border border-red-500/20">
+                   <h3 className="text-[10px] lg:text-[11px] font-black uppercase text-red-400 tracking-widest mb-4 flex items-center gap-2"><Trash2 size={14}/>DANGER ZONE</h3>
+                   <div className="space-y-2 lg:space-y-3">
+                    <button onClick={resetAllProgress} className="w-full h-10 lg:h-12 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[9px] lg:text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
                         RESET RECORDS
                     </button>
-                    <button onClick={clearAppCache} className="w-full h-12 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-orange-500 text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
+                    <button onClick={clearAppCache} className="w-full h-10 lg:h-12 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-orange-500 text-[9px] lg:text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 active:scale-95 transition-all">
                         <ShieldAlert size={14}/> WIPE & REFRESH
                     </button>
                    </div>
                 </div>
               </div>
 
-              <button onClick={() => setShowMenu(false)} className="mt-8 w-full h-16 bg-blue-600 rounded-[2rem] text-white text-sm font-black uppercase tracking-[0.3em] shadow-xl active:scale-95 transition-all">CLOSE</button>
+              <button onClick={() => setShowMenu(false)} className="mt-6 lg:mt-8 w-full h-14 lg:h-16 bg-blue-600 rounded-[2rem] text-white text-xs lg:text-sm font-black uppercase tracking-[0.3em] shadow-xl active:scale-95 transition-all">CLOSE</button>
            </div>
         </div>
       )}
@@ -451,11 +440,11 @@ const App: React.FC = () => {
         selectedItem={currentTheme}
         onSelect={handleThemeChange}
         renderItem={(theme) => (
-          <div className="p-4 flex items-center gap-4">
-            <div className={`w-16 h-16 rounded-full border-2 border-white/20 shadow-xl overflow-hidden`} style={{ background: `radial-gradient(circle at 35% 35%, ${theme.marbleStart} 0%, ${theme.marbleEnd} 85%)` }}></div>
-            <div className="flex flex-col">
-              <span className="text-sm font-black uppercase tracking-widest">{theme.name}</span>
-              <span className="text-[8px] font-bold uppercase text-white/40 tracking-widest mt-1">PREMIUM SKIN</span>
+          <div className="p-3 lg:p-4 flex items-center gap-4">
+            <div className={`w-12 lg:w-16 h-12 lg:h-16 rounded-full border-2 border-white/20 shadow-xl overflow-hidden shrink-0`} style={{ background: `radial-gradient(circle at 35% 35%, ${theme.marbleStart} 0%, ${theme.marbleEnd} 85%)` }}></div>
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs lg:text-sm font-black uppercase tracking-widest truncate">{theme.name}</span>
+              <span className="text-[7px] lg:text-[8px] font-bold uppercase text-white/40 tracking-widest mt-1">PREMIUM SKIN</span>
             </div>
           </div>
         )}
@@ -469,33 +458,33 @@ const App: React.FC = () => {
         selectedItem={currentLayout}
         onSelect={handleLayoutChange}
         renderItem={(layout) => (
-          <div className="p-4 flex flex-col">
-            <span className="text-sm font-black uppercase tracking-widest mb-1">{layout.name}</span>
-            <span className="text-[9px] font-bold text-white/40 leading-relaxed uppercase tracking-widest">{layout.description}</span>
+          <div className="p-3 lg:p-4 flex flex-col min-w-0">
+            <span className="text-xs lg:text-sm font-black uppercase tracking-widest mb-1 truncate">{layout.name}</span>
+            <span className="text-[8px] lg:text-[9px] font-bold text-white/40 leading-relaxed uppercase tracking-widest line-clamp-2">{layout.description}</span>
           </div>
         )}
       />
 
       {showResultsModal && (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-sm w-full p-10 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center">
-              {isNewRecord && <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-yellow-500 text-black px-8 py-3 rounded-full font-black text-sm uppercase tracking-[0.4em] shadow-[0_15px_40px_rgba(234,179,8,0.5)] z-30 animate-bounce">RECORD!</div>}
-              <div className={`mx-auto w-20 h-20 rounded-full flex items-center justify-center mb-8 ${gameStatus === GameStatus.WON ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'}`}>
-                {gameStatus === GameStatus.WON ? <Trophy size={40} /> : <X size={40} />}
+           <div className="relative max-w-sm w-full p-8 lg:p-10 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center">
+              {isNewRecord && <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-yellow-500 text-black px-6 lg:px-8 py-2 lg:py-3 rounded-full font-black text-xs lg:text-sm uppercase tracking-[0.4em] shadow-[0_15px_40px_rgba(234,179,8,0.5)] z-30 animate-bounce">RECORD!</div>}
+              <div className={`mx-auto w-16 lg:w-20 h-16 lg:h-20 rounded-full flex items-center justify-center mb-6 lg:mb-8 ${gameStatus === GameStatus.WON ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'}`}>
+                {gameStatus === GameStatus.WON ? <Trophy size={32} /> : <X size={32} />}
               </div>
-              <h2 className="text-3xl font-black mb-6 uppercase italic tracking-tighter drop-shadow-lg">{getWinnerInfo()}</h2>
-              <div className="grid grid-cols-2 gap-4 mb-10">
-                <div className={`p-5 rounded-[2.5rem] border transition-colors ${isNewRecord ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-white/10 border-white/5'}`}>
-                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">TIME</p>
-                    <p className={`text-xl font-black ${isNewRecord ? 'text-yellow-400' : ''}`}>{formatTime(timer)}</p>
+              <h2 className="text-2xl lg:text-3xl font-black mb-4 lg:mb-6 uppercase italic tracking-tighter drop-shadow-lg">{getWinnerInfo()}</h2>
+              <div className="grid grid-cols-2 gap-3 lg:gap-4 mb-8 lg:mb-10">
+                <div className={`p-4 lg:p-5 rounded-[2rem] lg:rounded-[2.5rem] border transition-colors ${isNewRecord ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-white/10 border-white/5'}`}>
+                    <p className="text-[8px] lg:text-[10px] font-black text-white/40 uppercase tracking-widest mb-1 lg:mb-2">TIME</p>
+                    <p className={`text-lg lg:text-xl font-black ${isNewRecord ? 'text-yellow-400' : ''}`}>{formatTime(timer)}</p>
                 </div>
-                <div className="bg-white/10 p-5 rounded-[2.5rem] border border-white/5">
-                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">REMAINING</p>
-                    <p className="text-xl font-black">{marblesRemaining}</p>
+                <div className="bg-white/10 p-4 lg:p-5 rounded-[2rem] lg:rounded-[2.5rem] border border-white/5">
+                    <p className="text-[8px] lg:text-[10px] font-black text-white/40 uppercase tracking-widest mb-1 lg:mb-2">REMAINING</p>
+                    <p className="text-lg lg:text-xl font-black">{marblesRemaining}</p>
                 </div>
               </div>
-              <button onClick={stopGame} className="w-full h-18 bg-blue-600 rounded-[2.5rem] text-white text-sm font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 transition-transform hover:scale-105 active:scale-95 shadow-2xl py-4">
-                <RefreshCw size={24} /><span>TRY AGAIN</span>
+              <button onClick={stopGame} className="w-full h-16 lg:h-18 bg-blue-600 rounded-[2rem] lg:rounded-[2.5rem] text-white text-xs lg:text-sm font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 transition-transform hover:scale-105 active:scale-95 shadow-2xl py-4">
+                <RefreshCw size={20} /><span>TRY AGAIN</span>
               </button>
            </div>
         </div>

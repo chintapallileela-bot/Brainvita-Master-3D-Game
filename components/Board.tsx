@@ -36,8 +36,9 @@ export const Board: React.FC<BoardProps> = ({
     }
   }, [animatingMove, lastLandedPos]);
 
-  // Sizing refined to be more conservative vertically (max 38vh) to avoid button overlap
-  const boardSize = 'clamp(240px, min(85vw, 38vh), 460px)';
+  // Sizing refined to handle various orientations - max height is strictly capped to avoid pushing buttons off screen
+  // 35vh is used to leave room for Title (15vh), Header (10vh), and Footer (25vh) + margins
+  const boardSize = 'clamp(200px, min(80vw, 35vh, 480px), 480px)';
 
   return (
     <div className={`board-container-3d flex justify-center items-center relative w-full h-full pointer-events-none transition-all duration-700 ${disabled ? 'opacity-40 grayscale-[0.5] scale-95 blur-[1px]' : 'opacity-100 grayscale-0 scale-100 blur-0'}`} style={{ touchAction: 'none' }}>
@@ -46,7 +47,7 @@ export const Board: React.FC<BoardProps> = ({
 
       <div 
         ref={boardRef}
-        className="relative rounded-full board-base pointer-events-none flex items-center justify-center p-4 shadow-[0_50px_100px_rgba(0,0,0,0.8)]"
+        className="relative rounded-full board-base pointer-events-none flex items-center justify-center p-3 sm:p-4 shadow-[0_50px_100px_rgba(0,0,0,0.8)]"
         style={{ 
           transformStyle: 'preserve-3d',
           width: boardSize,
@@ -54,7 +55,7 @@ export const Board: React.FC<BoardProps> = ({
         }}
       >
           {/* External Thick Wood/Stone Bezel */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-400 via-slate-800 to-black border-b-[12px] border-black/90"
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-400 via-slate-800 to-black border-b-[8px] lg:border-b-[12px] border-black/90"
                style={{ transform: 'translateZ(-5px)' }}></div>
           
           {/* Play Surface Housing */}
@@ -93,7 +94,7 @@ export const Board: React.FC<BoardProps> = ({
                       >
                         {/* Recursive Indented Hole Visual */}
                         <div className={`absolute w-[92%] h-[92%] rounded-full transition-all duration-300 ${theme.holeBg} 
-                          shadow-[inset_4px_6px_12px_rgba(0,0,0,1),inset_-2px_-2px_4px_rgba(255,255,255,0.05)]
+                          shadow-[inset_2px_4px_8px_rgba(0,0,0,1),inset_-1px_-1px_2px_rgba(255,255,255,0.05)]
                           ${isValidDestination ? 'ring-2 ring-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.4)] bg-emerald-900/20' : ''}
                         `}>
                             <div className="absolute inset-[-1px] rounded-full border border-white/5 pointer-events-none"></div>
