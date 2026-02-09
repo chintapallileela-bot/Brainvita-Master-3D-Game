@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'brainvita-3d-v1.5.0';
+const CACHE_NAME = 'brainvita-3d-v1.5.3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -13,60 +13,50 @@ const ASSETS_TO_CACHE = [
   'https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png'
 ];
 
-// Install Event: Cache app shell
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('SW: Pre-caching app shell');
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
   );
   self.skipWaiting();
 });
 
-// Activate Event: Clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('SW: Purging old cache', cache);
-            return caches.delete(cache);
-          }
-        })
-      );
-    })
+    caches.keys().then((keys) => Promise.all(
+      keys.map((key) => {
+        if (key !== CACHE_NAME) return caches.delete(key);
+      })
+    ))
   );
   self.clients.claim();
 });
 
-// Fetch Event: Network-first with offline fallback
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
 
-  const url = new URL(event.request.url);
+  // Fix: Wrap URL construction in try-catch to prevent "Invalid URL" crash on mobile
+  let url;
+  try {
+    url = new URL(event.request.url);
+  } catch (e) {
+    // If URL is invalid (e.g. non-standard protocol), just fetch normally without caching logic
+    event.respondWith(fetch(event.request));
+    return;
+  }
 
-  // Handle navigation requests (e.g., clicking refresh or entering URL)
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('./index.html');
-      })
+      fetch(event.request).catch(() => caches.match('./index.html'))
     );
     return;
   }
 
-  // Handle asset requests
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+      if (cachedResponse) return cachedResponse;
 
       return fetch(event.request).then((networkResponse) => {
-        // Cache external assets dynamically (like Tailwind or Fonts)
+        // Cache external assets dynamically
         if (
           url.origin !== self.location.origin ||
           url.pathname.endsWith('.ts') ||

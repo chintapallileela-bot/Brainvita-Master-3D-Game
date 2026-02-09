@@ -2,7 +2,7 @@
 {
   "short_name": "Brainvita 3D",
   "name": "Brainvita Master 3D: Peg Solitaire Puzzle",
-  "description": "Master the classic Brainvita logic puzzle with stunning 3D graphics and immersive strategy themes. The ultimate brain training game for puzzle fans.",
+  "description": "Master the classic Brainvita logic puzzle with stunning 3D graphics.",
   "id": "com.brainvita.master3d.v1",
   "icons": [
     {
@@ -20,56 +20,15 @@
     {
       "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
       "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "maskable"
-    },
-    {
-      "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
-      "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
     }
   ],
-  "start_url": "./index.html?utm_source=pwa",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "minimal-ui"],
   "theme_color": "#020617",
   "background_color": "#020617",
   "orientation": "any",
-  "prefer_related_applications": false,
-  "categories": ["games", "puzzle", "strategy", "education"],
-  "screenshots": [
-    {
-      "src": "https://i.postimg.cc/W1HTMk80/Screenshot-20260130-152329-Chrome.jpg",
-      "type": "image/jpeg",
-      "sizes": "1080x2400",
-      "form_factor": "narrow",
-      "label": "Immersive 3D Themes"
-    },
-    {
-      "src": "https://i.postimg.cc/yxVMq1jL/Screenshot-20260130-152448-Chrome.jpg",
-      "type": "image/jpeg",
-      "sizes": "1080x2400",
-      "form_factor": "narrow",
-      "label": "Multiple Board Layouts"
-    },
-    {
-      "src": "https://i.postimg.cc/W1HTMk80/Screenshot-20260130-152329-Chrome.jpg",
-      "type": "image/jpeg",
-      "sizes": "2400x1080",
-      "form_factor": "wide",
-      "label": "Desktop Play Experience"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Start New Game",
-      "short_name": "New Game",
-      "url": "./",
-      "icons": [{ "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png", "sizes": "192x192" }]
-    }
-  ],
-  "lang": "en-US",
-  "dir": "ltr"
+  "lang": "en-US"
 }

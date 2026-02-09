@@ -1,39 +1,26 @@
 
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
 
-/**
- * Service Worker Registration
- * Using a simple relative path is the most robust way to ensure the origin
- * matches correctly in various sandbox and proxy environments.
- */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Standard relative registration
-    navigator.serviceWorker.register('./sw.js')
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
       .then((reg) => {
-        console.log('SW: Registered successfully. Scope:', reg.scope);
+        console.log('SW Registered:', reg.scope);
       })
       .catch((err) => {
-        // Log warnings for origin mismatches (common in dev environments)
-        if (err.message && err.message.includes('origin')) {
-          console.warn('SW: Registration origin issue detected. This is expected in some development previews.');
-        } else {
-          console.error('SW: Registration failed:', err);
-        }
+        console.warn('SW Registration failed:', err);
       });
   });
 }
 
 const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
+if (rootElement) {
+  const root = createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
 }
-
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
