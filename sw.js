@@ -1,8 +1,7 @@
-const CACHE_NAME = 'brainvita-3d-v1.6.3';
+const CACHE_NAME = 'brainvita-3d-v1.6.4';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
+  'index.html',
+  'manifest.json',
   'https://cdn.tailwindcss.com',
   'https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png'
 ];
@@ -10,7 +9,6 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // Non-blocking asset caching
       return Promise.allSettled(
         ASSETS_TO_CACHE.map(url => cache.add(url))
       );
@@ -35,15 +33,13 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
-  // For the main entry point, always try network first
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match('./index.html'))
+      fetch(event.request).catch(() => caches.match('index.html'))
     );
     return;
   }
 
-  // Cache-first for predictable assets
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) return cachedResponse;
@@ -62,10 +58,7 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      }).catch(() => {
-        // Safe empty response for failed optional assets
-        return new Response('', { status: 408 });
-      });
+      }).catch(() => new Response('', { status: 408 }));
     })
   );
 });
