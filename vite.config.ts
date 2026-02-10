@@ -1,99 +1,46 @@
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  base: './',
+  base: '/',
+  build: {
+    assetsDir: 'assets',
+    outDir: 'dist',
+    sourcemap: false
+  },
   plugins: [
     react(),
     VitePWA({
-      injectRegister: null,
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg', '.well-known/assetlinks.json'],
+      injectRegister: 'auto',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', '.well-known/assetlinks.json'],
       manifest: {
         short_name: "Brainvita 3D",
         name: "Brainvita Master 3D: Peg Solitaire",
-        description: "Classic puzzle with premium 3D graphics and immersive themes.",
-        id: "com.brainvita.master3d.v130",
-        start_url: "./index.html?v=1.3.0",
-        scope: "./",
+        description: "Classic puzzle with premium 3D graphics.",
+        id: "com.brainvita.master3d.v1.6.5",
+        start_url: "/",
+        scope: "/",
         display: "standalone",
-        orientation: "portrait",
         theme_color: "#020617",
         background_color: "#020617",
-        categories: ["games", "puzzle"],
         icons: [
           {
             src: "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
             sizes: "192x192",
-            type: "image/png",
-            purpose: "any"
+            type: "image/png"
           },
           {
             src: "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
             sizes: "512x512",
-            type: "image/png",
-            purpose: "any"
-          },
-          {
-            src: "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable"
-          }
-        ],
-        screenshots: [
-           {
-            src: "https://i.postimg.cc/W1HTMk80/Screenshot-20260130-152329-Chrome.jpg",
-            type: "image/jpeg",
-            sizes: "1080x2400",
-            form_factor: "narrow"
-          },
-          {
-            src: "https://i.postimg.cc/yxVMq1jL/Screenshot-20260130-152448-Chrome.jpg",
-            type: "image/jpeg",
-            sizes: "1080x2400",
-            form_factor: "narrow"
+            type: "image/png"
           }
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,tsx,ts}'],
-        cleanupOutdatedCaches: true,
-        skipWaiting: true,
-        clientsClaim: true,
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 365,
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
-          {
-            urlPattern: /^https:\/\/i\.postimg\.cc\/.*/i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'image-assets',
-              expiration: {
-                maxEntries: 50,
-              }
-            }
-          },
-          {
-            urlPattern: /^https:\/\/cdn\.tailwindcss\.com/,
-            handler: 'CacheFirst',
-            options: { cacheName: 'tailwind-cdn' }
-          }
-        ]
+        globPatterns: ['**/*.{js,css,html,json}'],
+        cleanupOutdatedCaches: true
       }
     })
   ]
