@@ -1,11 +1,11 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/Board.tsx';
 import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types.ts';
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic.ts';
 import { 
   Menu, X, Timer as TimerIcon, Play, Palette, LayoutGrid,
-  Trophy, RefreshCw, Settings, Trash2, ShieldAlert
+  Trophy, RefreshCw, Settings, Trash2, ShieldAlert, Award, Medal,
+  Volume2, VolumeX, Smartphone
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants.ts';
 import { Tutorial } from './components/Tutorial.tsx';
@@ -23,8 +23,17 @@ import {
   setVibrationEnabled
 } from './utils/sound.ts';
 
-const VERSION = "1.5.4";
+const VERSION = "1.8.0";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
+
+const MedalBadge: React.FC<{ size?: string }> = ({ size = "w-12 h-12" }) => (
+  <div className={`${size} rounded-full bg-gradient-to-b from-amber-400 to-amber-600 p-0.5 shadow-lg border border-white/20 relative`}>
+    <div className="w-full h-full rounded-full bg-[#8b4513] flex items-center justify-center">
+      <div className="w-[70%] h-[70%] rounded-full bg-[#5d2e0d] border border-black/20"></div>
+    </div>
+    <div className="absolute top-0 inset-x-0 h-1/2 bg-white/20 rounded-t-full"></div>
+  </div>
+);
 
 const App: React.FC = () => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(() => THEMES[0]);
@@ -50,6 +59,7 @@ const App: React.FC = () => {
   const [vibrationOn, setVibrationOn] = useState(true);
   const [timer, setTimer] = useState(0);
   const [bestTimes, setBestTimes] = useState<Record<string, number>>({});
+  const [totalWins, setTotalWins] = useState(0);
   const [isNewRecord, setIsNewRecord] = useState(false);
   const [animatingMove, setAnimatingMove] = useState<{from: Position, to: Position, mid: Position} | null>(null);
 
@@ -62,6 +72,10 @@ const App: React.FC = () => {
     const savedTimes = localStorage.getItem('brainvita_best_times');
     if (savedTimes) {
       try { setBestTimes(JSON.parse(savedTimes)); } catch (e) {}
+    }
+    const savedWins = localStorage.getItem('brainvita_total_wins');
+    if (savedWins) {
+      setTotalWins(parseInt(savedWins, 10) || 0);
     }
     const savedVibe = localStorage.getItem('brainvita_vibration');
     if (savedVibe !== null) {
@@ -87,16 +101,9 @@ const App: React.FC = () => {
   }, [gameStatus]);
 
   const formatTime = (seconds: number) => {
-    if (seconds === Infinity || seconds === 0) return "--:--";
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const getWinnerInfo = () => {
-    if (gameStatus === GameStatus.WON) return "SOLVED!";
-    if (gameStatus === GameStatus.LOST) return "GAME OVER";
-    return "";
   };
 
   useEffect(() => {
@@ -179,14 +186,23 @@ const App: React.FC = () => {
     const status = checkGameStatus(newBoard);
     setGameStatus(status);
     if (status !== GameStatus.PLAYING) {
-      if (status === GameStatus.WON) { if (soundEnabled) playWinSound(); handleWin(); }
-      else if (status === GameStatus.LOST) { if (soundEnabled) playLoseSound(); }
+      if (status === GameStatus.WON) { 
+        if (soundEnabled) playWinSound(); 
+        handleWin(); 
+      }
+      else if (status === GameStatus.LOST) { 
+        if (soundEnabled) playLoseSound(); 
+      }
       stopBackgroundMusic();
-      setTimeout(() => setShowResultsModal(true), 3000);
+      setTimeout(() => setShowResultsModal(true), 1500);
     }
   };
 
   const handleWin = () => {
+    const newWins = totalWins + 1;
+    setTotalWins(newWins);
+    localStorage.setItem('brainvita_total_wins', String(newWins));
+
     const currentBest = bestTimes[currentLayout.name] || Infinity;
     if (timer < currentBest) {
       setIsNewRecord(true);
@@ -253,9 +269,11 @@ const App: React.FC = () => {
   };
 
   const resetAllProgress = () => {
-    if (window.confirm("Delete all records?")) {
+    if (window.confirm("Delete all records and medals?")) {
       setBestTimes({});
+      setTotalWins(0);
       localStorage.removeItem('brainvita_best_times');
+      localStorage.removeItem('brainvita_total_wins');
       if (soundEnabled) playInvalidSound();
     }
   };
@@ -373,98 +391,127 @@ const App: React.FC = () => {
       </footer>
 
       {showMenu && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-sm w-full p-6 lg:p-8 rounded-[3.5rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/95 backdrop-blur-3xl animate-in">
+           <div className="relative max-w-sm w-full p-8 rounded-[3rem] bg-[#0c1220] border-2 border-white/10 text-white shadow-4xl flex flex-col max-h-[90vh]">
               <div className="flex justify-between items-center mb-6">
                 <div className="flex flex-col">
-                  <h2 className="text-xl font-black uppercase italic tracking-tighter leading-none">MASTER</h2>
-                  <h2 className="text-xl font-black uppercase italic tracking-tighter text-emerald-500 leading-none">MENU</h2>
+                  <h2 className="text-xl font-black uppercase tracking-tighter leading-none">MASTER</h2>
+                  <h2 className="text-xl font-black uppercase tracking-tighter text-[#10b981] leading-none">MENU</h2>
                 </div>
-                <button onClick={() => setShowMenu(false)} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20"><X size={20}/></button>
+                <button onClick={() => setShowMenu(false)} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20 active:scale-90 transition-all"><X size={20}/></button>
               </div>
 
-              <div className="overflow-y-auto flex-1 pr-2 space-y-4 no-scrollbar">
-                <div className="bg-white/5 p-4 rounded-[2rem] border border-white/10">
-                   <h3 className="text-[10px] font-black uppercase text-amber-400 tracking-widest mb-4 flex items-center gap-2"><Settings size={14}/>PREFERENCES</h3>
-                   <div className="space-y-4">
+              <div className="overflow-y-auto flex-1 pr-2 space-y-6 no-scrollbar">
+                {/* Rewards Section */}
+                <div className="bg-[#1a1f2e]/40 p-6 rounded-[2rem] border border-white/5 shadow-inner">
+                   <h3 className="text-[10px] font-black uppercase text-amber-500 tracking-widest mb-4 flex items-center gap-2"><Award size={14}/> REWARDS</h3>
+                   <div className="flex items-center gap-4 mb-4">
+                      {totalWins > 0 ? (
+                        <MedalBadge size="w-14 h-14" />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-black/20 border border-white/5 flex items-center justify-center opacity-20">
+                           <Award size={24} className="text-white/20" />
+                        </div>
+                      )}
+                   </div>
+                   <div className="flex items-center justify-center gap-1.5 py-1 bg-black/20 rounded-full">
+                      <Trophy size={12} className="text-amber-500" />
+                      <span className="text-[10px] font-black uppercase tracking-widest text-white/60">TOTAL VICTORIES: {totalWins}</span>
+                   </div>
+                </div>
+
+                {/* Preferences Section */}
+                <div className="bg-[#1a1f2e]/40 p-6 rounded-[2rem] border border-white/5 shadow-inner">
+                   <h3 className="text-[10px] font-black uppercase text-amber-500 tracking-widest mb-6 flex items-center gap-2"><Settings size={14}/> PREFERENCES</h3>
+                   <div className="space-y-6">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Sound FX</span>
-                        <button onClick={() => setSoundEnabled(!soundEnabled)} className={`w-12 h-6 rounded-full transition-all relative ${soundEnabled ? 'bg-blue-500' : 'bg-slate-700'}`}>
-                          <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${soundEnabled ? 'left-7' : 'left-1'}`}></div>
+                        <span className="text-[11px] font-black uppercase tracking-widest text-white/80">Sound FX</span>
+                        <button onClick={() => setSoundEnabled(!soundEnabled)} className={`w-14 h-7 rounded-full transition-all relative ${soundEnabled ? 'bg-[#3b82f6]' : 'bg-[#1a1f2e] border border-white/10'}`}>
+                          <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${soundEnabled ? 'left-8 shadow-[0_0_10px_rgba(255,255,255,0.4)]' : 'left-1'}`}></div>
                         </button>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Haptics</span>
-                        <button onClick={toggleVibration} className={`w-12 h-6 rounded-full transition-all relative ${vibrationOn ? 'bg-green-500' : 'bg-slate-700'}`}>
-                          <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${vibrationOn ? 'left-7' : 'left-1'}`}></div>
+                        <span className="text-[11px] font-black uppercase tracking-widest text-white/80">Haptics</span>
+                        <button onClick={toggleVibration} className={`w-14 h-7 rounded-full transition-all relative ${vibrationOn ? 'bg-[#10b981]' : 'bg-[#1a1f2e] border border-white/10'}`}>
+                          <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${vibrationOn ? 'left-8 shadow-[0_0_10px_rgba(255,255,255,0.4)]' : 'left-1'}`}></div>
                         </button>
                       </div>
                    </div>
                 </div>
 
-                <div className="bg-red-500/5 p-4 rounded-[2rem] border border-red-500/20">
-                   <h3 className="text-[10px] font-black uppercase text-red-400 tracking-widest mb-4 flex items-center gap-2"><Trash2 size={14}/>DANGER ZONE</h3>
-                   <div className="space-y-2">
-                    <button onClick={resetAllProgress} className="w-full h-10 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[9px] font-black uppercase tracking-widest active:scale-95 transition-all">RESET RECORDS</button>
-                    <button onClick={clearAppCache} className="w-full h-10 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-orange-500 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><ShieldAlert size={14}/> WIPE & REFRESH</button>
+                {/* Danger Zone Section */}
+                <div className="bg-red-500/5 p-6 rounded-[2rem] border border-red-500/20">
+                   <h3 className="text-[10px] font-black uppercase text-red-500 tracking-widest mb-4 flex items-center gap-2"><Trash2 size={14}/> DANGER ZONE</h3>
+                   <div className="space-y-3">
+                    <button onClick={resetAllProgress} className="w-full h-11 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all">RESET RECORDS</button>
+                    <button onClick={clearAppCache} className="w-full h-11 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-orange-500 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all"><ShieldAlert size={14}/> WIPE & REFRESH</button>
                    </div>
                 </div>
               </div>
 
-              <button onClick={() => setShowMenu(false)} className="mt-6 w-full h-14 bg-blue-600 rounded-[2rem] text-white text-xs font-black uppercase tracking-[0.3em] active:scale-95 transition-all">CLOSE</button>
+              <button onClick={() => setShowMenu(false)} className="mt-8 w-full h-16 bg-[#3b82f6] rounded-[2rem] text-white text-xs font-black uppercase tracking-[0.4em] active:scale-95 transition-all shadow-xl shadow-blue-500/20">CLOSE</button>
            </div>
         </div>
       )}
 
-      <SelectionModal
-        isOpen={showThemeModal}
-        onClose={() => setShowThemeModal(false)}
-        title="THEMES"
-        items={THEMES}
-        selectedItem={currentTheme}
-        onSelect={handleThemeChange}
-        renderItem={(theme) => (
-          <div className="p-3 flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-full border-2 border-white/20 shadow-xl overflow-hidden shrink-0`} style={{ background: `radial-gradient(circle at 35% 35%, ${theme.marbleStart} 0%, ${theme.marbleEnd} 85%)` }}></div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-xs font-black uppercase tracking-widest truncate">{theme.name}</span>
-            </div>
-          </div>
-        )}
-      />
-
-      <SelectionModal
-        isOpen={showLayoutModal}
-        onClose={() => setShowLayoutModal(false)}
-        title="LAYOUTS"
-        items={LAYOUTS}
-        selectedItem={currentLayout}
-        onSelect={handleLayoutChange}
-        renderItem={(layout) => (
-          <div className="p-3 flex flex-col min-w-0">
-            <span className="text-xs font-black uppercase tracking-widest mb-1 truncate">{layout.name}</span>
-            <span className="text-[8px] font-bold text-white/40 leading-relaxed uppercase tracking-widest line-clamp-2">{layout.description}</span>
-          </div>
-        )}
-      />
-
       {showResultsModal && (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
-        <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-sm w-full p-8 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center">
-              <h2 className="text-2xl font-black mb-4 uppercase italic tracking-tighter drop-shadow-lg">{getWinnerInfo()}</h2>
-              <div className="grid grid-cols-2 gap-3 mb-8">
-                <div className="p-4 rounded-[2rem] border bg-white/10 border-white/5">
-                    <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">TIME</p>
-                    <p className={`text-lg font-black ${isNewRecord ? 'text-yellow-400' : ''}`}>{formatTime(timer)}</p>
+        <div className="fixed inset-0 z-[20000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
+           <div className="relative max-w-sm w-full p-10 rounded-[3rem] bg-[#0c1220] border-2 border-white/10 text-white shadow-4xl text-center flex flex-col items-center">
+              
+              <div className="relative mb-8">
+                <div className="w-24 h-24 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto shadow-[0_0_40px_rgba(245,158,11,0.2)]">
+                  <Trophy size={48} className="text-amber-400" strokeWidth={1.5} />
                 </div>
-                <div className="bg-white/10 p-4 rounded-[2rem] border border-white/5">
-                    <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">REMAINING</p>
-                    <p className="text-lg font-black">{marblesRemaining}</p>
+                {gameStatus === GameStatus.WON && (
+                  <div className="absolute -bottom-2 -right-2 transform rotate-12 scale-110">
+                    <MedalBadge size="w-10 h-10" />
+                  </div>
+                )}
+              </div>
+
+              <h2 className="text-[11px] font-black text-amber-500 uppercase tracking-[0.3em] mb-2 drop-shadow-md">CONGRATULATIONS</h2>
+              <h3 className="text-4xl font-black italic tracking-tighter text-white mb-6 uppercase leading-none">VICTORY</h3>
+
+              {gameStatus === GameStatus.WON && (
+                <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-amber-500/40 bg-amber-500/10 mb-10">
+                   <Award size={14} className="text-amber-500" />
+                   <span className="text-[10px] font-black uppercase tracking-widest text-amber-500">GOLD MEDAL EARNED!</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4 w-full mb-12">
+                <div className="p-6 rounded-[2rem] bg-[#1a1f2e] border border-white/5 flex flex-col items-center justify-center min-h-[120px]">
+                    <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">TIME</p>
+                    <p className={`text-2xl font-black ${isNewRecord ? 'text-amber-500' : 'text-white'}`}>{formatTime(timer)}</p>
+                    {isNewRecord && (
+                      <p className="text-[8px] font-black uppercase tracking-widest text-amber-500 mt-1">NEW RECORD!</p>
+                    )}
+                </div>
+                <div className="p-6 rounded-[2rem] bg-[#1a1f2e] border border-white/5 flex flex-col items-center justify-center min-h-[120px]">
+                    <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">REMAINED</p>
+                    <p className="text-3xl font-black text-white">{marblesRemaining}</p>
+                    {marblesRemaining === 1 && (
+                      <p className="text-[8px] font-black uppercase tracking-widest text-blue-400 mt-1">PERFECT</p>
+                    )}
                 </div>
               </div>
-              <button onClick={stopGame} className="w-full h-16 bg-blue-600 rounded-[2.5rem] text-white text-xs font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 active:scale-95 shadow-2xl py-4">
-                <RefreshCw size={20} /><span>TRY AGAIN</span>
-              </button>
+
+              <div className="w-full space-y-4">
+                <button 
+                  onClick={startGame} 
+                  className="w-full h-16 bg-[#3b82f6] rounded-[2rem] text-white text-xs font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 active:scale-95 transition-all shadow-xl shadow-blue-500/20"
+                >
+                  <RefreshCw size={18} strokeWidth={3} />
+                  <span>PLAY AGAIN</span>
+                </button>
+
+                <button 
+                  onClick={stopGame}
+                  className="w-full py-4 text-white/20 hover:text-white/40 text-[10px] font-black uppercase tracking-[0.3em] transition-colors"
+                >
+                  BACK TO MAIN MENU
+                </button>
+              </div>
            </div>
         </div>
       )}
