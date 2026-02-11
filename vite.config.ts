@@ -8,22 +8,24 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
-    rollupOptions: {
-      output: {
-        manualChunks: undefined
-      }
-    }
+    copyPublicDir: true // Ensures root files like manifest.json are copied to dist
   },
+  // We tell Vite to treat the root as the public directory so .well-known is included
+  publicDir: '.', 
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
-      manifest: false, // We use a custom manifest.json file
+      manifest: false, // Use our existing manifest.json at root
       workbox: {
+        // Only cache the final built assets, don't try to cache source TSX files
         globPatterns: ['**/*.{js,css,html,json,png,jpg}'],
         cleanupOutdatedCaches: true,
-        navigateFallback: 'index.html'
+        navigateFallback: 'index.html',
+        // Exclude the assetlinks file from being cached/intercepted by Service Worker
+        // to ensure Android always sees the fresh server version
+        exclude: [/assetlinks\.json$/]
       }
     })
   ]
