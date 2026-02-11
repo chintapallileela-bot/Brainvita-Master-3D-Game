@@ -2,42 +2,87 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 
-declare global {
-  interface Window {
-    __BRAINVITA_CLEAR_WATCHDOG?: () => void;
-    __APP_READY?: boolean;
+// Robust error reporting for production devices
+const reportFatalError = (err: any) => {
+  // Ignore Service Worker origin mismatch or registration errors as they are not fatal
+  const errMsg = String(err?.message || err);
+  if (errMsg.includes('ServiceWorker') || errMsg.includes('scriptURL')) {
+    console.warn('Non-fatal background error ignored:', errMsg);
+    return;
   }
-}
 
-// Clear the watchdog as early as possible once JS execution starts
-if (window.__BRAINVITA_CLEAR_WATCHDOG) {
-  window.__APP_READY = true;
-  window.__BRAINVITA_CLEAR_WATCHDOG();
-}
+  console.error('Fatal App Error:', err);
+  const root = document.getElementById('root');
+  if (root) {
+    root.innerHTML = `
+      <div style="background: #020617; color: white; padding: 40px; text-align: center; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: sans-serif;">
+        <h1 style="font-size: 24px; margin-bottom: 16px; font-weight: 900; color: #f43f5e;">BOOT FAILURE</h1>
+        <p style="color: #94a3b8; max-width: 320px; margin-bottom: 24px; font-size: 14px;">The game encountered a problem starting. This often happens if the device is low on memory or the WebView is outdated.</p>
+        <div style="background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.2); color: #ef4444; font-size: 10px; padding: 12px; border-radius: 8px; font-family: monospace; overflow-wrap: break-word; max-width: 80vw; margin-bottom: 32px; text-align: left;">
+          ${errMsg}
+        </div>
+        <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 16px 32px; border: none; border-radius: 20px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em;">Force Restart</button>
+      </div>
+    `;
+  }
+};
+
+// Catch global unhandled errors during boot
+window.onerror = (msg, url, lineNo, columnNo, error) => {
+  reportFatalError(error || msg);
+  return false;
+};
+
+window.onunhandledrejection = (event) => {
+  reportFatalError(event.reason);
+};
 
 const mountApp = () => {
   const rootElement = document.getElementById('root');
-  if (!rootElement) return;
+  const loader = document.getElementById('initial-loader');
 
-  try {
-    const root = createRoot(rootElement);
-    root.render(
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    );
-  } catch (err) {
-    console.error('Mounting error:', err);
-    const errorLog = document.getElementById('boot-error-msg');
-    if (errorLog) {
-      errorLog.innerText = "Fatal: " + (err instanceof Error ? err.message : String(err));
+  // NOTE: Manual Service Worker registration removed. 
+  // VitePWA is configured with injectRegister: 'auto' in vite.config.ts,
+  // which handles registration correctly based on the base path.
+
+  // SAFETY VALVE: Hide loader after 5s regardless, to avoid infinite "Waking Up"
+  const safetyTimeout = setTimeout(() => {
+    if (loader && loader.style.opacity !== '0') {
+       console.warn('App mount taking too long, forcing loader removal');
+       loader.style.opacity = '0';
+       setTimeout(() => loader.remove(), 500);
+    }
+  }, 5000);
+
+  if (rootElement) {
+    try {
+      const root = createRoot(rootElement);
+      root.render(
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      );
+      
+      if (loader) {
+        clearTimeout(safetyTimeout);
+        // Wait a tiny bit for React to actually paint before hiding loader
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 500);
+          }, 300);
+        });
+      }
+    } catch (err) {
+      clearTimeout(safetyTimeout);
+      reportFatalError(err);
     }
   }
 };
 
-// Ensure mounting happens after DOM is ready
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  mountApp();
+// Start the app
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', mountApp);
 } else {
-  window.addEventListener('load', mountApp);
+  mountApp();
 }

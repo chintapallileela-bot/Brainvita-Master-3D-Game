@@ -9,10 +9,9 @@
     <meta name="theme-color" content="#020617" />
     <meta name="description" content="Brainvita Master 3D: Ultimate peg solitaire puzzle." />
     
+    <!-- PWA -->
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Brainvita 3D">
     <link rel="manifest" href="manifest.json" />
 
     <title>Brainvita Master 3D</title>
@@ -27,14 +26,11 @@
       }
 
       html, body {
-        height: 100dvh;
+        height: 100%;
         margin: 0;
         padding: 0;
         background-color: #020617;
         overflow: hidden;
-        overscroll-behavior: none; 
-        position: fixed;
-        width: 100%;
       }
       
       body {
@@ -42,16 +38,12 @@
         -webkit-user-select: none;
         user-select: none;
         padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
-        -webkit-tap-highlight-color: transparent;
-        touch-action: none;
       }
 
       #root {
-        height: 100dvh;
-        width: 100%;
+        height: 100%;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
       }
 
       #initial-loader {
@@ -68,96 +60,76 @@
       .spinner {
         width: 40px;
         height: 40px;
-        border: 4px solid rgba(255,255,255,0.05);
+        border: 4px solid rgba(255,255,255,0.1);
         border-left-color: #3b82f6;
         border-radius: 50%;
-        animation: spin 0.8s linear infinite;
+        animation: spin 1s linear infinite;
       }
       @keyframes spin {
         to { transform: rotate(360deg); }
       }
 
-      #rescue-ui {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 30px;
-        animation: fadeIn 0.8s ease forwards;
+      .board-container-3d {
+        perspective: 1500px;
+        transform-style: preserve-3d;
       }
-      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-      #boot-error-msg {
-        color: #ef4444;
-        font-family: monospace;
-        font-size: 8px;
-        margin-top: 10px;
-        max-width: 80vw;
-        text-align: center;
-        opacity: 0.5;
+      .board-base {
+        transform-style: preserve-3d;
+        will-change: transform;
+      }
+
+      .btn-3d {
+        position: relative;
+        transition: transform 0.1s;
+        transform-style: preserve-3d;
+      }
+      
+      .btn-3d:active:not(:disabled) {
+        transform: translateY(3px);
+      }
+
+      .marble-3d {
+        box-shadow: 
+          inset -12px -18px 30px rgba(0,0,0,0.8),
+          inset 10px 10px 20px rgba(255,255,255,0.4),
+          0 15px 25px -10px rgba(0,0,0,0.9);
+      }
+      
+      .marble-selected {
+        animation: marble-hover-bob 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes marble-hover-bob {
+        0% { transform: translateY(-40px) scale(1.1); }
+        100% { transform: translateY(-50px) scale(1.15); }
       }
 
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
-    
-    <script>
-      (function() {
-        const watchdog = setTimeout(() => {
-          if (!window.__APP_READY) {
-            const statusText = document.getElementById('loader-text');
-            const spinner = document.querySelector('.spinner');
-            const rescue = document.getElementById('rescue-ui');
-            
-            if (statusText) statusText.innerText = "COULD NOT START ENGINE";
-            if (statusText) statusText.style.color = "#ef4444";
-            if (spinner) spinner.style.borderLeftColor = "#ef4444";
-            if (rescue) rescue.style.display = 'flex';
-          }
-        }, 12000);
-
-        window.__BRAINVITA_CLEAR_WATCHDOG = () => {
-          window.__APP_READY = true;
-          clearTimeout(watchdog);
-          const loader = document.getElementById('initial-loader');
-          if (loader) {
-            loader.style.opacity = '0';
-            setTimeout(() => loader.remove(), 500);
-          }
-        };
-
-        window.addEventListener('error', function(e) {
-          const debug = document.getElementById('boot-error-msg');
-          if (debug) debug.innerText = "Log: " + e.message;
-        });
-      })();
-    </script>
-  <script type="importmap">
+    <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.453.0?external=react",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
     "vite": "https://esm.sh/vite@^7.3.1",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.4",
     "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0"
   }
 }
 </script>
-</head>
+  </head>
   <body>
     <div id="initial-loader">
       <div class="spinner"></div>
-      <p id="loader-text" style="color: #475569; font-size: 10px; margin-top: 20px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;">Igniting 3D Engine...</p>
-      <div id="boot-error-msg"></div>
-      
-      <div id="rescue-ui">
-        <p style="color: #64748b; font-size: 11px; max-width: 250px; text-align: center; margin-bottom: 20px; line-height: 1.6;">The 3D environment is taking longer than usual to initialize.</p>
-        <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer;">Retry Boot</button>
-      </div>
+      <p style="color: #64748b; font-size: 12px; margin-top: 16px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;">Waking Up...</p>
     </div>
-    
     <div id="root"></div>
-    <script type="module" src="index.tsx"></script>
+    <script type="module" src="index.tsx" crossorigin></script>
   </body>
 </html>

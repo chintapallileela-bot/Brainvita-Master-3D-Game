@@ -23,7 +23,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.6.3";
+const VERSION = "1.6.0";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
 
 const App: React.FC = () => {
@@ -189,6 +189,7 @@ const App: React.FC = () => {
   };
 
   const handleWin = () => {
+    // Increment total wins and award medal
     const newWinsCount = totalWins + 1;
     setTotalWins(newWinsCount);
     localStorage.setItem('brainvita_total_wins', String(newWinsCount));
@@ -288,7 +289,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`relative h-[100dvh] w-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-hidden`}>
+    <div className={`relative min-h-screen w-full flex flex-col items-center justify-between ${currentTheme.appBg} ${currentTheme.isDark ? 'text-white' : 'text-slate-900'} font-poppins overflow-hidden`}>
       
       {showTutorial && <Tutorial onComplete={completeTutorial} />}
 
@@ -385,7 +386,7 @@ const App: React.FC = () => {
 
       {showMenu && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/98 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-sm w-full p-6 lg:p-8 rounded-[3.5rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl flex flex-col max-h-[90dvh]">
+           <div className="relative max-w-sm w-full p-6 lg:p-8 rounded-[3.5rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl flex flex-col max-h-[90vh]">
               <div className="flex justify-between items-center mb-6">
                 <div className="flex flex-col">
                   <h2 className="text-xl font-black uppercase italic tracking-tighter leading-none">MASTER</h2>
@@ -483,6 +484,7 @@ const App: React.FC = () => {
       {showResultsModal && (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
            <div className="relative max-w-md w-full p-8 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center overflow-hidden">
+              {/* Victory Background Glow */}
               {gameStatus === GameStatus.WON && (
                 <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/10 to-transparent -z-10 pointer-events-none"></div>
               )}
