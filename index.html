@@ -86,40 +86,24 @@
       }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-      #debug-log {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-        color: #ef4444;
-        font-family: monospace;
-        font-size: 8px;
-        text-align: center;
-        opacity: 0.6;
-        pointer-events: none;
-        z-index: 10000;
-      }
-
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
     
     <script>
       (function() {
-        // High-level watchdog
         const watchdog = setTimeout(() => {
           if (!window.__APP_READY) {
-            console.error('Watchdog: Readiness signal not received.');
             const statusText = document.getElementById('loader-text');
             const spinner = document.querySelector('.spinner');
             const rescue = document.getElementById('rescue-ui');
             
-            if (statusText) statusText.innerText = "COULD NOT START ENGINE";
+            if (statusText) statusText.innerText = "ENGINE BOOT TIMEOUT";
             if (statusText) statusText.style.color = "#ef4444";
             if (spinner) spinner.style.borderLeftColor = "#ef4444";
             if (rescue) rescue.style.display = 'flex';
           }
-        }, 6000);
+        }, 8000);
 
         window.__BRAINVITA_CLEAR_WATCHDOG = () => {
           clearTimeout(watchdog);
@@ -129,45 +113,34 @@
             setTimeout(() => loader.remove(), 500);
           }
         };
-
-        // UI-based Debugger
-        window.addEventListener('error', function(e) {
-          const log = document.getElementById('debug-log');
-          if (log) log.innerText = "Error: " + e.message;
-        });
       })();
     </script>
-
-    <script type="importmap">
+  <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@19.0.0",
-    "react-dom": "https://esm.sh/react-dom@19.0.0",
-    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "lucide-react": "https://esm.sh/lucide-react@0.453.0?external=react",
+    "react": "https://esm.sh/react@^19.2.4",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/",
     "vite": "https://esm.sh/vite@^7.3.1",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.4",
-    "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0"
+    "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
   }
 }
 </script>
-  </head>
+</head>
   <body>
     <div id="initial-loader">
       <div class="spinner"></div>
       <p id="loader-text" style="color: #475569; font-size: 10px; margin-top: 20px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;">Waking Up...</p>
       
       <div id="rescue-ui">
-        <p style="color: #64748b; font-size: 11px; max-width: 250px; text-align: center; margin-bottom: 20px; line-height: 1.6;">The 3D Engine is taking longer than usual.</p>
+        <p style="color: #64748b; font-size: 11px; max-width: 250px; text-align: center; margin-bottom: 20px; line-height: 1.6;">The Engine encountered a problem starting.</p>
         <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer;">Try Again</button>
       </div>
     </div>
     
-    <div id="debug-log"></div>
     <div id="root"></div>
-    
     <script type="module" src="index.tsx"></script>
   </body>
 </html>
