@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { BoardState, CellState, Position, Theme } from '../types';
 import { Marble } from './Marble';
@@ -36,41 +35,45 @@ export const Board: React.FC<BoardProps> = ({
     }
   }, [animatingMove, lastLandedPos]);
 
-  // Sizing refined to handle various orientations - max height is strictly capped to avoid pushing buttons off screen
-  // 35vh is used to leave room for Title (15vh), Header (10vh), and Footer (25vh) + margins
-  const boardSize = 'clamp(200px, min(80vw, 35vh, 480px), 480px)';
+  // Sizing refined to handle various orientations
+  const boardSize = 'clamp(240px, min(85vw, 45vh), 500px)';
 
   return (
-    <div className={`board-container-3d flex justify-center items-center relative w-full h-full pointer-events-none transition-all duration-700 ${disabled ? 'opacity-40 grayscale-[0.5] scale-95 blur-[1px]' : 'opacity-100 grayscale-0 scale-100 blur-0'}`} style={{ touchAction: 'none' }}>
-      {/* Dynamic Aura Glow based on theme brightness */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] blur-[120px] rounded-full -z-10 transition-all duration-1000 ${theme.isDark ? 'bg-indigo-500/10' : 'bg-white/30'} opacity-40`}></div>
-
+    <div className={`board-container-3d flex justify-center items-center relative w-full h-full pointer-events-none transition-all duration-700 ${disabled ? 'opacity-40' : 'opacity-100'}`} style={{ touchAction: 'none' }}>
       <div 
         ref={boardRef}
-        className="relative rounded-full board-base pointer-events-none flex items-center justify-center p-3 sm:p-4 shadow-[0_50px_100px_rgba(0,0,0,0.8)]"
+        className="relative rounded-full board-base pointer-events-none flex items-center justify-center p-0 shadow-[0_50px_100px_rgba(0,0,0,0.95)]"
         style={{ 
           transformStyle: 'preserve-3d',
           width: boardSize,
           height: boardSize
         }}
       >
-          {/* External Thick Wood/Stone Bezel */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-400 via-slate-800 to-black border-b-[8px] lg:border-b-[12px] border-black/90"
-               style={{ transform: 'translateZ(-5px)' }}></div>
+          {/* EXTERNAL ELEVATING FRAME - Dark Metallic Plastic Look */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-b from-[#475569] via-[#1e293b] to-[#020617] border-b-[12px] border-black/90"
+               style={{ transform: 'translateZ(-15px)' }}>
+               {/* Specular Rim Light */}
+               <div className="absolute inset-0 rounded-full border-t-[2px] border-white/10"></div>
+          </div>
           
-          {/* Play Surface Housing */}
-          <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border-2 shadow-[inset_0_20px_80px_rgba(0,0,0,1),0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-center p-[8%] overflow-hidden`}
-               style={{ transform: 'translateZ(10px)' }}>
+          {/* INNER RIM - The "Lip" that holds the play surface */}
+          <div className="absolute inset-[2%] rounded-full bg-gradient-to-br from-[#1e293b] to-black shadow-2xl border-[1px] border-white/5"
+               style={{ transform: 'translateZ(-2px)' }}></div>
+
+          {/* MAIN PLAY SURFACE - Recessed with Deep Plum Gradient */}
+          <div className={`relative w-[92%] h-[92%] rounded-full bg-gradient-to-br from-[#5a2a3e] to-[#240e18] shadow-[inset_0_10px_40px_rgba(0,0,0,0.9),0_5px_15px_rgba(0,0,0,0.5)] flex items-center justify-center p-[8%] overflow-hidden`}
+               style={{ transform: 'translateZ(5px)' }}>
             
-            {/* Fine Texture Overlay */}
-            <div className="absolute inset-0 rounded-full opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/dark-leather.png')] pointer-events-none"></div>
-            
+            {/* The distinct horizontal reflection/gloss line precisely as in the pic */}
+            <div className="absolute top-0 left-0 w-full h-[50%] bg-gradient-to-b from-white/15 to-transparent pointer-events-none z-20"></div>
+            <div className="absolute top-[49%] left-0 w-full h-[1.5px] bg-white/20 blur-[0.3px] z-20 shadow-[0_2px_4px_rgba(0,0,0,0.3)]"></div>
+
             {animatingMove && (
               <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
             )}
 
-            {/* Main Game Grid */}
-            <div className="grid grid-cols-7 gap-[2.5%] w-full h-full relative z-10" style={{ transformStyle: 'preserve-3d' }}>
+            {/* Main Game Grid Container */}
+            <div className="grid grid-cols-7 gap-[2%] w-full h-full relative z-10" style={{ transformStyle: 'preserve-3d' }}>
               {board.map((row, rIndex) => (
                 <React.Fragment key={rIndex}>
                   {row.map((cell, cIndex) => {
@@ -92,16 +95,14 @@ export const Board: React.FC<BoardProps> = ({
                         onClick={() => !disabled && onCellClick({ row: rIndex, col: cIndex })}
                         style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                       >
-                        {/* Recursive Indented Hole Visual */}
-                        <div className={`absolute w-[92%] h-[92%] rounded-full transition-all duration-300 ${theme.holeBg} 
-                          shadow-[inset_2px_4px_8px_rgba(0,0,0,1),inset_-1px_-1px_2px_rgba(255,255,255,0.05)]
-                          ${isValidDestination ? 'ring-2 ring-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.4)] bg-emerald-900/20' : ''}
+                        {/* Hole Pits - Deep matte black */}
+                        <div className={`absolute w-[90%] h-[90%] rounded-full transition-all duration-300 bg-[#0a0a0a] shadow-[inset_0_3px_8px_rgba(0,0,0,1),0_1px_1px_rgba(255,255,255,0.08)]
+                          ${isValidDestination ? 'ring-2 ring-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.7)]' : ''}
                         `}>
-                            <div className="absolute inset-[-1px] rounded-full border border-white/5 pointer-events-none"></div>
                         </div>
 
                         {hasMarble && !isAnimatingSource && (
-                          <div className="relative z-10 w-[82%] h-[82%] flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
+                          <div className="relative z-10 w-[96%] h-[96%] flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
                             <Marble 
                               id={rIndex * 7 + cIndex} 
                               isSelected={isSelected} 
@@ -114,7 +115,7 @@ export const Board: React.FC<BoardProps> = ({
 
                         {!disabled && isValidDestination && (
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[30%] h-[30%] rounded-full bg-emerald-400 shadow-[0_0_25px_#10b981] animate-pulse"
-                                 style={{ transform: 'translateZ(25px)' }}
+                                 style={{ transform: 'translateZ(12px)' }}
                             ></div>
                         )}
                       </div>
