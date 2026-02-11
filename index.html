@@ -86,12 +86,23 @@
       }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+      #boot-error-msg {
+        color: #ef4444;
+        font-family: monospace;
+        font-size: 8px;
+        margin-top: 10px;
+        max-width: 80vw;
+        text-align: center;
+        opacity: 0.5;
+      }
+
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
     
     <script>
       (function() {
+        // High-level watchdog
         const watchdog = setTimeout(() => {
           if (!window.__APP_READY) {
             const statusText = document.getElementById('loader-text');
@@ -103,9 +114,10 @@
             if (spinner) spinner.style.borderLeftColor = "#ef4444";
             if (rescue) rescue.style.display = 'flex';
           }
-        }, 8000);
+        }, 12000); // Increased to 12s for mobile stability
 
         window.__BRAINVITA_CLEAR_WATCHDOG = () => {
+          window.__APP_READY = true;
           clearTimeout(watchdog);
           const loader = document.getElementById('initial-loader');
           if (loader) {
@@ -113,6 +125,12 @@
             setTimeout(() => loader.remove(), 500);
           }
         };
+
+        // Capture early errors to display on screen
+        window.addEventListener('error', function(e) {
+          const debug = document.getElementById('boot-error-msg');
+          if (debug) debug.innerText = "Boot Log: " + e.message;
+        });
       })();
     </script>
   <script type="importmap">
@@ -121,10 +139,10 @@
     "react": "https://esm.sh/react@^19.2.4",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
     "vite": "https://esm.sh/vite@^7.3.1",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.4",
-    "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+    "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0"
   }
 }
 </script>
@@ -132,10 +150,11 @@
   <body>
     <div id="initial-loader">
       <div class="spinner"></div>
-      <p id="loader-text" style="color: #475569; font-size: 10px; margin-top: 20px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;">Waking Up...</p>
+      <p id="loader-text" style="color: #475569; font-size: 10px; margin-top: 20px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;">Igniting 3D Engine...</p>
+      <div id="boot-error-msg"></div>
       
       <div id="rescue-ui">
-        <p style="color: #64748b; font-size: 11px; max-width: 250px; text-align: center; margin-bottom: 20px; line-height: 1.6;">The Engine encountered a problem starting.</p>
+        <p style="color: #64748b; font-size: 11px; max-width: 250px; text-align: center; margin-bottom: 20px; line-height: 1.6;">The engine is taking longer than usual to load on this device.</p>
         <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer;">Try Again</button>
       </div>
     </div>

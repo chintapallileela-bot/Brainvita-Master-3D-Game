@@ -23,7 +23,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.6.2";
+const VERSION = "1.6.3";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
 
 const App: React.FC = () => {
@@ -58,17 +58,6 @@ const App: React.FC = () => {
   const bgLayerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
-
-  // READY SIGNAL: Tell the watchdog we are alive
-  useEffect(() => {
-    window.__APP_READY = true;
-    if (window.__BRAINVITA_CLEAR_WATCHDOG) {
-      // Delay slightly to ensure first paint is done
-      setTimeout(() => {
-        window.__BRAINVITA_CLEAR_WATCHDOG?.();
-      }, 300);
-    }
-  }, []);
 
   useEffect(() => {
     const savedTimes = localStorage.getItem('brainvita_best_times');
@@ -200,7 +189,6 @@ const App: React.FC = () => {
   };
 
   const handleWin = () => {
-    // Increment total wins and award medal
     const newWinsCount = totalWins + 1;
     setTotalWins(newWinsCount);
     localStorage.setItem('brainvita_total_wins', String(newWinsCount));
@@ -495,7 +483,6 @@ const App: React.FC = () => {
       {showResultsModal && (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
            <div className="relative max-w-md w-full p-8 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center overflow-hidden">
-              {/* Victory Background Glow */}
               {gameStatus === GameStatus.WON && (
                 <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/10 to-transparent -z-10 pointer-events-none"></div>
               )}
