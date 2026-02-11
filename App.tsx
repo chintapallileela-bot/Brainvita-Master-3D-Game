@@ -23,7 +23,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.6.1";
+const VERSION = "1.6.2";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
 
 const App: React.FC = () => {
@@ -58,6 +58,17 @@ const App: React.FC = () => {
   const bgLayerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
+
+  // READY SIGNAL: Tell the watchdog we are alive
+  useEffect(() => {
+    window.__APP_READY = true;
+    if (window.__BRAINVITA_CLEAR_WATCHDOG) {
+      // Delay slightly to ensure first paint is done
+      setTimeout(() => {
+        window.__BRAINVITA_CLEAR_WATCHDOG?.();
+      }, 300);
+    }
+  }, []);
 
   useEffect(() => {
     const savedTimes = localStorage.getItem('brainvita_best_times');
