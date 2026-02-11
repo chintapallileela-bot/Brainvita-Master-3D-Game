@@ -4,6 +4,13 @@ import App from './App';
 
 // Robust error reporting for production devices
 const reportFatalError = (err: any) => {
+  // Ignore Service Worker origin mismatch or registration errors as they are not fatal
+  const errMsg = String(err?.message || err);
+  if (errMsg.includes('ServiceWorker') || errMsg.includes('scriptURL')) {
+    console.warn('Non-fatal background error ignored:', errMsg);
+    return;
+  }
+
   console.error('Fatal App Error:', err);
   const root = document.getElementById('root');
   if (root) {
@@ -12,7 +19,7 @@ const reportFatalError = (err: any) => {
         <h1 style="font-size: 24px; margin-bottom: 16px; font-weight: 900; color: #f43f5e;">BOOT FAILURE</h1>
         <p style="color: #94a3b8; max-width: 320px; margin-bottom: 24px; font-size: 14px;">The game encountered a problem starting. This often happens if the device is low on memory or the WebView is outdated.</p>
         <div style="background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.2); color: #ef4444; font-size: 10px; padding: 12px; border-radius: 8px; font-family: monospace; overflow-wrap: break-word; max-width: 80vw; margin-bottom: 32px; text-align: left;">
-          ${String(err?.message || err)}
+          ${errMsg}
         </div>
         <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 16px 32px; border: none; border-radius: 20px; font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em;">Force Restart</button>
       </div>
@@ -34,32 +41,9 @@ const mountApp = () => {
   const rootElement = document.getElementById('root');
   const loader = document.getElementById('initial-loader');
 
-  // Register Service Worker for PWA updates
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      // Use a relative path 'sw.js' instead of absolute '/sw.js' to avoid origin mismatch errors
-      // in proxied preview environments.
-      navigator.serviceWorker.register('sw.js')
-        .then(registration => {
-          console.log('SW registered:', registration.scope);
-          // Check for updates periodically
-          registration.onupdatefound = () => {
-            const installingWorker = registration.installing;
-            if (installingWorker) {
-              installingWorker.onstatechange = () => {
-                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New content is available; force refresh for best experience
-                  window.location.reload();
-                }
-              };
-            }
-          };
-        })
-        .catch(error => {
-          console.error('SW registration failed:', error);
-        });
-    });
-  }
+  // NOTE: Manual Service Worker registration removed. 
+  // VitePWA is configured with injectRegister: 'auto' in vite.config.ts,
+  // which handles registration correctly based on the base path.
 
   // SAFETY VALVE: Hide loader after 5s regardless, to avoid infinite "Waking Up"
   const safetyTimeout = setTimeout(() => {

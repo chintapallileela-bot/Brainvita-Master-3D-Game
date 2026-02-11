@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  base: '/',
+  base: './', // Use relative base to prevent origin mismatch errors in preview environments
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
