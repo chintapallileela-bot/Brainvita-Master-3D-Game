@@ -26,7 +26,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,json,png,jpg}'],
         cleanupOutdatedCaches: true,
         navigateFallback: 'index.html',
-        exclude: [/assetlinks\.json$/]
+        globIgnores: ['**/.well-known/**', '**/assetlinks.json']
       }
     }),
     {
