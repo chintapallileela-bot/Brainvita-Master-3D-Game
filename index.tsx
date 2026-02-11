@@ -9,17 +9,17 @@ declare global {
   }
 }
 
+// Clear the watchdog as early as possible once JS execution starts
+if (window.__BRAINVITA_CLEAR_WATCHDOG) {
+  window.__APP_READY = true;
+  window.__BRAINVITA_CLEAR_WATCHDOG();
+}
+
 const mountApp = () => {
   const rootElement = document.getElementById('root');
   if (!rootElement) return;
 
   try {
-    // Clear watchdog immediately upon script entry
-    window.__APP_READY = true;
-    if (window.__BRAINVITA_CLEAR_WATCHDOG) {
-      window.__BRAINVITA_CLEAR_WATCHDOG();
-    }
-
     const root = createRoot(rootElement);
     root.render(
       <React.StrictMode>
@@ -29,10 +29,13 @@ const mountApp = () => {
   } catch (err) {
     console.error('Mounting error:', err);
     const errorLog = document.getElementById('boot-error-msg');
-    if (errorLog) errorLog.innerText = "Mount Error: " + (err instanceof Error ? err.message : String(err));
+    if (errorLog) {
+      errorLog.innerText = "Fatal: " + (err instanceof Error ? err.message : String(err));
+    }
   }
 };
 
+// Ensure mounting happens after DOM is ready
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   mountApp();
 } else {

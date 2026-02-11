@@ -108,12 +108,12 @@
             const spinner = document.querySelector('.spinner');
             const rescue = document.getElementById('rescue-ui');
             
-            if (statusText) statusText.innerText = "ENGINE BOOT TIMEOUT";
+            if (statusText) statusText.innerText = "COULD NOT START ENGINE";
             if (statusText) statusText.style.color = "#ef4444";
             if (spinner) spinner.style.borderLeftColor = "#ef4444";
             if (rescue) rescue.style.display = 'flex';
           }
-        }, 15000);
+        }, 12000);
 
         window.__BRAINVITA_CLEAR_WATCHDOG = () => {
           window.__APP_READY = true;
@@ -127,7 +127,7 @@
 
         window.addEventListener('error', function(e) {
           const debug = document.getElementById('boot-error-msg');
-          if (debug) debug.innerText = "Boot Log: " + e.message;
+          if (debug) debug.innerText = "Log: " + e.message;
         });
       })();
     </script>
@@ -152,8 +152,8 @@
       <div id="boot-error-msg"></div>
       
       <div id="rescue-ui">
-        <p style="color: #64748b; font-size: 11px; max-width: 250px; text-align: center; margin-bottom: 20px; line-height: 1.6;">The engine is taking longer than usual to load on this device.</p>
-        <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer;">Try Again</button>
+        <p style="color: #64748b; font-size: 11px; max-width: 250px; text-align: center; margin-bottom: 20px; line-height: 1.6;">The 3D environment is taking longer than usual to initialize.</p>
+        <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer;">Retry Boot</button>
       </div>
     </div>
     
