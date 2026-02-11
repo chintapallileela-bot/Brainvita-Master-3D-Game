@@ -37,7 +37,9 @@ const mountApp = () => {
   // Register Service Worker for PWA updates
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
+      // Use a relative path 'sw.js' instead of absolute '/sw.js' to avoid origin mismatch errors
+      // in proxied preview environments.
+      navigator.serviceWorker.register('sw.js')
         .then(registration => {
           console.log('SW registered:', registration.scope);
           // Check for updates periodically

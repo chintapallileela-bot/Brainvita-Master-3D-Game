@@ -4,7 +4,8 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   Menu, X, Timer as TimerIcon, Play, Palette, LayoutGrid,
-  RefreshCw, Settings, Trash2, ShieldAlert, Trophy, Frown
+  RefreshCw, Settings, Trash2, ShieldAlert, Trophy, Frown, 
+  Medal, Star, Award
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { Tutorial } from './components/Tutorial';
@@ -22,7 +23,7 @@ import {
   setVibrationEnabled
 } from './utils/sound';
 
-const VERSION = "1.5.4";
+const VERSION = "1.6.0";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
 
 const App: React.FC = () => {
@@ -49,6 +50,7 @@ const App: React.FC = () => {
   const [vibrationOn, setVibrationOn] = useState(true);
   const [timer, setTimer] = useState(0);
   const [bestTimes, setBestTimes] = useState<Record<string, number>>({});
+  const [totalWins, setTotalWins] = useState(0);
   const [isNewRecord, setIsNewRecord] = useState(false);
   const [animatingMove, setAnimatingMove] = useState<{from: Position, to: Position, mid: Position} | null>(null);
 
@@ -61,6 +63,10 @@ const App: React.FC = () => {
     const savedTimes = localStorage.getItem('brainvita_best_times');
     if (savedTimes) {
       try { setBestTimes(JSON.parse(savedTimes)); } catch (e) {}
+    }
+    const savedWins = localStorage.getItem('brainvita_total_wins');
+    if (savedWins) {
+      setTotalWins(parseInt(savedWins, 10) || 0);
     }
     const savedVibe = localStorage.getItem('brainvita_vibration');
     if (savedVibe !== null) {
@@ -172,7 +178,10 @@ const App: React.FC = () => {
     const status = checkGameStatus(newBoard);
     setGameStatus(status);
     if (status !== GameStatus.PLAYING) {
-      if (status === GameStatus.WON) { if (soundEnabled) playWinSound(); handleWin(); }
+      if (status === GameStatus.WON) { 
+        if (soundEnabled) playWinSound(); 
+        handleWin(); 
+      }
       else if (status === GameStatus.LOST) { if (soundEnabled) playLoseSound(); }
       stopBackgroundMusic();
       setTimeout(() => setShowResultsModal(true), 1500);
@@ -180,6 +189,11 @@ const App: React.FC = () => {
   };
 
   const handleWin = () => {
+    // Increment total wins and award medal
+    const newWinsCount = totalWins + 1;
+    setTotalWins(newWinsCount);
+    localStorage.setItem('brainvita_total_wins', String(newWinsCount));
+
     const currentBest = bestTimes[currentLayout.name] || Infinity;
     if (timer < currentBest) {
       setIsNewRecord(true);
@@ -246,9 +260,11 @@ const App: React.FC = () => {
   };
 
   const resetAllProgress = () => {
-    if (window.confirm("Delete all records?")) {
+    if (window.confirm("Delete all records and medals?")) {
       setBestTimes({});
+      setTotalWins(0);
       localStorage.removeItem('brainvita_best_times');
+      localStorage.removeItem('brainvita_total_wins');
       if (soundEnabled) playInvalidSound();
     }
   };
@@ -361,7 +377,10 @@ const App: React.FC = () => {
         </div>
         <div className="w-full flex items-center justify-between px-2 opacity-50">
             <span className="text-[7px] font-black uppercase tracking-widest text-fuchsia-300">V{VERSION}</span>
-            {bestTimes[currentLayout.name] && <span className="text-[7px] font-black uppercase tracking-widest text-white/40">BEST: {formatTime(bestTimes[currentLayout.name])}</span>}
+            <div className="flex items-center gap-3">
+              {totalWins > 0 && <div className="flex items-center gap-1"><Medal size={10} className="text-yellow-400" /> <span className="text-[7px] font-black text-yellow-400">{totalWins}</span></div>}
+              {bestTimes[currentLayout.name] && <span className="text-[7px] font-black uppercase tracking-widest text-white/40">BEST: {formatTime(bestTimes[currentLayout.name])}</span>}
+            </div>
         </div>
       </footer>
 
@@ -377,7 +396,28 @@ const App: React.FC = () => {
               </div>
 
               <div className="overflow-y-auto flex-1 pr-2 space-y-4 no-scrollbar">
-                <div className="bg-white/5 p-4 rounded-[2rem] border border-white/10">
+                
+                {/* Rewards Section */}
+                <div className="bg-gradient-to-br from-yellow-500/10 to-amber-600/5 p-5 rounded-[2.5rem] border border-yellow-500/20">
+                   <h3 className="text-[10px] font-black uppercase text-yellow-500 tracking-widest mb-4 flex items-center gap-2"><Award size={14}/> REWARDS</h3>
+                   <div className="flex flex-wrap gap-2">
+                      {totalWins > 0 ? Array.from({ length: Math.min(totalWins, 15) }).map((_, i) => (
+                         <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-b from-yellow-400 to-amber-600 flex items-center justify-center shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-t border-yellow-200 ring-1 ring-yellow-500/50">
+                            <Medal size={18} className="text-amber-900 drop-shadow-sm" fill="currentColor" />
+                         </div>
+                      )) : (
+                        <div className="w-full py-4 text-center border-2 border-dashed border-white/10 rounded-2xl">
+                           <span className="text-[8px] font-black text-white/30 uppercase tracking-widest italic">Win games to earn medals!</span>
+                        </div>
+                      )}
+                      {totalWins > 15 && <div className="text-[10px] font-black self-center ml-2 text-yellow-500/50">+{totalWins - 15} MORE</div>}
+                   </div>
+                   {totalWins > 0 && (
+                     <p className="text-[9px] font-bold text-yellow-500/80 uppercase tracking-widest mt-4 text-center">🏆 TOTAL VICTORIES: {totalWins}</p>
+                   )}
+                </div>
+
+                <div className="bg-white/5 p-5 rounded-[2.5rem] border border-white/10">
                    <h3 className="text-[10px] font-black uppercase text-amber-400 tracking-widest mb-4 flex items-center gap-2"><Settings size={14}/>PREFERENCES</h3>
                    <div className="space-y-4">
                       <div className="flex items-center justify-between">
@@ -395,7 +435,7 @@ const App: React.FC = () => {
                    </div>
                 </div>
 
-                <div className="bg-red-500/5 p-4 rounded-[2rem] border border-red-500/20">
+                <div className="bg-red-500/5 p-5 rounded-[2.5rem] border border-red-500/20">
                    <h3 className="text-[10px] font-black uppercase text-red-400 tracking-widest mb-4 flex items-center gap-2"><Trash2 size={14}/>DANGER ZONE</h3>
                    <div className="space-y-2">
                     <button onClick={resetAllProgress} className="w-full h-10 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[9px] font-black uppercase tracking-widest active:scale-95 transition-all">RESET RECORDS</button>
@@ -454,10 +494,19 @@ const App: React.FC = () => {
                    <>
                      <div className="relative mb-6">
                         <div className="absolute inset-0 blur-[30px] bg-yellow-400 opacity-30 animate-pulse"></div>
-                        <Trophy size={80} className="text-yellow-400 relative drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]" strokeWidth={1.5} />
+                        <div className="relative group">
+                           <Trophy size={80} className="text-yellow-400 relative drop-shadow-[0_0_20px_rgba(250,204,21,0.5)] mb-2" strokeWidth={1.5} />
+                           <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-gradient-to-b from-yellow-300 to-amber-600 flex items-center justify-center border-2 border-slate-950 scale-110 shadow-lg">
+                              <Medal size={20} className="text-amber-950" fill="currentColor" />
+                           </div>
+                        </div>
                      </div>
                      <h2 className="text-3xl font-black uppercase italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500 leading-none mb-2">CONGRATULATIONS</h2>
-                     <h3 className="text-xl font-bold uppercase tracking-[0.3em] text-white/60">VICTORY</h3>
+                     <h3 className="text-xl font-bold uppercase tracking-[0.3em] text-white/60 mb-2">VICTORY</h3>
+                     <div className="flex items-center gap-2 bg-yellow-400/10 px-4 py-1.5 rounded-full border border-yellow-400/30">
+                        <Award size={14} className="text-yellow-400" />
+                        <span className="text-[10px] font-black uppercase text-yellow-400 tracking-widest">GOLD MEDAL EARNED!</span>
+                     </div>
                    </>
                  ) : (
                    <>
