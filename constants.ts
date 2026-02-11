@@ -1,3 +1,4 @@
+
 import { Theme, GameLayout } from './types';
 
 export const BOARD_SIZE = 7;
@@ -141,8 +142,8 @@ export const THEMES: Theme[] = [
     boardBorder: 'border-sky-200/50',
     grooveBorder: 'border-white/30',
     holeBg: 'bg-sky-950/60',
-    marbleStart: '#e0f2fe', // Sky 100 (Ice)
-    marbleEnd: '#0284c7',   // Sky 600 (Deep Ice)
+    marbleStart: '#ffffff', // Pure White
+    marbleEnd: '#ffffff',   // Pure White
     selectionRing: 'ring-white',
     accentColor: 'bg-sky-500 hover:bg-sky-400',
     overlayClass: 'overlay-snowflakes'
@@ -173,8 +174,8 @@ export const THEMES: Theme[] = [
     boardBorder: 'border-cyan-400/60',
     grooveBorder: 'border-cyan-300/40',
     holeBg: 'bg-blue-950/80',
-    marbleStart: '#f0f9ff',
-    marbleEnd: '#0099ff',
+    marbleStart: '#ecfdf5', // Pale Green (Emerald 50)
+    marbleEnd: '#10b981',   // Pale Green Body (Emerald 500)
     selectionRing: 'ring-yellow-300',
     accentColor: 'bg-cyan-600 hover:bg-cyan-500',
     overlayClass: 'overlay-bubbles'

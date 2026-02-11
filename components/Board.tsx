@@ -35,36 +35,37 @@ export const Board: React.FC<BoardProps> = ({
     }
   }, [animatingMove, lastLandedPos]);
 
-  // Sizing refined to handle various orientations
   const boardSize = 'clamp(240px, min(85vw, 45vh), 500px)';
 
   return (
     <div className={`board-container-3d flex justify-center items-center relative w-full h-full pointer-events-none transition-all duration-700 ${disabled ? 'opacity-40' : 'opacity-100'}`} style={{ touchAction: 'none' }}>
       <div 
         ref={boardRef}
-        className="relative rounded-full board-base pointer-events-none flex items-center justify-center p-0 shadow-[0_50px_100px_rgba(0,0,0,0.95)]"
+        className="relative rounded-full board-base pointer-events-none flex items-center justify-center p-0 shadow-[0_60px_120px_rgba(0,0,0,0.95),0_0_40px_rgba(0,0,0,0.5)]"
         style={{ 
           transformStyle: 'preserve-3d',
           width: boardSize,
           height: boardSize
         }}
       >
-          {/* EXTERNAL ELEVATING FRAME - Dark Metallic Plastic Look */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-b from-[#475569] via-[#1e293b] to-[#020617] border-b-[12px] border-black/90"
-               style={{ transform: 'translateZ(-15px)' }}>
-               {/* Specular Rim Light */}
-               <div className="absolute inset-0 rounded-full border-t-[2px] border-white/10"></div>
+          {/* EXTERNAL ELEVATING FRAME */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-b from-[#475569] via-[#1e293b] to-[#020617] border-b-[14px] border-black/95"
+               style={{ transform: 'translateZ(-20px)' }}>
+               <div className="absolute inset-0 rounded-full border-t-[3px] border-white/10"></div>
+               {/* Ambient Occlusion shadow under the frame */}
+               <div className="absolute inset-[-5%] rounded-full bg-black/40 blur-[40px] -z-10"></div>
           </div>
           
-          {/* INNER RIM - The "Lip" that holds the play surface */}
-          <div className="absolute inset-[2%] rounded-full bg-gradient-to-br from-[#1e293b] to-black shadow-2xl border-[1px] border-white/5"
-               style={{ transform: 'translateZ(-2px)' }}></div>
+          {/* INNER RIM LIP */}
+          <div className="absolute inset-[1.5%] rounded-full bg-gradient-to-br from-[#1e293b] via-black to-black shadow-2xl border-[1px] border-white/5"
+               style={{ transform: 'translateZ(-5px)' }}></div>
 
-          {/* MAIN PLAY SURFACE - Recessed with Deep Plum Gradient */}
-          <div className={`relative w-[92%] h-[92%] rounded-full bg-gradient-to-br from-[#5a2a3e] to-[#240e18] shadow-[inset_0_10px_40px_rgba(0,0,0,0.9),0_5px_15px_rgba(0,0,0,0.5)] flex items-center justify-center p-[8%] overflow-hidden`}
+          {/* MAIN PLAY SURFACE */}
+          <div className={`relative w-[93%] h-[93%] rounded-full bg-gradient-to-br from-[#5a2a3e] to-[#1e0a14] shadow-[inset_0_15px_50px_rgba(0,0,0,0.95),0_5px_20px_rgba(0,0,0,0.6)] flex items-center justify-center p-[8%] overflow-hidden`}
                style={{ transform: 'translateZ(5px)' }}>
             
-            {/* The horizontal gloss line was removed here as requested */}
+            {/* Subtle surface texture overlay for realism */}
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_50%,#fff,transparent_70%)] pointer-events-none"></div>
 
             {animatingMove && (
               <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
@@ -93,10 +94,13 @@ export const Board: React.FC<BoardProps> = ({
                         onClick={() => !disabled && onCellClick({ row: rIndex, col: cIndex })}
                         style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
                       >
-                        {/* Hole Pits - Deep matte black */}
-                        <div className={`absolute w-[90%] h-[90%] rounded-full transition-all duration-300 bg-[#0a0a0a] shadow-[inset_0_3px_8px_rgba(0,0,0,1),0_1px_1px_rgba(255,255,255,0.08)]
-                          ${isValidDestination ? 'ring-2 ring-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.7)]' : ''}
+                        {/* Hole Pits with improved Ambient Occlusion */}
+                        <div className={`absolute w-[92%] h-[92%] rounded-full transition-all duration-500 bg-[#080808] 
+                          shadow-[inset_0_4px_12px_rgba(0,0,0,1),inset_0_-2px_6px_rgba(255,255,255,0.05),0_1px_2px_rgba(255,255,255,0.05)]
+                          ${isValidDestination ? 'ring-2 ring-emerald-400/80 shadow-[0_0_25px_rgba(52,211,153,0.8),inset_0_0_15px_rgba(52,211,153,0.3)]' : ''}
                         `}>
+                          {/* Inner hole rim shadow for depth */}
+                          <div className="absolute inset-0 rounded-full border-t-[1px] border-black/80"></div>
                         </div>
 
                         {hasMarble && !isAnimatingSource && (
@@ -112,8 +116,8 @@ export const Board: React.FC<BoardProps> = ({
                         )}
 
                         {!disabled && isValidDestination && (
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[30%] h-[30%] rounded-full bg-emerald-400 shadow-[0_0_25px_#10b981] animate-pulse"
-                                 style={{ transform: 'translateZ(12px)' }}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[28%] h-[28%] rounded-full bg-emerald-400 shadow-[0_0_30px_#10b981,0_0_10px_#fff] animate-pulse"
+                                 style={{ transform: 'translateZ(15px)' }}
                             ></div>
                         )}
                       </div>
