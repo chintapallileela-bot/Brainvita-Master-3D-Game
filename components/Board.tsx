@@ -64,9 +64,7 @@ export const Board: React.FC<BoardProps> = ({
           <div className={`relative w-[92%] h-[92%] rounded-full bg-gradient-to-br from-[#5a2a3e] to-[#240e18] shadow-[inset_0_10px_40px_rgba(0,0,0,0.9),0_5px_15px_rgba(0,0,0,0.5)] flex items-center justify-center p-[8%] overflow-hidden`}
                style={{ transform: 'translateZ(5px)' }}>
             
-            {/* The distinct horizontal reflection/gloss line precisely as in the pic */}
-            <div className="absolute top-0 left-0 w-full h-[50%] bg-gradient-to-b from-white/15 to-transparent pointer-events-none z-20"></div>
-            <div className="absolute top-[49%] left-0 w-full h-[1.5px] bg-white/20 blur-[0.3px] z-20 shadow-[0_2px_4px_rgba(0,0,0,0.3)]"></div>
+            {/* The horizontal gloss line was removed here as requested */}
 
             {animatingMove && (
               <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
