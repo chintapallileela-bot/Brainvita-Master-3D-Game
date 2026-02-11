@@ -102,7 +102,6 @@
     
     <script>
       (function() {
-        // High-level watchdog
         const watchdog = setTimeout(() => {
           if (!window.__APP_READY) {
             const statusText = document.getElementById('loader-text');
@@ -114,7 +113,7 @@
             if (spinner) spinner.style.borderLeftColor = "#ef4444";
             if (rescue) rescue.style.display = 'flex';
           }
-        }, 12000); // Increased to 12s for mobile stability
+        }, 15000); // 15s for mobile stability
 
         window.__BRAINVITA_CLEAR_WATCHDOG = () => {
           window.__APP_READY = true;
@@ -126,7 +125,6 @@
           }
         };
 
-        // Capture early errors to display on screen
         window.addEventListener('error', function(e) {
           const debug = document.getElementById('boot-error-msg');
           if (debug) debug.innerText = "Boot Log: " + e.message;

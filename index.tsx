@@ -15,21 +15,18 @@ const mountApp = () => {
 
   try {
     const root = createRoot(rootElement);
+    
+    // Set readiness before render to prevent race conditions on fast devices
+    window.__APP_READY = true;
+    
     root.render(
       <React.StrictMode>
         <App />
       </React.StrictMode>
     );
     
-    // Explicitly signal readiness to clear the HTML loader
     if (window.__BRAINVITA_CLEAR_WATCHDOG) {
-      // Use requestAnimationFrame to ensure the browser has actually started 
-      // working on the React tree before hiding the splash
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          window.__BRAINVITA_CLEAR_WATCHDOG?.();
-        }, 100);
-      });
+      window.__BRAINVITA_CLEAR_WATCHDOG();
     }
   } catch (err) {
     console.error('Mounting error:', err);
@@ -38,7 +35,6 @@ const mountApp = () => {
   }
 };
 
-// Handle all ready states for broad mobile browser compatibility
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   mountApp();
 } else {
