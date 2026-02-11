@@ -4,7 +4,7 @@ import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from '
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   Menu, X, Timer as TimerIcon, Play, Palette, LayoutGrid,
-  RefreshCw, Settings, Trash2, ShieldAlert
+  RefreshCw, Settings, Trash2, ShieldAlert, Trophy, Frown
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
 import { Tutorial } from './components/Tutorial';
@@ -92,12 +92,6 @@ const App: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getWinnerInfo = () => {
-    if (gameStatus === GameStatus.WON) return "SOLVED!";
-    if (gameStatus === GameStatus.LOST) return "GAME OVER";
-    return "";
-  };
-
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => { mouseRef.current = { x: e.clientX, y: e.clientY }; };
     const handleTouchMove = (e: TouchEvent) => { if(e.touches[0]) mouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
@@ -181,7 +175,7 @@ const App: React.FC = () => {
       if (status === GameStatus.WON) { if (soundEnabled) playWinSound(); handleWin(); }
       else if (status === GameStatus.LOST) { if (soundEnabled) playLoseSound(); }
       stopBackgroundMusic();
-      setTimeout(() => setShowResultsModal(true), 3000);
+      setTimeout(() => setShowResultsModal(true), 1500);
     }
   };
 
@@ -449,20 +443,57 @@ const App: React.FC = () => {
 
       {showResultsModal && (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-sm w-full p-8 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center">
-              <h2 className="text-2xl font-black mb-4 uppercase italic tracking-tighter drop-shadow-lg">{getWinnerInfo()}</h2>
-              <div className="grid grid-cols-2 gap-3 mb-8">
-                <div className="p-4 rounded-[2rem] border bg-white/10 border-white/5">
-                    <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">TIME</p>
-                    <p className={`text-lg font-black ${isNewRecord ? 'text-yellow-400' : ''}`}>{formatTime(timer)}</p>
+           <div className="relative max-w-md w-full p-8 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center overflow-hidden">
+              {/* Victory Background Glow */}
+              {gameStatus === GameStatus.WON && (
+                <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/10 to-transparent -z-10 pointer-events-none"></div>
+              )}
+
+              <div className="flex flex-col items-center mb-6">
+                 {gameStatus === GameStatus.WON ? (
+                   <>
+                     <div className="relative mb-6">
+                        <div className="absolute inset-0 blur-[30px] bg-yellow-400 opacity-30 animate-pulse"></div>
+                        <Trophy size={80} className="text-yellow-400 relative drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]" strokeWidth={1.5} />
+                     </div>
+                     <h2 className="text-3xl font-black uppercase italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500 leading-none mb-2">CONGRATULATIONS</h2>
+                     <h3 className="text-xl font-bold uppercase tracking-[0.3em] text-white/60">VICTORY</h3>
+                   </>
+                 ) : (
+                   <>
+                     <Frown size={80} className="text-rose-500 mb-6 opacity-80" strokeWidth={1.5} />
+                     <h2 className="text-3xl font-black uppercase italic tracking-tighter text-rose-500 leading-none mb-2">GAME OVER</h2>
+                     <h3 className="text-xl font-bold uppercase tracking-[0.3em] text-white/60">OUT OF MOVES</h3>
+                   </>
+                 )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-10">
+                <div className="p-6 rounded-[2.5rem] border bg-white/5 border-white/5 shadow-inner">
+                    <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">TIME</p>
+                    <p className={`text-2xl font-black tracking-tight ${isNewRecord ? 'text-yellow-400' : 'text-white'}`}>{formatTime(timer)}</p>
+                    {isNewRecord && <p className="text-[8px] font-black uppercase text-yellow-500 mt-1">NEW RECORD!</p>}
                 </div>
-                <div className="bg-white/10 p-4 rounded-[2rem] border border-white/5">
-                    <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">REMAINING</p>
-                    <p className="text-lg font-black">{marblesRemaining}</p>
+                <div className="p-6 rounded-[2.5rem] border bg-white/5 border-white/5 shadow-inner">
+                    <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">REMAINED</p>
+                    <p className="text-2xl font-black tracking-tight">{marblesRemaining}</p>
+                    <p className="text-[8px] font-black uppercase text-white/20 mt-1">{marblesRemaining === 1 ? 'PERFECT' : 'PEGS'}</p>
                 </div>
               </div>
-              <button onClick={stopGame} className="w-full h-16 bg-blue-600 rounded-[2.5rem] text-white text-xs font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 active:scale-95 shadow-2xl py-4">
-                <RefreshCw size={20} /><span>TRY AGAIN</span>
+
+              <button 
+                onClick={startGame} 
+                className="w-full h-18 bg-blue-600 rounded-[2.5rem] text-white text-sm font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 active:scale-95 shadow-2xl py-5 transition-transform"
+              >
+                <RefreshCw size={24} />
+                <span>PLAY AGAIN</span>
+              </button>
+
+              <button 
+                onClick={stopGame}
+                className="mt-4 text-white/40 hover:text-white/80 text-[10px] font-black uppercase tracking-widest transition-colors"
+              >
+                BACK TO MAIN MENU
               </button>
            </div>
         </div>
