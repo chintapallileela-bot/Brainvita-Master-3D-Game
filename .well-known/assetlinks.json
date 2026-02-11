@@ -7,7 +7,9 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.brainvita.master3d",
-      "sha256_cert_fingerprints": ["C6:37:08:52:55:41:02:22:B6:09:93:3B:78:66:87:A4:C3:7E:54:59:04:B1:39:2B:0D:71:B6:6F:4C:7B:A2:C0"]
+      "sha256_cert_fingerprints": [
+        "PASTE_YOUR_SHA256_FINGERPRINT_FROM_PLAY_CONSOLE_HERE"
+      ]
     }
   }
 ]
