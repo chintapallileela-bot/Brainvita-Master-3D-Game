@@ -1,3 +1,4 @@
+
 export enum CellState {
   INVALID = -1,
   EMPTY = 0,
@@ -28,11 +29,6 @@ export interface GameLayout {
   name: string;
   description: string;
   board: number[][];
-}
-
-export interface WinStats {
-  totalWins: number;
-  bestTimes: Record<string, number>;
 }
 
 export interface Theme {

@@ -1,15 +1,15 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Board } from './components/Board';
-import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types';
-import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
+import { Board } from './components/Board.tsx';
+import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types.ts';
+import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic.ts';
 import { 
   Menu, X, Timer as TimerIcon, Play, Palette, LayoutGrid,
-  RefreshCw, Settings, Trash2, ShieldAlert, Trophy, Frown, 
-  Medal, Star, Award
+  Trophy, RefreshCw, Settings, Trash2, ShieldAlert
 } from 'lucide-react';
-import { THEMES, LAYOUTS } from './constants';
-import { Tutorial } from './components/Tutorial';
-import { SelectionModal } from './components/SelectionModal';
+import { THEMES, LAYOUTS } from './constants.ts';
+import { Tutorial } from './components/Tutorial.tsx';
+import { SelectionModal } from './components/SelectionModal.tsx';
 import { 
   playMoveSound, 
   playWinSound, 
@@ -21,9 +21,9 @@ import {
   startBackgroundMusic,
   stopBackgroundMusic,
   setVibrationEnabled
-} from './utils/sound';
+} from './utils/sound.ts';
 
-const VERSION = "1.6.0";
+const VERSION = "1.5.4";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
 
 const App: React.FC = () => {
@@ -50,7 +50,6 @@ const App: React.FC = () => {
   const [vibrationOn, setVibrationOn] = useState(true);
   const [timer, setTimer] = useState(0);
   const [bestTimes, setBestTimes] = useState<Record<string, number>>({});
-  const [totalWins, setTotalWins] = useState(0);
   const [isNewRecord, setIsNewRecord] = useState(false);
   const [animatingMove, setAnimatingMove] = useState<{from: Position, to: Position, mid: Position} | null>(null);
 
@@ -63,10 +62,6 @@ const App: React.FC = () => {
     const savedTimes = localStorage.getItem('brainvita_best_times');
     if (savedTimes) {
       try { setBestTimes(JSON.parse(savedTimes)); } catch (e) {}
-    }
-    const savedWins = localStorage.getItem('brainvita_total_wins');
-    if (savedWins) {
-      setTotalWins(parseInt(savedWins, 10) || 0);
     }
     const savedVibe = localStorage.getItem('brainvita_vibration');
     if (savedVibe !== null) {
@@ -96,6 +91,12 @@ const App: React.FC = () => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const getWinnerInfo = () => {
+    if (gameStatus === GameStatus.WON) return "SOLVED!";
+    if (gameStatus === GameStatus.LOST) return "GAME OVER";
+    return "";
   };
 
   useEffect(() => {
@@ -178,22 +179,14 @@ const App: React.FC = () => {
     const status = checkGameStatus(newBoard);
     setGameStatus(status);
     if (status !== GameStatus.PLAYING) {
-      if (status === GameStatus.WON) { 
-        if (soundEnabled) playWinSound(); 
-        handleWin(); 
-      }
+      if (status === GameStatus.WON) { if (soundEnabled) playWinSound(); handleWin(); }
       else if (status === GameStatus.LOST) { if (soundEnabled) playLoseSound(); }
       stopBackgroundMusic();
-      setTimeout(() => setShowResultsModal(true), 1500);
+      setTimeout(() => setShowResultsModal(true), 3000);
     }
   };
 
   const handleWin = () => {
-    // Increment total wins and award medal
-    const newWinsCount = totalWins + 1;
-    setTotalWins(newWinsCount);
-    localStorage.setItem('brainvita_total_wins', String(newWinsCount));
-
     const currentBest = bestTimes[currentLayout.name] || Infinity;
     if (timer < currentBest) {
       setIsNewRecord(true);
@@ -260,11 +253,9 @@ const App: React.FC = () => {
   };
 
   const resetAllProgress = () => {
-    if (window.confirm("Delete all records and medals?")) {
+    if (window.confirm("Delete all records?")) {
       setBestTimes({});
-      setTotalWins(0);
       localStorage.removeItem('brainvita_best_times');
-      localStorage.removeItem('brainvita_total_wins');
       if (soundEnabled) playInvalidSound();
     }
   };
@@ -377,10 +368,7 @@ const App: React.FC = () => {
         </div>
         <div className="w-full flex items-center justify-between px-2 opacity-50">
             <span className="text-[7px] font-black uppercase tracking-widest text-fuchsia-300">V{VERSION}</span>
-            <div className="flex items-center gap-3">
-              {totalWins > 0 && <div className="flex items-center gap-1"><Medal size={10} className="text-yellow-400" /> <span className="text-[7px] font-black text-yellow-400">{totalWins}</span></div>}
-              {bestTimes[currentLayout.name] && <span className="text-[7px] font-black uppercase tracking-widest text-white/40">BEST: {formatTime(bestTimes[currentLayout.name])}</span>}
-            </div>
+            {bestTimes[currentLayout.name] && <span className="text-[7px] font-black uppercase tracking-widest text-white/40">BEST: {formatTime(bestTimes[currentLayout.name])}</span>}
         </div>
       </footer>
 
@@ -396,28 +384,7 @@ const App: React.FC = () => {
               </div>
 
               <div className="overflow-y-auto flex-1 pr-2 space-y-4 no-scrollbar">
-                
-                {/* Rewards Section */}
-                <div className="bg-gradient-to-br from-yellow-500/10 to-amber-600/5 p-5 rounded-[2.5rem] border border-yellow-500/20">
-                   <h3 className="text-[10px] font-black uppercase text-yellow-500 tracking-widest mb-4 flex items-center gap-2"><Award size={14}/> REWARDS</h3>
-                   <div className="flex flex-wrap gap-2">
-                      {totalWins > 0 ? Array.from({ length: Math.min(totalWins, 15) }).map((_, i) => (
-                         <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-b from-yellow-400 to-amber-600 flex items-center justify-center shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-t border-yellow-200 ring-1 ring-yellow-500/50">
-                            <Medal size={18} className="text-amber-900 drop-shadow-sm" fill="currentColor" />
-                         </div>
-                      )) : (
-                        <div className="w-full py-4 text-center border-2 border-dashed border-white/10 rounded-2xl">
-                           <span className="text-[8px] font-black text-white/30 uppercase tracking-widest italic">Win games to earn medals!</span>
-                        </div>
-                      )}
-                      {totalWins > 15 && <div className="text-[10px] font-black self-center ml-2 text-yellow-500/50">+{totalWins - 15} MORE</div>}
-                   </div>
-                   {totalWins > 0 && (
-                     <p className="text-[9px] font-bold text-yellow-500/80 uppercase tracking-widest mt-4 text-center">🏆 TOTAL VICTORIES: {totalWins}</p>
-                   )}
-                </div>
-
-                <div className="bg-white/5 p-5 rounded-[2.5rem] border border-white/10">
+                <div className="bg-white/5 p-4 rounded-[2rem] border border-white/10">
                    <h3 className="text-[10px] font-black uppercase text-amber-400 tracking-widest mb-4 flex items-center gap-2"><Settings size={14}/>PREFERENCES</h3>
                    <div className="space-y-4">
                       <div className="flex items-center justify-between">
@@ -435,7 +402,7 @@ const App: React.FC = () => {
                    </div>
                 </div>
 
-                <div className="bg-red-500/5 p-5 rounded-[2.5rem] border border-red-500/20">
+                <div className="bg-red-500/5 p-4 rounded-[2rem] border border-red-500/20">
                    <h3 className="text-[10px] font-black uppercase text-red-400 tracking-widest mb-4 flex items-center gap-2"><Trash2 size={14}/>DANGER ZONE</h3>
                    <div className="space-y-2">
                     <button onClick={resetAllProgress} className="w-full h-10 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 text-[9px] font-black uppercase tracking-widest active:scale-95 transition-all">RESET RECORDS</button>
@@ -483,66 +450,20 @@ const App: React.FC = () => {
 
       {showResultsModal && (gameStatus === GameStatus.WON || gameStatus === GameStatus.LOST) && (
         <div className="fixed inset-0 z-[20000] flex items-center justify-center p-6 bg-black/95 backdrop-blur-3xl animate-in">
-           <div className="relative max-w-md w-full p-8 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center overflow-hidden">
-              {/* Victory Background Glow */}
-              {gameStatus === GameStatus.WON && (
-                <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/10 to-transparent -z-10 pointer-events-none"></div>
-              )}
-
-              <div className="flex flex-col items-center mb-6">
-                 {gameStatus === GameStatus.WON ? (
-                   <>
-                     <div className="relative mb-6">
-                        <div className="absolute inset-0 blur-[30px] bg-yellow-400 opacity-30 animate-pulse"></div>
-                        <div className="relative group">
-                           <Trophy size={80} className="text-yellow-400 relative drop-shadow-[0_0_20px_rgba(250,204,21,0.5)] mb-2" strokeWidth={1.5} />
-                           <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-gradient-to-b from-yellow-300 to-amber-600 flex items-center justify-center border-2 border-slate-950 scale-110 shadow-lg">
-                              <Medal size={20} className="text-amber-950" fill="currentColor" />
-                           </div>
-                        </div>
-                     </div>
-                     <h2 className="text-3xl font-black uppercase italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500 leading-none mb-2">CONGRATULATIONS</h2>
-                     <h3 className="text-xl font-bold uppercase tracking-[0.3em] text-white/60 mb-2">VICTORY</h3>
-                     <div className="flex items-center gap-2 bg-yellow-400/10 px-4 py-1.5 rounded-full border border-yellow-400/30">
-                        <Award size={14} className="text-yellow-400" />
-                        <span className="text-[10px] font-black uppercase text-yellow-400 tracking-widest">GOLD MEDAL EARNED!</span>
-                     </div>
-                   </>
-                 ) : (
-                   <>
-                     <Frown size={80} className="text-rose-500 mb-6 opacity-80" strokeWidth={1.5} />
-                     <h2 className="text-3xl font-black uppercase italic tracking-tighter text-rose-500 leading-none mb-2">GAME OVER</h2>
-                     <h3 className="text-xl font-bold uppercase tracking-[0.3em] text-white/60">OUT OF MOVES</h3>
-                   </>
-                 )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-10">
-                <div className="p-6 rounded-[2.5rem] border bg-white/5 border-white/5 shadow-inner">
-                    <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">TIME</p>
-                    <p className={`text-2xl font-black tracking-tight ${isNewRecord ? 'text-yellow-400' : 'text-white'}`}>{formatTime(timer)}</p>
-                    {isNewRecord && <p className="text-[8px] font-black uppercase text-yellow-500 mt-1">NEW RECORD!</p>}
+           <div className="relative max-w-sm w-full p-8 rounded-[4rem] bg-slate-950 border-2 border-white/20 text-white shadow-4xl text-center">
+              <h2 className="text-2xl font-black mb-4 uppercase italic tracking-tighter drop-shadow-lg">{getWinnerInfo()}</h2>
+              <div className="grid grid-cols-2 gap-3 mb-8">
+                <div className="p-4 rounded-[2rem] border bg-white/10 border-white/5">
+                    <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">TIME</p>
+                    <p className={`text-lg font-black ${isNewRecord ? 'text-yellow-400' : ''}`}>{formatTime(timer)}</p>
                 </div>
-                <div className="p-6 rounded-[2.5rem] border bg-white/5 border-white/5 shadow-inner">
-                    <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">REMAINED</p>
-                    <p className="text-2xl font-black tracking-tight">{marblesRemaining}</p>
-                    <p className="text-[8px] font-black uppercase text-white/20 mt-1">{marblesRemaining === 1 ? 'PERFECT' : 'PEGS'}</p>
+                <div className="bg-white/10 p-4 rounded-[2rem] border border-white/5">
+                    <p className="text-[8px] font-black text-white/40 uppercase tracking-widest mb-1">REMAINING</p>
+                    <p className="text-lg font-black">{marblesRemaining}</p>
                 </div>
               </div>
-
-              <button 
-                onClick={startGame} 
-                className="w-full h-18 bg-blue-600 rounded-[2.5rem] text-white text-sm font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 active:scale-95 shadow-2xl py-5 transition-transform"
-              >
-                <RefreshCw size={24} />
-                <span>PLAY AGAIN</span>
-              </button>
-
-              <button 
-                onClick={stopGame}
-                className="mt-4 text-white/40 hover:text-white/80 text-[10px] font-black uppercase tracking-widest transition-colors"
-              >
-                BACK TO MAIN MENU
+              <button onClick={stopGame} className="w-full h-16 bg-blue-600 rounded-[2.5rem] text-white text-xs font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 active:scale-95 shadow-2xl py-4">
+                <RefreshCw size={20} /><span>TRY AGAIN</span>
               </button>
            </div>
         </div>
