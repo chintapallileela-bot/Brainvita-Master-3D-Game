@@ -9,7 +9,6 @@
     <meta name="theme-color" content="#020617" />
     <meta name="description" content="Brainvita Master 3D: Ultimate peg solitaire puzzle." />
     
-    <!-- PWA / Full Screen Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -87,6 +86,20 @@
       }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+      #debug-log {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        color: #ef4444;
+        font-family: monospace;
+        font-size: 8px;
+        text-align: center;
+        opacity: 0.6;
+        pointer-events: none;
+        z-index: 10000;
+      }
+
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -94,7 +107,6 @@
     <script>
       (function() {
         // High-level watchdog
-        window.__APP_LOAD_START = Date.now();
         const watchdog = setTimeout(() => {
           if (!window.__APP_READY) {
             console.error('Watchdog: Readiness signal not received.');
@@ -117,6 +129,12 @@
             setTimeout(() => loader.remove(), 500);
           }
         };
+
+        // UI-based Debugger
+        window.addEventListener('error', function(e) {
+          const log = document.getElementById('debug-log');
+          if (log) log.innerText = "Error: " + e.message;
+        });
       })();
     </script>
 
@@ -143,10 +161,13 @@
       
       <div id="rescue-ui">
         <p style="color: #64748b; font-size: 11px; max-width: 250px; text-align: center; margin-bottom: 20px; line-height: 1.6;">The 3D Engine is taking longer than usual.</p>
-        <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer; box-shadow: 0 10px 20px rgba(37,99,235,0.2);">Try Again</button>
+        <button onclick="window.location.reload()" style="background: #2563eb; color: white; padding: 14px 28px; border: none; border-radius: 14px; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; cursor: pointer;">Try Again</button>
       </div>
     </div>
+    
+    <div id="debug-log"></div>
     <div id="root"></div>
-    <script type="module" src="index.tsx" crossorigin></script>
+    
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>
