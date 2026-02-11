@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  base: './', // Use relative base to prevent origin mismatch errors in preview environments
+  base: './', 
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -20,7 +20,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
+      injectRegister: null, // Set to null to avoid conflict with manual safe registration
       manifest: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,json,png,jpg}'],
