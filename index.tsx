@@ -14,20 +14,18 @@ const mountApp = () => {
   if (!rootElement) return;
 
   try {
-    const root = createRoot(rootElement);
-    
-    // Set readiness before render to prevent race conditions on fast devices
+    // Clear watchdog immediately upon script entry
     window.__APP_READY = true;
-    
+    if (window.__BRAINVITA_CLEAR_WATCHDOG) {
+      window.__BRAINVITA_CLEAR_WATCHDOG();
+    }
+
+    const root = createRoot(rootElement);
     root.render(
       <React.StrictMode>
         <App />
       </React.StrictMode>
     );
-    
-    if (window.__BRAINVITA_CLEAR_WATCHDOG) {
-      window.__BRAINVITA_CLEAR_WATCHDOG();
-    }
   } catch (err) {
     console.error('Mounting error:', err);
     const errorLog = document.getElementById('boot-error-msg');
