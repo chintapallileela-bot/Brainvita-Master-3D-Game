@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
+import App from './App';
 
 // Robust error reporting for production devices
 const reportFatalError = (err: any) => {

@@ -1,15 +1,14 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Board } from './components/Board.tsx';
-import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types.ts';
-import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic.ts';
+import { Board } from './components/Board';
+import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types';
+import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   Menu, X, Timer as TimerIcon, Play, Palette, LayoutGrid,
-  Trophy, RefreshCw, Settings, Trash2, ShieldAlert
+  RefreshCw, Settings, Trash2, ShieldAlert
 } from 'lucide-react';
-import { THEMES, LAYOUTS } from './constants.ts';
-import { Tutorial } from './components/Tutorial.tsx';
-import { SelectionModal } from './components/SelectionModal.tsx';
+import { THEMES, LAYOUTS } from './constants';
+import { Tutorial } from './components/Tutorial';
+import { SelectionModal } from './components/SelectionModal';
 import { 
   playMoveSound, 
   playWinSound, 
@@ -21,7 +20,7 @@ import {
   startBackgroundMusic,
   stopBackgroundMusic,
   setVibrationEnabled
-} from './utils/sound.ts';
+} from './utils/sound';
 
 const VERSION = "1.5.4";
 const TUTORIAL_KEY = `brainvita_tutorial_v${VERSION.replace(/\./g, '')}`;
