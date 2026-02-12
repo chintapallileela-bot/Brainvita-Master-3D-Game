@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/Board.tsx';
 import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types.ts';
@@ -535,7 +536,7 @@ const App: React.FC = () => {
       <SelectionModal
         isOpen={showThemeModal}
         onClose={() => setShowThemeModal(false)}
-        title="ENVIRONMENT THEMES"
+        title="BACKGROUND THEMES"
         items={THEMES}
         selectedItem={currentTheme}
         onSelect={handleThemeChange}
@@ -544,7 +545,7 @@ const App: React.FC = () => {
             <div className="w-14 h-14 rounded-full border-2 border-white/20 shadow-xl overflow-hidden shrink-0" style={{ background: `radial-gradient(circle at 35% 35%, ${theme.marbleStart} 0%, ${theme.marbleEnd} 85%)` }}></div>
             <div className="flex flex-col">
               <span className="text-sm font-black uppercase tracking-widest text-white">{theme.name}</span>
-              <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest mt-1">3D Environment</span>
+              <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest mt-1">3D Background</span>
             </div>
           </div>
         )}
