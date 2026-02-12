@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Check } from 'lucide-react';
 
 interface SelectionModalProps<T> {
@@ -21,7 +21,21 @@ export function SelectionModal<T extends { name: string }>({
   onSelect,
   renderItem
 }: SelectionModalProps<T>) {
+  const [pendingSelection, setPendingSelection] = useState<T>(selectedItem);
+
+  // Synchronize internal state when modal opens or external selection changes
+  useEffect(() => {
+    if (isOpen) {
+      setPendingSelection(selectedItem);
+    }
+  }, [isOpen, selectedItem]);
+
   if (!isOpen) return null;
+
+  const handleConfirm = () => {
+    onSelect(pendingSelection);
+    // Note: onSelect in App.tsx typically handles closing the modal too
+  };
 
   return (
     <div className="fixed inset-0 z-[20000] flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-xl animate-in">
@@ -46,11 +60,11 @@ export function SelectionModal<T extends { name: string }>({
         <div className="flex-1 overflow-y-auto p-6 sm:p-8 no-scrollbar">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {items.map((item) => {
-              const isSelected = item.name === selectedItem.name;
+              const isSelected = item.name === pendingSelection.name;
               return (
                 <div 
                   key={item.name}
-                  onClick={() => onSelect(item)}
+                  onClick={() => setPendingSelection(item)}
                   className={`
                     relative cursor-pointer transition-all duration-300 rounded-[2.5rem] border-2 group
                     ${isSelected ? 'border-blue-500 bg-blue-500/10' : 'border-white/5 bg-white/5 hover:border-white/20 hover:bg-white/10'}
@@ -72,7 +86,7 @@ export function SelectionModal<T extends { name: string }>({
         {/* Footer */}
         <div className="p-6 border-t border-white/5 bg-white/5 flex justify-center">
            <button 
-             onClick={onClose}
+             onClick={handleConfirm}
              className="w-full h-14 bg-blue-600 rounded-[2rem] text-xs font-black uppercase tracking-[0.3em] shadow-xl active:scale-95 transition-all"
            >
              CONFIRM SELECTION
