@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Theme } from '../gameTypes';
+import { Theme } from '../constants';
 
 interface RemovedMarblesProps {
   count: number;

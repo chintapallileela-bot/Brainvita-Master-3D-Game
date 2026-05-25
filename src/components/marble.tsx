@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Theme } from '../gameTypes';
+import { Theme } from '../constants';
 
 interface MarbleProps {
   isSelected?: boolean;

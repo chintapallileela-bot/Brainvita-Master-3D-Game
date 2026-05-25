@@ -1,13 +1,12 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/board';
-import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './gameTypes';
+import { BoardState, CellState, Position, GameStatus, Theme, GameLayout, THEMES, LAYOUTS } from './constants';
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   X, Timer as TimerIcon, Play, Palette, LayoutGrid,
   Trophy, RefreshCw, Award, Volume2, VolumeX, HelpCircle, Frown, Check, Medal, Menu, Settings, Trash2, ShieldAlert
 } from 'lucide-react';
-import { THEMES, LAYOUTS } from './constants';
 import { Tutorial } from './components/tutorial';
 import { SelectionModal } from './components/selectionModal';
 import { 

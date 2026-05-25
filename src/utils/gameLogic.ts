@@ -1,4 +1,4 @@
-import { BoardState, CellState, Position, GameStatus } from '../gameTypes';
+import { BoardState, CellState, Position, GameStatus } from '../constants';
 import { BOARD_SIZE } from '../constants';
 
 export const createInitialBoard = (layoutTemplate: number[][]): BoardState => {
