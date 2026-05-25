@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Board } from './components/Board';
+import { Board } from './components/board';
 import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types';
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
@@ -8,8 +8,8 @@ import {
   Trophy, RefreshCw, Award, Volume2, VolumeX, HelpCircle, Frown, Check, Medal, Menu, Settings, Trash2, ShieldAlert
 } from 'lucide-react';
 import { THEMES, LAYOUTS } from './constants';
-import { Tutorial } from './components/Tutorial';
-import { SelectionModal } from './components/SelectionModal';
+import { Tutorial } from './components/tutorial';
+import { SelectionModal } from './components/selectionModal';
 import { 
   playMoveSound, 
   playWinSound, 
