@@ -1,5 +1,6 @@
 {
   "name": "Brainvita Master 3D",
   "description": "Premium 3D Peg Solitaire experience with stunning visual themes.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

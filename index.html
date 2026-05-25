@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="background-color: #020617;">
+<html lang="en" style="background-color: #020617; overflow: hidden; height: 100%;">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png" />
@@ -9,13 +9,13 @@
     <meta name="theme-color" content="#020617" />
     <meta name="description" content="Brainvita Master 3D: Ultimate peg solitaire puzzle." />
     
-    <!-- PWA -->
+    <!-- PWA settings -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="/manifest.json" />
 
     <title>Brainvita Master 3D</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Poppins Elegant Font family -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
       :root {
@@ -48,31 +48,8 @@
         width: 100%;
       }
 
-      #initial-loader {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #020617;
-        z-index: 9999;
-        transition: opacity 0.5s ease;
-      }
-      .spinner {
-        width: 32px;
-        height: 32px;
-        border: 3px solid rgba(255,255,255,0.1);
-        border-left-color: #3b82f6;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-      }
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-
       .board-container-3d {
-        perspective: 1500px;
+        perspective: 1200px;
         transform-style: preserve-3d;
       }
 
@@ -81,64 +58,30 @@
         will-change: transform;
       }
 
-      .btn-3d {
-        position: relative;
-        transition: transform 0.1s;
-        transform-style: preserve-3d;
-      }
-      
-      .btn-3d:active:not(:disabled) {
-        transform: translateY(2px);
-      }
-
-      .marble-3d {
-        box-shadow: 
-          inset -12px -18px 30px rgba(0,0,0,0.8),
-          inset 10px 10px 20px rgba(255,255,255,0.4),
-          0 15px 25px -10px rgba(0,0,0,0.9);
-      }
-      
       .marble-selected {
-        animation: marble-hover-bob 2s ease-in-out infinite alternate;
+        animation: marble-hover-bob 1.2s ease-in-out infinite alternate;
       }
 
       @keyframes marble-hover-bob {
-        0% { transform: translateY(-40px) scale(1.1); }
-        100% { transform: translateY(-50px) scale(1.15); }
+        0% { transform: translateY(0px) scale(1); }
+        100% { transform: translateY(-8px) scale(1.06); }
       }
 
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-      /* Animation for modals */
+      /* Animation for modal entrances */
       @keyframes modalIn {
-        from { opacity: 0; transform: scale(0.9) translateY(20px); }
+        from { opacity: 0; transform: scale(0.92) translateY(20px); }
         to { opacity: 1; transform: scale(1) translateY(0); }
       }
       .animate-modal {
-        animation: modalIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        animation: modalIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "vite": "https://esm.sh/vite@^7.3.1",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.4",
-    "vite-plugin-pwa": "https://esm.sh/vite-plugin-pwa@^1.2.0"
-  }
-}
-</script>
-</head>
+  </head>
   <body>
-    <div id="initial-loader">
-      <div class="spinner"></div>
-      <p style="color: #475569; font-size: 11px; margin-top: 16px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;">Booting Master 3D...</p>
-    </div>
     <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

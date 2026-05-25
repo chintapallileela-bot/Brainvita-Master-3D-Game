@@ -1,131 +1,55 @@
-
-import React, { useState, useEffect } from 'react';
-import { BoardState, CellState, Position, Theme } from '../types';
-import { Marble } from './Marble';
-import { MoveOverlay } from './MoveOverlay';
+import React from 'react';
+import { BoardState, Position, Theme } from '../types.ts';
+import { Marble } from './Marble.tsx';
 
 interface BoardProps {
   board: BoardState;
   selectedPos: Position | null;
-  validMoves: Position[];
+  validDestinations: Position[];
   onCellClick: (pos: Position) => void;
   theme: Theme;
-  animatingMove: { from: Position; to: Position; mid: Position } | null;
-  boardRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export const Board: React.FC<BoardProps> = ({ 
-  board, 
-  selectedPos, 
-  validMoves, 
-  onCellClick, 
-  theme,
-  animatingMove,
-  boardRef
+export const Board: React.FC<BoardProps> = ({
+  board,
+  selectedPos,
+  validDestinations,
+  onCellClick,
+  theme
 }) => {
-  const [lastLandedPos, setLastLandedPos] = useState<Position | null>(null);
+  const isSelected = (r: number, c: number) => {
+    return selectedPos?.row === r && selectedPos?.col === c;
+  };
 
-  useEffect(() => {
-    if (animatingMove) {
-      setLastLandedPos(animatingMove.to);
-    } else if (lastLandedPos) {
-      const timer = setTimeout(() => setLastLandedPos(null), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [animatingMove, lastLandedPos]);
-
-  // Robust sizing using clamp to ensure it fits regardless of screen ratio and doesn't squash vertically
-  const boardSize = 'clamp(280px, min(80vw, 40vh), 420px)';
-
-  const boardGlowClass = theme.isDark 
-    ? 'bg-indigo-500/20 shadow-[0_0_60px_rgba(99,102,241,0.2)]' 
-    : 'bg-white/40 shadow-[0_0_60px_rgba(255,255,255,0.2)]';
+  const isValidDestination = (r: number, c: number) => {
+    return validDestinations.some(dest => dest.row === r && dest.col === c);
+  };
 
   return (
-    <div className="flex justify-center items-center relative pointer-events-none w-full h-full" style={{ touchAction: 'none' }}>
-      {/* Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] blur-[50px] rounded-full -z-10 transition-all duration-700 ${boardGlowClass}`}></div>
+    <div className={`relative p-5 sm:p-6 md:p-8 rounded-full border-4 ${theme.boardBg} ${theme.boardBorder} transition-all duration-300 max-w-full aspect-square flex items-center justify-center`}>
+      {/* circular shadow and rim reflections */}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-black/50 via-transparent to-white/10 pointer-events-none border border-white/5" />
+      <div className="absolute inset-2 rounded-full border-2 border-black/30 pointer-events-none" />
+      <div className="absolute inset-4 rounded-full border border-white/5 pointer-events-none" />
 
-      <div 
-        ref={boardRef}
-        className="relative rounded-full board-base pointer-events-none bg-gradient-to-b from-slate-700 via-slate-800 to-black p-2 shadow-[0_30px_60px_rgba(0,0,0,0.8)] flex-shrink-0"
-        style={{ 
-          transformStyle: 'preserve-3d',
-          width: boardSize,
-          height: boardSize
-        }}
-      >
-          {/* Bezel Rim */}
-          <div className="w-full h-full rounded-full p-2 bg-gradient-to-br from-slate-400 via-slate-900 to-black border-b-[6px] sm:border-b-[10px] border-black/95 relative"
-               style={{ transform: 'translateZ(10px)' }}>
-            
-            {/* Play Surface Bowl */}
-            <div className={`relative w-full h-full rounded-full ${theme.boardBg} ${theme.boardBorder} border border-white/10 shadow-[inset_0_10px_40px_rgba(0,0,0,0.9)] flex items-center justify-center p-[15%] overflow-hidden`}
-                 style={{ transform: 'translateZ(15px)' }}>
-                
-                {/* Surface Fine Texture */}
-                <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none z-0">
-                    <div className="absolute inset-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-                </div>
-                
-                {animatingMove && (
-                  <MoveOverlay from={animatingMove.from} to={animatingMove.to} theme={theme} />
-                )}
-
-                {/* Grid */}
-                <div className="grid grid-cols-7 gap-[2%] w-full h-full relative z-10" style={{ transformStyle: 'preserve-3d' }}>
-                  {board.map((row, rIndex) => (
-                    <React.Fragment key={rIndex}>
-                      {row.map((cell, cIndex) => {
-                        const isInvalid = cell === CellState.INVALID;
-                        const isSelected = selectedPos?.row === rIndex && selectedPos?.col === cIndex;
-                        const hasMarble = cell === CellState.MARBLE;
-                        const isValidDestination = validMoves.some(m => m.row === rIndex && m.col === cIndex);
-                        const isAnimatingSource = animatingMove?.from.row === rIndex && animatingMove?.from.col === cIndex;
-                        const isAnimatingMid = animatingMove?.mid.row === rIndex && animatingMove?.mid.col === cIndex;
-                        const isJustLanded = lastLandedPos?.row === rIndex && lastLandedPos?.col === cIndex;
-
-                        if (isInvalid) return <div key={`${rIndex}-${cIndex}`} className="w-full h-full" />;
-
-                        return (
-                          <div
-                            key={`${rIndex}-${cIndex}`}
-                            id={`cell-${rIndex}-${cIndex}`}
-                            className="w-full aspect-square rounded-full flex items-center justify-center relative pointer-events-auto cursor-pointer"
-                            onClick={() => onCellClick({ row: rIndex, col: cIndex })}
-                            style={{ transformStyle: 'preserve-3d', transform: 'translateZ(2px)' }}
-                          >
-                            <div className={`absolute w-[95%] h-[95%] rounded-full hole-3d transition-all duration-300 
-                              ${isValidDestination ? 'bg-green-500/20 ring-2 ring-green-400/40 shadow-[0_0_10px_rgba(74,222,128,0.4)]' : ''}
-                            `}>
-                                <div className="hole-rim-highlight"></div>
-                            </div>
-
-                            {hasMarble && !isAnimatingSource && (
-                              <div className="relative z-10 w-[85%] h-[85%] flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
-                                <Marble 
-                                  id={rIndex * 7 + cIndex} 
-                                  isSelected={isSelected} 
-                                  theme={theme} 
-                                  isRemoving={isAnimatingMid}
-                                  isNew={isJustLanded && !animatingMove}
-                                />
-                              </div>
-                            )}
-
-                            {isValidDestination && (
-                                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[20%] h-[20%] rounded-full animate-pulse bg-green-400 shadow-[0_0_12px_#4ade80]`}
-                                     style={{ transform: 'translateZ(20px)' }}
-                                ></div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </React.Fragment>
-                  ))}
-                </div>
+      {/* Grid container */}
+      <div className="grid grid-cols-7 gap-1.5 sm:gap-2.5 md:gap-3.5 relative z-10 w-full h-full max-w-lg aspect-square">
+        {board.map((row, rIdx) =>
+          row.map((cell, cIdx) => (
+            <div
+              key={`${rIdx}-${cIdx}`}
+              className="flex items-center justify-center aspect-square"
+            >
+              <Marble
+                state={cell}
+                isSelected={isSelected(rIdx, cIdx)}
+                isValidDest={isValidDestination(rIdx, cIdx)}
+                onClick={() => onCellClick({ row: rIdx, col: cIdx })}
+                theme={theme}
+              />
             </div>
-          </div>
+          ))
+        )}
       </div>
     </div>
   );

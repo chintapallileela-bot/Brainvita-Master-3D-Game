@@ -1,73 +1,73 @@
-
-import React, { useMemo } from 'react';
-import { Theme } from '../types';
+import React from 'react';
+import { CellState, Theme } from '../types.ts';
 
 interface MarbleProps {
-  isSelected?: boolean;
-  onClick?: () => void;
-  isGhost?: boolean;
-  isRemoving?: boolean;
-  isNew?: boolean;
+  state: CellState;
+  isSelected: boolean;
+  isValidDest: boolean;
+  onClick: () => void;
   theme: Theme;
-  id: number;
 }
 
-export const Marble: React.FC<MarbleProps> = ({ isSelected, onClick, isGhost, isRemoving, isNew, theme, id }) => {
-  const visualStyle = useMemo(() => {
-    const seed = id * 12345 + (theme.isDark ? 99 : 1);
-    const rnd = (offset: number) => {
-      const x = Math.sin(seed + offset) * 10000;
-      return x - Math.floor(x);
-    };
-
-    const isGemTheme = theme.name === 'Gem Stones';
-    const hueShift = isGemTheme ? Math.floor(rnd(1) * 360) : Math.floor(rnd(1) * 60) - 30;
-    const rotation = Math.floor(rnd(2) * 360);
-    const innerTexture = `
-      radial-gradient(ellipse at 35% 65%, rgba(255,255,255,0.4) 0%, transparent 60%),
-      linear-gradient(${rotation}deg, transparent 42%, rgba(255,255,255,0.15) 48%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.15) 52%, transparent 58%)
-    `;
-
-    return {
-      filter: `hue-rotate(${hueShift}deg) contrast(1.1) saturate(1.15)`,
-      pattern: innerTexture,
-    };
-  }, [id, theme.name, theme.isDark]);
-
-  if (isGhost) {
-     return <div className="w-full h-full rounded-full bg-black/50 transform scale-50 blur-[2px]" />;
+export const Marble: React.FC<MarbleProps> = ({
+  state,
+  isSelected,
+  isValidDest,
+  onClick,
+  theme
+}) => {
+  if (state === CellState.INVALID) {
+    return <div className="w-10 h-10 md:w-14 md:h-14 opacity-0 pointer-events-none" />;
   }
 
   return (
-    <div
-      onClick={onClick}
-      className={`
-        w-full h-full rounded-full cursor-pointer
-        relative transition-all duration-300
-        ${isRemoving ? 'scale-0 opacity-0 rotate-180 pointer-events-none' : ''}
-        ${isNew ? 'marble-landed' : ''}
-        ${isSelected ? `marble-selected ring-2 ring-white/50 ring-offset-4 ring-offset-transparent` : 'marble-3d hover:translate-y-[-12%]'}
-      `}
-      style={{
-        background: `
-          ${visualStyle.pattern},
-          radial-gradient(circle at 35% 35%, ${theme.marbleStart} 0%, ${theme.marbleEnd} 85%, #000 100%)
-        `,
-        filter: visualStyle.filter,
-        transformStyle: 'preserve-3d'
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        onClick();
       }}
+      className="relative w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-full cursor-pointer touch-manipulation group"
+      style={{ minWidth: '44px', minHeight: '44px' }}
+      aria-label={
+        state === CellState.MARBLE
+          ? `${isSelected ? 'Selected ' : ''}Marble`
+          : isValidDest
+          ? 'Valid jump target'
+          : 'Empty slot'
+      }
     >
-      <div className="absolute top-[12%] left-[14%] w-[20%] h-[15%] rounded-[50%] bg-white blur-[0.3px] shadow-[0_0_8px_rgba(255,255,255,1)] z-20"></div>
-      <div className="absolute top-[8%] left-[25%] w-[35%] h-[25%] rounded-[50%] bg-gradient-to-r from-white/40 to-transparent blur-[2px] z-10"></div>
-      <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"></div>
-      {(!isRemoving) && (
-        <div 
-          className={`
-            absolute left-1/2 -translate-x-1/2 bg-black/60 blur-[8px] sm:blur-[12px] rounded-full pointer-events-none mix-blend-multiply transition-all duration-400
-            ${isSelected ? 'bottom-[-60%] w-[95%] h-[25%] opacity-30 blur-[15px] sm:blur-[25px]' : 'bottom-[-5%] w-[80%] h-[12%] opacity-70'}
+      {/* 3D Slot Socket - always visible */}
+      <div className="absolute w-[80%] h-[80%] rounded-full bg-black/60 shadow-[inset_0_4px_8px_rgba(0,0,0,0.9),0_1px_1px_rgba(255,255,255,0.15)] flex items-center justify-center">
+        {/* Subtle inner center depth hole */}
+        <div className="w-[30%] h-[30%] rounded-full bg-black/40 blur-[1px]"></div>
+      </div>
+
+      {/* Marble Sphere */}
+      {state === CellState.MARBLE && (
+        <div
+          className={`absolute w-[85%] h-[85%] rounded-full transition-all duration-300 transform-gpu 
+            ${isSelected ? 'marble-selected scale-110' : 'hover:scale-105 active:scale-95'} 
+            ${isSelected ? theme.selectedMarbleBg : theme.marbleBg}
+            shadow-[inset_-4px_-6px_15px_rgba(0,0,0,0.85),inset_6px_6px_10px_rgba(255,255,255,0.4),0_10px_16px_rgba(0,0,0,0.8)]
           `}
-        ></div>
+        >
+          {/* Inner glass glossy highlight */}
+          <div className="absolute top-[8%] left-[18%] w-[25%] h-[15%] bg-white/50 rounded-full blur-[0.8px] rotate-[25deg]" />
+          <div className="absolute top-0 inset-x-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent rounded-t-full" />
+          
+          {/* Glowing border if selected */}
+          {isSelected && (
+            <div className="absolute inset-0 rounded-full border border-cyan-400/50 animate-pulse pointer-events-none" />
+          )}
+        </div>
       )}
-    </div>
+
+      {/* Valid Destination Indicator */}
+      {isValidDest && (
+        <div className="absolute w-[85%] h-[85%] rounded-full border-2 border-dashed border-cyan-450 bg-cyan-400/10 animate-pulse flex items-center justify-center transition-all duration-200 hover:bg-cyan-400/20">
+          <div className="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
+        </div>
+      )}
+    </button>
   );
 };

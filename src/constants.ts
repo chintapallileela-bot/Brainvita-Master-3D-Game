@@ -1,179 +1,97 @@
-
-import { Theme, GameLayout } from './types';
-
-export const BOARD_SIZE = 7;
-
-// Helper to create the board grid easily
-const I = -1; // Invalid
-const O = 1;  // Marble
-const E = 0;  // Empty
-
-export const LAYOUTS: GameLayout[] = [
-  {
-    name: "Circular Board",
-    description: "37 holes. The classic round layout.",
-    board: [
-      [I, I, O, O, O, I, I],
-      [I, O, O, O, O, O, I],
-      [O, O, O, O, O, O, O],
-      [O, O, O, E, O, O, O],
-      [O, O, O, O, O, O, O],
-      [I, O, O, O, O, O, I],
-      [I, I, O, O, O, I, I],
-    ]
-  },
-  {
-    name: "Classic Cross",
-    description: "The standard 33-hole English board.",
-    board: [
-      [I, I, O, O, O, I, I],
-      [I, I, O, O, O, I, I],
-      [O, O, O, O, O, O, O],
-      [O, O, O, E, O, O, O],
-      [O, O, O, O, O, O, O],
-      [I, I, O, O, O, I, I],
-      [I, I, O, O, O, I, I],
-    ]
-  },
-  {
-    name: "Pyramid",
-    description: "Triangle formation on the Classic board.",
-    board: [
-      [I, I, E, O, E, I, I],
-      [I, I, E, O, O, I, I],
-      [E, E, E, O, O, O, E],
-      [E, E, E, O, O, O, O],
-      [E, E, E, E, E, E, E],
-      [I, I, E, E, E, I, I],
-      [I, I, E, E, E, I, I],
-    ]
-  },
-  {
-    name: "Diamond",
-    description: "A sharp diamond shape.",
-    board: [
-      [I, I, E, O, E, I, I],
-      [I, I, O, O, O, I, I],
-      [E, O, O, O, O, O, E],
-      [O, O, O, E, O, O, O],
-      [E, O, O, O, O, O, E],
-      [I, I, O, O, O, I, I],
-      [I, I, E, O, E, I, I],
-    ]
-  }
-];
+import { Theme, GameLayout } from './types.ts';
 
 export const THEMES: Theme[] = [
   {
-    name: 'Barbie World',
-    isDark: false,
-    appBg: 'bg-pink-100',
-    bgAnimClass: 'bg-anim-barbie',
-    bgImage: 'https://i.postimg.cc/GH3fjn62/Barbie.jpg', 
-    boardBg: 'bg-gradient-to-br from-pink-400/50 to-rose-500/50 backdrop-blur-xl',
-    boardBorder: 'border-white/70',
-    grooveBorder: 'border-pink-200/50',
-    holeBg: 'bg-rose-900/10',
-    marbleStart: '#fff0f5', // Lavender Blush
-    marbleEnd: '#ec4899',   // Pink 500
-    selectionRing: 'ring-fuchsia-300',
-    accentColor: 'bg-pink-500 hover:bg-pink-400',
-    overlayClass: 'overlay-hearts'
+    id: 'cosmic',
+    name: 'Cosmic Nebula',
+    boardBg: 'bg-slate-900/90 backdrop-blur-xl',
+    boardBorder: 'border-indigo-500/50 shadow-[0_0_40px_rgba(99,102,241,0.35)]',
+    marbleBg: 'bg-gradient-to-br from-indigo-300 via-indigo-500 to-indigo-950',
+    selectedMarbleBg: 'bg-gradient-to-br from-cyan-300 via-cyan-500 to-cyan-800 shadow-[0_0_25px_rgba(6,182,212,0.85)]',
+    bgGradient: 'from-slate-950 via-indigo-950 to-slate-950',
+    buttonColor: 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-500/20',
+    accentColor: 'text-indigo-400',
+    textColor: 'text-slate-200'
   },
   {
-    name: 'Frozen Theme',
-    isDark: true,
-    appBg: 'bg-sky-950',
-    bgAnimClass: 'bg-anim-ice',
-    bgImage: 'https://i.postimg.cc/vcDJsdXs/Frozen.jpg', 
-    boardBg: 'bg-gradient-to-br from-sky-300/30 to-blue-600/30 backdrop-blur-md',
-    boardBorder: 'border-sky-200/50',
-    grooveBorder: 'border-white/30',
-    holeBg: 'bg-sky-950/60',
-    marbleStart: '#e0f2fe', // Sky 100 (Ice)
-    marbleEnd: '#0284c7',   // Sky 600 (Deep Ice)
-    selectionRing: 'ring-white',
-    accentColor: 'bg-sky-500 hover:bg-sky-400',
-    overlayClass: 'overlay-snowflakes'
+    id: 'gold-forest',
+    name: 'Royal Forest',
+    boardBg: 'bg-emerald-950/90 backdrop-blur-xl',
+    boardBorder: 'border-amber-500/50 shadow-[0_0_40px_rgba(245,158,11,0.25)]',
+    marbleBg: 'bg-gradient-to-br from-amber-200 via-amber-400 to-amber-900',
+    selectedMarbleBg: 'bg-gradient-to-br from-emerald-300 via-emerald-400 to-emerald-800 shadow-[0_0_25px_rgba(52,211,153,0.85)]',
+    bgGradient: 'from-slate-950 via-emerald-950/80 to-slate-950',
+    buttonColor: 'bg-amber-500 hover:bg-amber-400 text-amber-950 shadow-amber-500/20 font-bold',
+    accentColor: 'text-amber-400',
+    textColor: 'text-emerald-100'
   },
   {
-    name: 'Nature',
-    isDark: true,
-    appBg: 'bg-indigo-950', 
-    bgAnimClass: 'bg-anim-nature',
-    bgImage: 'https://i.postimg.cc/rzwb1LBd/Nature.jpg', 
-    boardBg: 'bg-gradient-to-br from-indigo-900/50 to-blue-900/50 backdrop-blur-md',
-    boardBorder: 'border-indigo-400/50',
-    grooveBorder: 'border-amber-200/40', // Golden groove
-    holeBg: 'bg-indigo-950/60',
-    marbleStart: '#fef3c7', // Pale Gold/Yellow (Firefly light)
-    marbleEnd: '#d97706',   // Deep Amber/Orange
-    selectionRing: 'ring-amber-300', 
-    accentColor: 'bg-amber-600 hover:bg-amber-500',
-    overlayClass: 'overlay-fireflies'
+    id: 'royal-velvet',
+    name: 'Royal Velvet',
+    boardBg: 'bg-rose-950/95 backdrop-blur-xl',
+    boardBorder: 'border-pink-500/40 shadow-[0_0_40px_rgba(244,63,94,0.25)]',
+    marbleBg: 'bg-gradient-to-br from-slate-100 via-slate-300 to-slate-700',
+    selectedMarbleBg: 'bg-gradient-to-br from-rose-400 via-rose-500 to-rose-900 shadow-[0_0_25px_rgba(244,63,94,0.85)]',
+    bgGradient: 'from-slate-950 via-rose-950/70 to-slate-950',
+    buttonColor: 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-500/20',
+    accentColor: 'text-rose-400',
+    textColor: 'text-rose-100'
   },
   {
-    name: 'Under Water',
-    isDark: true,
-    appBg: 'bg-blue-950',
-    bgAnimClass: 'bg-anim-ocean',
-    bgImage: 'https://i.postimg.cc/4KG2mCvy/Under-Water.jpg', 
-    boardBg: 'bg-gradient-to-br from-cyan-900/60 to-blue-900/60 backdrop-blur-xl',
-    boardBorder: 'border-cyan-400/60',
-    grooveBorder: 'border-cyan-300/40',
-    holeBg: 'bg-blue-950/80',
-    marbleStart: '#f0f9ff',
-    marbleEnd: '#0099ff',
-    selectionRing: 'ring-yellow-300',
-    accentColor: 'bg-cyan-600 hover:bg-cyan-500',
-    overlayClass: 'overlay-bubbles'
+    id: 'amber-wood',
+    name: 'Classic Amber',
+    boardBg: 'bg-gradient-to-b from-[#4a2e12] to-[#2b1803]',
+    boardBorder: 'border-[#8c5a2c] shadow-[0_20px_50px_rgba(0,0,0,0.8)]',
+    marbleBg: 'bg-gradient-to-br from-[#ebe6d8] via-[#cfc2a9] to-[#807255]',
+    selectedMarbleBg: 'bg-gradient-to-br from-orange-400 via-orange-500 to-orange-850 shadow-[0_0_25px_rgba(249,115,22,0.85)]',
+    bgGradient: 'from-[#1a1006] via-[#2d1b0a] to-[#120a03]',
+    buttonColor: 'bg-orange-600 hover:bg-orange-500 text-white shadow-orange-500/20',
+    accentColor: 'text-orange-400',
+    textColor: 'text-orange-100'
+  }
+];
+
+export const LAYOUTS: GameLayout[] = [
+  {
+    id: 'english',
+    name: 'English (Classic 33)',
+    description: 'The standard English Brainvita cross-shaped board. A perfect challenge.',
+    board: [
+      [0, 0, 1, 1, 1, 0, 0],
+      [0, 0, 1, 1, 1, 0, 0],
+      [1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 2, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1],
+      [0, 0, 1, 1, 1, 0, 0],
+      [0, 0, 1, 1, 1, 0, 0]
+    ]
   },
   {
-    name: 'Gem Stones',
-    isDark: true,
-    appBg: 'bg-slate-950',
-    bgAnimClass: 'bg-anim-crystal',
-    bgImage: 'https://i.postimg.cc/XZ6mdBb1/Gem-Stones.jpg', 
-    boardBg: 'bg-gradient-to-br from-slate-900/50 to-stone-900/50 backdrop-blur-xl',
-    boardBorder: 'border-white/20',
-    grooveBorder: 'border-white/10',
-    holeBg: 'bg-black/50',
-    marbleStart: '#ffffff', 
-    marbleEnd: '#0ea5e9', 
-    selectionRing: 'ring-white',
-    accentColor: 'bg-indigo-600 hover:bg-indigo-500',
-    overlayClass: 'overlay-crystals'
+    id: 'french',
+    name: 'French (37 Holes)',
+    description: 'European variation adding corner cells for complex diagonal jumps.',
+    board: [
+      [0, 0, 1, 1, 1, 0, 0],
+      [0, 1, 1, 1, 1, 1, 0],
+      [1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 2, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1],
+      [0, 1, 1, 1, 1, 1, 0],
+      [0, 0, 1, 1, 1, 0, 0]
+    ]
   },
   {
-    name: 'Disney Magic',
-    isDark: true,
-    appBg: 'bg-violet-950',
-    bgAnimClass: 'bg-anim-disney',
-    bgImage: 'https://i.postimg.cc/bZ48Mvjt/Disney.jpg', 
-    boardBg: 'bg-gradient-to-br from-violet-900/50 to-fuchsia-900/50 backdrop-blur-md',
-    boardBorder: 'border-yellow-200/40',
-    grooveBorder: 'border-white/20',
-    holeBg: 'bg-violet-950/60',
-    marbleStart: '#fae8ff', // Light Purple
-    marbleEnd: '#9333ea',   // Deep Purple
-    selectionRing: 'ring-yellow-300',
-    accentColor: 'bg-violet-600 hover:bg-violet-500',
-    overlayClass: 'overlay-sparkles'
-  },
-  {
-    name: 'Sky Kingdom',
-    isDark: false,
-    appBg: 'bg-sky-100',
-    bgAnimClass: 'bg-anim-sky',
-    bgImage: 'https://i.postimg.cc/tYLMGnYX/Sky.jpg', 
-    boardBg: 'bg-gradient-to-br from-white/50 to-sky-200/50 backdrop-blur-xl',
-    boardBorder: 'border-white/80',
-    grooveBorder: 'border-sky-200/40',
-    holeBg: 'bg-sky-900/10',
-    marbleStart: '#f0f9ff', // Sky 50
-    marbleEnd: '#0ea5e9',   // Sky 500
-    selectionRing: 'ring-yellow-400',
-    accentColor: 'bg-sky-500 hover:bg-sky-400',
-    overlayClass: 'overlay-clouds'
+    id: 'mini',
+    name: 'Mini Cross (9 Holes)',
+    description: 'An easier 9-peg layout starting with only a few marbles. Great for learning!',
+    board: [
+      [0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 1, 0, 0, 0],
+      [0, 0, 0, 1, 0, 0, 0],
+      [0, 1, 1, 2, 1, 1, 0],
+      [0, 0, 0, 1, 0, 0, 0],
+      [0, 0, 0, 1, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0]
+    ]
   }
 ];
