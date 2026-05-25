@@ -1,0 +1,33 @@
+{
+  "short_name": "Brainvita 3D",
+  "name": "Brainvita Master 3D: Peg Solitaire Puzzle",
+  "description": "Master the classic Brainvita logic puzzle with stunning 3D graphics.",
+  "id": "com.brainvita.master3d.v1.6.5",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#020617",
+  "background_color": "#020617",
+  "orientation": "portrait",
+  "lang": "en-US"
+}
