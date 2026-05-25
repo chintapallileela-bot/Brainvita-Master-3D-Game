@@ -22,12 +22,7 @@
     }
   },
   "include": [
-    "index.tsx",
-    "App.tsx",
-    "types.ts",
-    "constants.ts",
-    "components/**/*.tsx",
-    "utils/**/*.ts"
+    "src/**/*"
   ],
   "exclude": ["node_modules", "dist"]
 }
