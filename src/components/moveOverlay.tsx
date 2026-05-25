@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Position, Theme } from '../types';
+import { Position, Theme } from '../gameTypes';
 import { Marble } from './marble';
 
 interface MoveOverlayProps {

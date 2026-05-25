@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Board } from './components/board';
-import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './types';
+import { BoardState, CellState, Position, GameStatus, Theme, GameLayout } from './gameTypes';
 import { createInitialBoard, isMoveValid, checkGameStatus, countMarbles } from './utils/gameLogic';
 import { 
   X, Timer as TimerIcon, Play, Palette, LayoutGrid,

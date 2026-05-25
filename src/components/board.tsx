@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BoardState, CellState, Position, Theme } from '../types';
+import { BoardState, CellState, Position, Theme } from '../gameTypes';
 import { Marble } from './marble';
 import { MoveOverlay } from './moveOverlay';
 
