@@ -15,7 +15,7 @@
       "destination": "/sw.js"
     },
     {
-      "source": "/((?!assets/|manifest.json|sw.js|workbox-|.well-known/).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],

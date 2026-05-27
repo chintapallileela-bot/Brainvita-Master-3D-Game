@@ -2,6 +2,41 @@
 <html lang="en" style="background-color: #020617;">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function() {
+        try {
+          var SW_UPGRADE_KEY = 'brainvita_sw_upgrade_201';
+          if (localStorage.getItem(SW_UPGRADE_KEY) !== 'true') {
+            localStorage.setItem(SW_UPGRADE_KEY, 'true');
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                if (registrations && registrations.length > 0) {
+                  var count = 0;
+                  for (var i = 0; i < registrations.length; i++) {
+                    registrations[i].unregister().then(function() {
+                      count++;
+                      if (count === registrations.length) {
+                        try {
+                          caches.keys().then(function(keys) {
+                            Promise.all(keys.map(function(key) { return caches.delete(key); })).then(function() {
+                              window.location.reload();
+                            });
+                          });
+                        } catch (e) {
+                          window.location.reload();
+                        }
+                      }
+                    });
+                  }
+                }
+              });
+            }
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      })();
+    </script>
     <link rel="icon" type="image/png" href="https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png" />
     <link rel="apple-touch-icon" href="https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
