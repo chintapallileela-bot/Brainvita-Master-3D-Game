@@ -10,17 +10,20 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'inline',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+      manifestFilename: 'manifest.json',
+      includeAssets: [],
       manifest: {
-        name: 'Brainvita Master 3D',
+        name: 'Brainvita Master 3D: Peg Solitaire Puzzle',
         short_name: 'Brainvita 3D',
-        description: 'Premium 3D Peg Solitaire experience with stunning visual themes.',
+        description: 'Master the classic Brainvita logic puzzle with stunning 3D graphics.',
         theme_color: '#020617',
         background_color: '#020617',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',
-        id: '/',
+        scope: '/',
+        id: 'com.brainvita.master3d.v1.6.5',
+        lang: 'en-US',
         icons: [
           {
             src: 'https://i.postimg.cc/LsgKttrt/Brainvita-Icon.png',
@@ -43,7 +46,7 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
+        globPatterns: ['**/*.{js,html,json}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
