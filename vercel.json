@@ -1,5 +1,19 @@
 {
+  "cleanUrls": false,
+  "trailingSlash": false,
   "rewrites": [
+    {
+      "source": "/.well-known/assetlinks.json",
+      "destination": "/.well-known/assetlinks.json"
+    },
+    {
+      "source": "/manifest.json",
+      "destination": "/manifest.json"
+    },
+    {
+      "source": "/sw.js",
+      "destination": "/sw.js"
+    },
     {
       "source": "/((?!assets/|manifest.json|sw.js|workbox-|.well-known/).*)",
       "destination": "/index.html"
