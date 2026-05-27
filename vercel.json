@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/((?!assets/|manifest.json|sw.js|workbox-|.well-known/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
